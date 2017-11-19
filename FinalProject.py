@@ -133,6 +133,8 @@ class Neuron(object):
 # Difference in AI difficulties could be how far the AI can see into the future with its move predictions.
 
 from tkinter import *
+import ChessBoard as CB
+import BackEndChess as BackEnd
 
 def startScreen(canvas, data):
 
@@ -161,8 +163,35 @@ def startScreen(canvas, data):
                         text = "multiplayer \n   mode", 
                         font = "courier "+str(int(data.width/44)),
                         fill = "black")
+
+def tutorialScreen(canvas, data):
+    canvas.create_text(15, 15, 
+                       text = "Back",
+                       font = "courier "+str(int(data.width/25)))
+    canvas.create_text(data.width/2, data.height/2, 
+                       text = "Search the link below to watch the tutorial",
+                       font = "courier "+str(int(data.width/25)))
+    canvas.create_text(data.width/2, data.height*3/4, 
+                       text = "https://www.youtube.com/watch?v=t-uwGvx4V_A",
+                       font = "courier "+str(int(data.width/30)))
     
-    
+def trainingScreen(canvas, data):
+    CB.drawBoard(canvas, data.width, data.height)
+    canvas.create_text(15, 15, 
+                       text = "Back",
+                       font = "courier "+str(int(data.width/25)))
+
+def competitiveScreen(canvas, data):
+    CB.drawBoard(canvas, data.width, data.height)
+    canvas.create_text(15, 15, 
+                       text = "Back",
+                       font = "courier "+str(int(data.width/25)))
+
+def multiplayerScreen(canvas, data):
+    CB.drawBoard(canvas, data.width, data.height)
+    canvas.create_text(15, 15, 
+                       text = "Back",
+                       font = "courier "+str(int(data.width/25)))
 
 ####################################
 # customize these functions
@@ -185,9 +214,26 @@ def init(data):
     data.r = 50
 
 def mousePressed(event, data):
+    if not data.gameBeginning:
+        if 0 <= event.x <= 30:
+            if 0 <= event.y <= 30:
+                init(data)
     if data.width/19 < event.x < data.width/19*3:
         if data.height/4*3-10 < event.y < data.height/4*3+10:
             data.tutorialStarted = True
+            data.gameBeginning = False
+    '''if data.width/19 < event.x < data.width/19*3:
+        if data.height/4*3-10 < event.y < data.height/4*3+10:
+            data.trainingStarted = True
+            data.gameBeginning = False
+    if data.width/19 < event.x < data.width/19*3:
+        if data.height/4*3-10 < event.y < data.height/4*3+10:
+            data.competitiveStarted = True
+            data.gameBeginning = False
+    if data.width/19 < event.x < data.width/19*3:
+        if data.height/4*3-10 < event.y < data.height/4*3+10:
+            data.multiplayerStarted = True
+            data.gameBeginning = False'''
 
 def keyPressed(event, data):
     # use event.char and event.keysym
@@ -198,9 +244,25 @@ def timerFired(data):
 
 def redrawAll(canvas, data):
     if data.gameBeginning:
+        canvas.create_rectangle(0, 0, data.width, data.height,
+                                fill='white', width=0)
         startScreen(canvas, data)
-    
-    pass
+    if data.tutorialStarted:
+        canvas.create_rectangle(0, 0, data.width, data.height,
+                                fill='white', width=0)
+        tutorialScreen(canvas, data)
+    if data.trainingStarted:
+        canvas.create_rectangle(0, 0, data.width, data.height,
+                                fill='white', width=0)
+        trainingScreen(canvas, data)
+    if data.competitiveStarted:
+        canvas.create_rectangle(0, 0, data.width, data.height,
+                                fill='white', width=0)
+        competitiveScreen(canvas, data)
+    if data.multiplayerStarted:
+        canvas.create_rectangle(0, 0, data.width, data.height,
+                                fill='white', width=0)
+        multiplayerScreen(canvas, data)
 
 ####################################
 # use the run function as-is

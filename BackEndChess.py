@@ -3,7 +3,7 @@ from PIL import Image, ImageTk
 #photo = ImageTk.PhotoImage(Image.open("someFile.jpg"))
 
 # If the player's move puts them in check, then the move is undone.
-def isCheck(board):
+#def isCheck(board):
 
 
 class Pawn(object):
@@ -11,23 +11,26 @@ class Pawn(object):
         self.color = color
         self.posRow = posRow
         self.posCol = posCol
-        self.image = ( xc, yc, r, "blue")
+        self.image = (posRow, posCol, 10, "blue")
         self.moves = []
         self.takeMoves = []
+    
+    def __repr__(self):
+        return self.color+" Pawn"
 
     def getMoves(self, board):
         # Black pieces start at the top of the board.
         if self.color == "Black":
-            if self.posRow == 6:
-                self.moves == [[self.posRow,self.posRow+1],[self.posRow,self.posRow+2]]
-            elif self.posRow != len(board)-1:
-                self.moves = [[self.posRow,self.posRow+1]]
+            if self.posRow == 1:
+                self.moves = [[self.posRow+1,self.posCol],[self.posRow+2,self.posCol]]
+            else:
+                self.moves = [[self.posRow+1,self.posCol]]
         # White pieces start at the bottom of the board.
         else:
-            if self.posRow == 1:
-                self.moves == [[self.posRow,self.posRow-1],[self.posRow,self.posRow-2]]
-            elif self.posRow != 0:
-                self.moves = [[self.posRow,self.posRow-1]]
+            if self.posRow == 6:
+                self.moves = [[self.posRow-1,self.posCol],[self.posRow-2,self.posCol]]
+            else:
+                self.moves = [[self.posRow-1,self.posCol]]
         # Gets rid of moves where other pieces are blocking pawn.
         for move in self.moves:
             if board[move[0]][move[1]] != None:
@@ -50,20 +53,24 @@ class Pawn(object):
             if self.posCol == len(board)-1:
                 self.takeMoves.remove(board[self.posRow-1][self.posCol+1])
         for i in range(len(self.takeMoves)):
-            confirmTakeMoves([self.takeMoves[i],self.takeMoves[i][1]], board)
+            confirmTakeMoves([self.takeMoves[i][0],self.takeMoves[i][1]], board)
 
     # Only adds to takeMoves list of diagonal moves if the piece is the opposite color.
     def confirmTakeMoves(self, otherPos, board):
-        if self.color != board[otherPos[0]][otherPos[1]].color:
-            self.moves.append([otherPos[0],otherPos[1]])
+        if board[otherPos[0]][otherPos[1]] != None:
+            if self.color != board[otherPos[0]][otherPos[1]].color:
+                self.moves.append([otherPos[0],otherPos[1]])
 
 class Rook(object):
     def __init__(self, color, posRow, posCol):
         self.color = color
         self.posRow = posRow
         self.posCol = posCol
-        self.image = ( xc, yc, r, "red")
+        self.image = (posRow, posCol, 10, "red")
         self.moves = []
+    
+    def __repr__(self):
+        return self.color+" Rook"
 
     # Finds all legal moves.
     def getMoves(self, board):
@@ -98,8 +105,11 @@ class Knight(object):
         self.color = color
         self.posRow = posRow
         self.posCol = posCol
-        self.image = ( xc, yc, r, "red")
+        self.image = (posRow, posCol, 10, "red")
         self.moves = []
+
+    def __repr__(self):
+        return self.color+" Knight"
 
     # Finds all moves.
     def getMoves(self, board, counter = 0):
@@ -117,8 +127,11 @@ class Bishop(object):
         self.color = color
         self.posRow = posRow
         self.posCol = posCol
-        self.image = ( xc, yc, r, "red")
+        self.image = (posRow, posCol, 10, "red")
         self.moves = []
+    
+    def __repr__(self):
+        return self.color+" Bishop"
     
     def getMoves(self, board):
         adder = 0
@@ -164,8 +177,11 @@ class Queen(object):
         self.color = color
         self.posRow = posRow
         self.posCol = posCol
-        self.image = ( xc, yc, r, "red")
+        self.image = (posRow, posCol, 10, "red")
         self.moves = []
+    
+    def __repr__(self):
+        return self.color+" Queen"
 
     def getStraightMoves(self, board):
         for i in range(self.posRow-1, -1):
@@ -236,8 +252,11 @@ class King(object):
         self.color = color
         self.posRow = posRow
         self.posCol = posCol
-        self.image = ( xc, yc, r, "red")
+        self.image = (posRow, posCol, 10, "red")
         self.moves = []
+
+    def __repr__(self):
+        return self.color+" King"
 
     def getMoves(self, board):
         for i in range(-1, 2):

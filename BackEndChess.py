@@ -2,8 +2,84 @@ from PIL import Image, ImageTk
 
 #photo = ImageTk.PhotoImage(Image.open("someFile.jpg"))
 
-# If the player's move puts them in check, then the move is undone.
-#def isCheck(board):
+# Identifies if a player is in check.
+def isCheck(board, turn):
+    if turn = "White":
+        for row in range(len(board)):
+            for col in range(len(board[0])):
+                if type(board[row][col]) == King and board[row][col].color == "White":
+                    kingRow = row
+                    kingCol = col
+                    break
+        for row in range(len(board)):
+            for col in range(len(board[0])):
+                if board[row][col].color == "Black":
+                    board[row][col].getMoves
+                    if [kingRow, kingCol] in board[row][col].moves:
+                        return True
+    else:
+        for row in range(len(board)):
+            for col in range(len(board[0])):
+                if type(board[row][col]) == King and board[row][col].color == "Black":
+                    kingRow = row
+                    kingCol = col
+                    break
+        for row in range(len(board)):
+            for col in range(len(board[0])):
+                if board[row][col].color == "White":
+                    board[row][col].getMoves
+                    if [kingRow, kingCol] in board[row][col].moves:
+                        return True
+    return False
+
+# If a player is in check, this checks if they are in checkMate.
+def isCheckMate(board, turn):
+    if turn == "White":
+        for row in range(len(board)):
+            for col in range(len(board[0])):
+                if type(board[row][col]) == King and board[row][col].color == "White":
+                    kingRow = row
+                    kingCol = col
+                    break
+        board[kingRow][kingCol].getMoves
+        moveCount = len(board[kingRow][kingCol].moves)
+        for move in board[kingRow][kingCol].moves:
+            for row in range(len(board)):
+                for col in range(len(board[0])):
+                    if board[row][col] != None and board[row][col].color == "Black":
+                        board[row][col].getMoves
+                        if move in board[row][col].moves:
+                            moveCount -= 1
+                            if moveCount == 0:
+                                return True
+    if turn == "Black":
+        for row in range(len(board)):
+            for col in range(len(board[0])):
+                if type(board[row][col]) == King and board[row][col].color == "Black":
+                    kingRow = row
+                    kingCol = col
+                    break
+        board[kingRow][kingCol].getMoves
+        moveCount = len(board[kingRow][kingCol].moves)
+        for move in board[kingRow][kingCol].moves:
+            for row in range(len(board)):
+                for col in range(len(board[0])):
+                    if board[row][col] != None and board[row][col].color == "White":
+                        board[row][col].getMoves
+                        if move in board[row][col].moves:
+                            moveCount -= 1
+                            if moveCount == 0:
+                                return True
+    return False
+    
+                            
+
+
+def isStaleMate(board):
+    pass
+
+def whosTurn(board):
+    pass
 
 
 class Pawn(object):
@@ -11,7 +87,7 @@ class Pawn(object):
         self.color = color
         self.posRow = posRow
         self.posCol = posCol
-        self.image = (posRow, posCol, 10, "blue")
+        self.image = ImageTk.PhotoImage(Image.open("someFile.jpg"))
         self.moves = []
         self.takeMoves = []
     
@@ -260,18 +336,25 @@ class King(object):
 
     def getMoves(self, board):
         for i in range(-1, 2):
-            self.moves.append([self.posRow-1, self.posCol+i])
-            if board[self.posRow-1][self.posCol+i] != None:
-                if board[self.posRow-1][self.posCol+i].color == self.color:
-                    self.moves.remove([self.posRow-1, self.posCol+i])
+            if 0 <= self.posRow-1 <= 7 and 0 <= self.posCol+i <= 7:
+                self.moves.append([self.posRow-1, self.posCol+i])
+                if board[self.posRow-1][self.posCol+i] != None:
+                    if board[self.posRow-1][self.posCol+i].color == self.color:
+                        self.moves.remove([self.posRow-1, self.posCol+i])
+                        
         for j in range(-1, 2):
-            self.moves.append([self.posRow+1, self.posCol+j])
-            if board[self.posRow+1][self.posCol+j] != None:
-                if board[self.posRow+1][self.posCol+j].color == self.color:
-                    self.moves.remove([self.posRow+1, self.posCol+j])
-        if (board[self.posRow][self.posCol-1] == None or 
-        board[self.posRow][self.posCol-1].color == self.color):
+            if 0 <= self.posRow+1 <= 7 and 0 <= self.posCol+j <= 7:
+                self.moves.append([self.posRow+1, self.posCol+j])
+                if board[self.posRow+1][self.posCol+j] != None:
+                    if board[self.posRow+1][self.posCol+j].color == self.color:
+                        self.moves.remove([self.posRow+1, self.posCol+j])
+
+        if 0 <= self.posRow <= 7 and 0 <= self.posCol-1 <= 7:
+            if (board[self.posRow][self.posCol-1] == None or 
+            board[self.posRow][self.posCol-1].color != self.color):
                 self.moves.append([self.posRow][self.posCol-1])
-        if (board[self.posRow][self.posCol+1] == None or 
-        board[self.posRow][self.posCol+1].color == self.color):
+
+        if 0 <= self.posRow <= 7 and 0 <= self.posCol+1 <= 7:
+            if (board[self.posRow][self.posCol+1] == None or 
+            board[self.posRow][self.posCol+1].color != self.color):
                 self.moves.append([self.posRow][self.posCol+1])

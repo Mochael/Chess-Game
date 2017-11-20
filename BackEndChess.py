@@ -32,7 +32,7 @@ def isCheck(board, turn):
                         return True
     return False
 
-# If a player is in check, this checks if they are in checkMate.
+# Run this function for both stalemate and checkmate. However, only run for checkmate if player is first in check.
 def isCheckMate(board, turn):
     if turn == "White":
         for row in range(len(board)):
@@ -71,16 +71,6 @@ def isCheckMate(board, turn):
                             if moveCount == 0:
                                 return True
     return False
-    
-                            
-
-
-def isStaleMate(board):
-    pass
-
-def whosTurn(board):
-    pass
-
 
 class Pawn(object):
     def __init__(self, color, posRow, posCol):

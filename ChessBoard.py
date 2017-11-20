@@ -1,48 +1,48 @@
 from tkinter import *
 from BackEndChess import *
 
-
 class Board(object):
 
     def __init__(self, width, height):
         self.width = width
         self.height = height
+        self.cellWidth = (self.width-2*self.margin)//8
+        self.cellHeight = (self.height-2*self.margin)//8
         self.board = []
+        self.margin = 20
+        self.clicked = False
+        self.rowClick = None
+        self.colClick = None
 
     def drawBoard(canvas, self):
-        margin = 20
-        cellWidth = (self.width-2*margin)//8
-        cellHeight = (self.height-2*margin)//8
         for row in range(8):
             if row%2 == 0:
                 for col in range(8):
                     if col%2 == 0:
-                        canvas.create_rectangle(margin+col*cellWidth, margin+row*cellHeight,
-                        margin+(col+1)*cellWidth, margin+(row+1)*cellHeight, fill = "tan",
-                        width = cellHeight//25)
+                        canvas.create_rectangle(self.margin+col*self.cellWidth, self.margin+row*self.cellHeight,
+                        self.margin+(col+1)*self.cellWidth, self.margin+(row+1)*self.cellHeight, fill = "tan",
+                        width = self.cellHeight//25)
                     else:
-                        canvas.create_rectangle(margin+col*cellWidth, margin+row*cellHeight,
-                        margin+(col+1)*cellWidth, margin+(row+1)*cellHeight, fill = "brown",
-                        width = cellHeight//25)
+                        canvas.create_rectangle(self.margin+col*self.cellWidth, self.margin+row*self.cellHeight,
+                        self.margin+(col+1)*self.cellWidth, self.margin+(row+1)*self.cellHeight, fill = "brown",
+                        width = self.cellHeight//25)
             else:
                 for col in range(8):
                     if col%2 == 0:
-                        canvas.create_rectangle(margin+col*cellWidth, margin+row*cellHeight,
-                        margin+(col+1)*cellWidth, margin+(row+1)*cellHeight, fill = "brown",
-                        width = cellHeight//25)
+                        canvas.create_rectangle(self.margin+col*self.cellWidth, self.margin+row*self.cellHeight,
+                        self.margin+(col+1)*self.cellWidth, self.margin+(row+1)*self.cellHeight, fill = "brown",
+                        width = self.cellHeight//25)
                     else:
-                        canvas.create_rectangle(margin+col*cellWidth, margin+row*cellHeight,
-                        margin+(col+1)*cellWidth, margin+(row+1)*cellHeight, fill = "tan",
-                        width = cellHeight//25)
+                        canvas.create_rectangle(self.margin+col*self.cellWidth, self.margin+row*self.cellHeight,
+                        self.margin+(col+1)*self.cellWidth, self.margin+(row+1)*self.cellHeight, fill = "tan",
+                        width = self.cellHeight//25)
 
     def drawPieces(self, board):
-        margin = 20
-        cellWidth = (self.width-2*margin)//8
-        cellHeight = (self.height-2*margin)//8
+        self.margin = 20
         for row in range(len(self.board)):
             for col in range(len(self.board[0])):
-                xc = margin+cellWidth*col-cellWidth/2
-                yc = margin+cellHeight*row-cellHeight/2
+                xc = self.margin+self.cellWidth*col-self.cellWidth/2
+                yc = self.margin+self.cellHeight*row-self.cellHeight/2
                 if self.board[row][col] != None:
                     self.board[row][col].image
 
@@ -79,3 +79,39 @@ class Board(object):
                 self.board[7][l] = Queen("Black", 0, l)
             elif l == 4:
                 self.board[7][l] = King("Black", 0, l)
+
+    # If the player's move puts them in check, then the move is undone.
+    def undoCheckMove(board):
+        pass
+
+    def mouseClick(self, eventX, eventY, turn, player):
+        if turn == player:
+            if (self.margin <= eventX <= self.width-self.margin and 
+            self.margin <= eventY <= self.height-self.margin):
+                self.rowClick = (eventY-self.margin)/((self.height-2*self.margin)//8)
+                self.colClick = (eventX-self.margin)/((self.width-2*self.margin)//8)
+                if self.board[self.rowClick][self.colClick] != None and self.board[self.rowClick][self.colClick].color = player:
+                    self.clicked = True
+                    canvas.create_rectangle(self.margin+self.rowClick*self.cellWidth,
+                                             self.margin+self.colClick*self.cellHeight,
+                                             self.margin+(self.rowClick+1)*self.cellWidth,
+                                             self.margin+(self.colClick+1)*self.cellHeight,
+                                             fill = "yellow")
+                else:
+                    self.clicked = False
+            else:
+                self.clicked = False
+        else:
+            self.clicked = False
+
+# Run moveClick before mouseClick and only run if self.clicked = True.
+    def moveClick(self, eventX, eventY, turn):
+        rowMove = (eventY-self.margin)/((self.height-2*self.margin)//8)
+        colMove = (eventX-self.margin)/((self.width-2*self.margin)//8)
+        self.board[self.rowClick][self.colClick].getMoves
+        if [rowMove, colMove] in self.board[self.rowClick][self.colClick].moves:
+            if not isCheck(board, turn):
+                self.board[rowMove][colMove] = self.board[self.rowClick][self.colClick]
+                self.board[self.rowClick][self.colClick] = None
+        # Set rowClick and colClick back to None after turn ends
+                    

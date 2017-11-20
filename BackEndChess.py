@@ -4,7 +4,7 @@ from PIL import Image, ImageTk
 
 # Identifies if a player is in check.
 def isCheck(board, turn):
-    if turn = "White":
+    if turn == "White":
         for row in range(len(board)):
             for col in range(len(board[0])):
                 if type(board[row][col]) == King and board[row][col].color == "White":

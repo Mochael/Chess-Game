@@ -137,7 +137,6 @@ import ChessBoard as CB
 import BackEndChess as BackEnd
 
 def startScreen(canvas, data):
-
     canvas.create_text(data.width/2, data.height/4,
                         text = "Welcome to Chess Trainer",
                         font = "courier "+str(int(data.width/25))+" underline")
@@ -151,14 +150,20 @@ def startScreen(canvas, data):
                         text = "tutorial \n  mode", 
                         font = "courier "+str(int(data.width/44)),
                         fill = "black")
+    canvas.create_rectangle(data.x2-data.r,data.y2-data.r,data.x2+data.r,data.y2+data.r,
+                            fill = "grey")
     canvas.create_text(data.x2, data.y2,
                         text = "training \n  mode", 
                         font = "courier "+str(int(data.width/44)),
                         fill = "black")
+    canvas.create_rectangle(data.x3-data.r,data.y3-data.r,data.x3+data.r,data.y3+data.r,
+                            fill = "grey")
     canvas.create_text(data.x3, data.y3,
                         text = "competitive \n    mode", 
                         font = "courier "+str(int(data.width/44)),
                         fill = "black")
+    canvas.create_rectangle(data.x4-data.r,data.y4-data.r,data.x4+data.r,data.y4+data.r,
+                            fill = "grey")
     canvas.create_text(data.x4, data.y4,
                         text = "multiplayer \n   mode", 
                         font = "courier "+str(int(data.width/44)),
@@ -176,23 +181,22 @@ def tutorialScreen(canvas, data):
                        font = "courier "+str(int(data.width/30)))
     
 def trainingScreen(canvas, data):
-    CB.drawBoard(canvas, data.width, data.height)
+    data.mainBoard.drawBoard(canvas)
     canvas.create_text(15, 15, 
                        text = "Back",
                        font = "courier "+str(int(data.width/25)))
 
 def competitiveScreen(canvas, data):
-    CB.drawBoard(canvas, data.width, data.height)
+    data.mainBoard.drawBoard(canvas)
     canvas.create_text(15, 15, 
                        text = "Back",
                        font = "courier "+str(int(data.width/25)))
 
 def multiplayerScreen(canvas, data):
-    CB.drawBoard(canvas, data.width, data.height)
+    data.mainBoard.drawBoard(canvas)
     canvas.create_text(15, 15, 
                        text = "Back",
                        font = "courier "+str(int(data.width/25)))
-
 
 ####################################
 # customize these functions
@@ -213,28 +217,32 @@ def init(data):
     data.x4 = data.width/19*16
     data.y4 = data.height/4*3
     data.r = 50
+    data.mainBoard = CB.Board(data.width, data.height)
 
 def mousePressed(event, data):
     if not data.gameBeginning:
         if 0 <= event.x <= 30:
             if 0 <= event.y <= 30:
                 init(data)
-    if data.width/19 < event.x < data.width/19*3:
-        if data.height/4*3-10 < event.y < data.height/4*3+10:
+    if data.x1-data.r <= event.x <= data.x1+data.r:
+        if data.y1-data.r <= event.y <= data.y1+data.r:
             data.tutorialStarted = True
             data.gameBeginning = False
-    '''if data.width/19 < event.x < data.width/19*3:
-        if data.height/4*3-10 < event.y < data.height/4*3+10:
+    if data.x2-data.r <= event.x <= data.x2+data.r:
+        if data.y2-data.r <= event.y <= data.y2+data.r:
             data.trainingStarted = True
             data.gameBeginning = False
-    if data.width/19 < event.x < data.width/19*3:
-        if data.height/4*3-10 < event.y < data.height/4*3+10:
+            multiplayerScreen(canvas, data)
+    if data.x3-data.r <= event.x <= data.x3+data.r:
+        if data.y3-data.r <= event.y <= data.y3+data.r:
             data.competitiveStarted = True
             data.gameBeginning = False
-    if data.width/19 < event.x < data.width/19*3:
-        if data.height/4*3-10 < event.y < data.height/4*3+10:
+            multiplayerScreen(canvas, data)
+    if data.x4-data.r <= event.x <= data.x4+data.r:
+        if data.y4-data.r <= event.y <= data.y4+data.r:
             data.multiplayerStarted = True
-            data.gameBeginning = False'''
+            data.gameBeginning = False
+            multiplayerScreen(canvas, data)
 
 def keyPressed(event, data):
     # use event.char and event.keysym
@@ -311,4 +319,4 @@ def run(width=300, height=300):
     root.mainloop()  # blocks until window is closed
     print("bye!")
 
-run(800, 800)
+run(400, 400)

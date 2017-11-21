@@ -105,6 +105,7 @@ class Pawn(object):
         for move in self.moves:
             if board[move[0]][move[1]] != None:
                 self.moves.remove(move)
+        self.findTakeMoves(board)
     
     # Finds possible diagonal moves for taking pieces with a pawn.
     def findTakeMoves(self, board):
@@ -123,13 +124,10 @@ class Pawn(object):
             if self.posCol == len(board)-1:
                 self.takeMoves.remove(board[self.posRow-1][self.posCol+1])
         for i in range(len(self.takeMoves)):
-            confirmTakeMoves([self.takeMoves[i][0],self.takeMoves[i][1]], board)
+            if self.takeMoves[i] != None:
+                if self.color != self.takeMoves[i].color:
+                    self.moves.append([otherPos[0],otherPos[1]])
 
-    # Only adds to takeMoves list of diagonal moves if the piece is the opposite color.
-    def confirmTakeMoves(self, otherPos, board):
-        if board[otherPos[0]][otherPos[1]] != None:
-            if self.color != board[otherPos[0]][otherPos[1]].color:
-                self.moves.append([otherPos[0],otherPos[1]])
 
 class Rook(object):
     def __init__(self, color, posRow, posCol):

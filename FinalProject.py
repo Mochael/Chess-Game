@@ -191,10 +191,6 @@ def trainingScreen(canvas, data):
                        text = "Back",
                        font = "courier "+str(int(data.width/25)))
     if data.mainBoard.clicked:
-        print(data.mainBoard.rowClick)
-        print(data.mainBoard.colClick)
-        print(data.mainBoard.margin+data.mainBoard.rowClick*data.mainBoard.cellHeight)
-        print(data.mainBoard.margin+data.mainBoard.colClick*data.mainBoard.cellWidth)
         canvas.create_rectangle(data.mainBoard.margin+data.mainBoard.colClick*data.mainBoard.cellWidth,
                                 data.mainBoard.margin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
                                 data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellWidth,
@@ -210,10 +206,10 @@ def competitiveScreen(canvas, data):
                        text = "Back",
                        font = "courier "+str(int(data.width/25)))
     if data.mainBoard.clicked:
-        canvas.create_rectangle(data.mainBoard.margin+data.mainBoard.rowClick*data.mainBoard.cellWidth,
-                                data.mainBoard.margin+data.mainBoard.colClick*data.mainBoard.cellHeight,
-                                data.mainBoard.margin+(data.mainBoard.rowClick+1)*data.mainBoard.cellWidth,
-                                data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellHeight,
+        canvas.create_rectangle(data.mainBoard.margin+data.mainBoard.colClick*data.mainBoard.cellWidth,
+                                data.mainBoard.margin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
+                                data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellWidth,
+                                data.mainBoard.margin+(data.mainBoard.rowClick+1)*data.mainBoard.cellHeight,
                                 fill = "yellow")
     drawImages(canvas, data)
 
@@ -225,10 +221,10 @@ def multiplayerScreen(canvas, data):
                        text = "Back",
                        font = "courier "+str(int(data.width/25)))
     if data.mainBoard.clicked:
-        canvas.create_rectangle(data.mainBoard.margin+data.mainBoard.rowClick*data.mainBoard.cellWidth,
-                                data.mainBoard.margin+data.mainBoard.colClick*data.mainBoard.cellHeight,
-                                data.mainBoard.margin+(data.mainBoard.rowClick+1)*data.mainBoard.cellWidth,
-                                data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellHeight,
+        canvas.create_rectangle(data.mainBoard.margin+data.mainBoard.colClick*data.mainBoard.cellWidth,
+                                data.mainBoard.margin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
+                                data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellWidth,
+                                data.mainBoard.margin+(data.mainBoard.rowClick+1)*data.mainBoard.cellHeight,
                                 fill = "yellow")
     drawImages(canvas, data)
 
@@ -359,7 +355,7 @@ def run(width=300, height=300):
     data = Struct()
     data.width = width
     data.height = height
-    data.timerDelay = 10000 # milliseconds
+    data.timerDelay = 1000 # milliseconds
     init(data)
     # create the root and the canvas
     root = Tk()

@@ -171,6 +171,8 @@ def startScreen(canvas, data):
                         fill = "black")
 
 def tutorialScreen(canvas, data):
+    canvas.create_rectangle(0, 0, data.width, data.height,
+                            fill='white', width=0)
     canvas.create_text(15, 15, 
                        text = "Back",
                        font = "courier "+str(int(data.width/25)))
@@ -182,25 +184,83 @@ def tutorialScreen(canvas, data):
                        font = "courier "+str(int(data.width/30)))
     
 def trainingScreen(canvas, data):
+    canvas.create_rectangle(0, 0, data.width, data.height,
+                            fill='white', width=0)
     data.mainBoard.drawBoard(canvas)
     canvas.create_text(15, 15, 
                        text = "Back",
                        font = "courier "+str(int(data.width/25)))
+    if data.mainBoard.clicked:
+        print(data.mainBoard.rowClick)
+        print(data.mainBoard.colClick)
+        print(data.mainBoard.margin+data.mainBoard.rowClick*data.mainBoard.cellHeight)
+        print(data.mainBoard.margin+data.mainBoard.colClick*data.mainBoard.cellWidth)
+        canvas.create_rectangle(data.mainBoard.margin+data.mainBoard.colClick*data.mainBoard.cellWidth,
+                                data.mainBoard.margin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
+                                data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellWidth,
+                                data.mainBoard.margin+(data.mainBoard.rowClick+1)*data.mainBoard.cellHeight,
+                                fill = "yellow")
     drawImages(canvas, data)
 
 def competitiveScreen(canvas, data):
+    canvas.create_rectangle(0, 0, data.width, data.height,
+                            fill='white', width=0)
     data.mainBoard.drawBoard(canvas)
     canvas.create_text(15, 15, 
                        text = "Back",
                        font = "courier "+str(int(data.width/25)))
+    if data.mainBoard.clicked:
+        canvas.create_rectangle(data.mainBoard.margin+data.mainBoard.rowClick*data.mainBoard.cellWidth,
+                                data.mainBoard.margin+data.mainBoard.colClick*data.mainBoard.cellHeight,
+                                data.mainBoard.margin+(data.mainBoard.rowClick+1)*data.mainBoard.cellWidth,
+                                data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellHeight,
+                                fill = "yellow")
     drawImages(canvas, data)
 
 def multiplayerScreen(canvas, data):
+    canvas.create_rectangle(0, 0, data.width, data.height,
+                            fill='white', width=0)
     data.mainBoard.drawBoard(canvas)
     canvas.create_text(15, 15, 
                        text = "Back",
                        font = "courier "+str(int(data.width/25)))
+    if data.mainBoard.clicked:
+        canvas.create_rectangle(data.mainBoard.margin+data.mainBoard.rowClick*data.mainBoard.cellWidth,
+                                data.mainBoard.margin+data.mainBoard.colClick*data.mainBoard.cellHeight,
+                                data.mainBoard.margin+(data.mainBoard.rowClick+1)*data.mainBoard.cellWidth,
+                                data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellHeight,
+                                fill = "yellow")
     drawImages(canvas, data)
+
+
+def gameMode(event, data):
+    if not data.gameBeginning:
+        if 0 <= event.x <= 30:
+            if 0 <= event.y <= 30:
+                init(data)
+    if data.x1-data.r <= event.x <= data.x1+data.r:
+        if data.y1-data.r <= event.y <= data.y1+data.r:
+            data.tutorialStarted = True
+            data.gameBeginning = False
+    if data.x2-data.r <= event.x <= data.x2+data.r:
+        if data.y2-data.r <= event.y <= data.y2+data.r:
+            data.trainingStarted = True
+            data.gameBeginning = False
+    if data.x3-data.r <= event.x <= data.x3+data.r:
+        if data.y3-data.r <= event.y <= data.y3+data.r:
+            data.competitiveStarted = True
+            data.gameBeginning = False
+    if data.x4-data.r <= event.x <= data.x4+data.r:
+        if data.y4-data.r <= event.y <= data.y4+data.r:
+            data.multiplayerStarted = True
+            data.gameBeginning = False
+
+def moveWithMouse(event, data):
+    if data.mainBoard.clicked:
+        data.mainBoard.moveClick(event.x, event.y, data.player)
+    else:
+        data.mainBoard.mouseClick(event.x, event.y, data.player)
+
 
 ####################################
 # customize these functions
@@ -223,7 +283,6 @@ def init(data):
     data.r = 50
     data.mainBoard = CB.Board(data.width, data.height)
     data.mainBoard.makeBoard()
-    data.turn = "White"
     data.player = "White"
 
 def initialize(canvas, data):
@@ -232,45 +291,19 @@ def initialize(canvas, data):
 def drawImages(canvas, data):
     for key in canvas.shapes:
         im = Image.open(canvas.shapes[key])
+        im = im.resize((data.width//5-2*data.mainBoard.margin, data.height//5-2*data.mainBoard.margin), 
+                        Image.ANTIALIAS)
         ph = ImageTk.PhotoImage(im)
         label = Label(canvas, image=ph)
         label.image=ph  #need to keep the reference of your image to avoid garbage collection
-        canvas.create_image(key[0]*data.mainBoard.cellWidth+data.mainBoard.cellWidth//2, 
-                            key[1]*data.mainBoard.cellHeight+data.mainBoard.cellHeight//2,
+        canvas.create_image(int(key[1]*data.mainBoard.cellWidth+data.mainBoard.cellWidth*(19/20)), 
+                            int(key[0]*data.mainBoard.cellHeight+data.mainBoard.cellHeight*(19/20)),
                             image=ph)
 
 def mousePressed(event, data):
+    gameMode(event, data)
     if not data.gameBeginning:
-        if 0 <= event.x <= 30:
-            if 0 <= event.y <= 30:
-                init(data)
-
-    if data.x1-data.r <= event.x <= data.x1+data.r:
-        if data.y1-data.r <= event.y <= data.y1+data.r:
-            data.tutorialStarted = True
-            data.gameBeginning = False
-
-    if data.x2-data.r <= event.x <= data.x2+data.r:
-        if data.y2-data.r <= event.y <= data.y2+data.r:
-            data.trainingStarted = True
-            data.gameBeginning = False
-
-    if data.x3-data.r <= event.x <= data.x3+data.r:
-        if data.y3-data.r <= event.y <= data.y3+data.r:
-            data.competitiveStarted = True
-            data.gameBeginning = False
-
-    if data.x4-data.r <= event.x <= data.x4+data.r:
-        if data.y4-data.r <= event.y <= data.y4+data.r:
-            data.multiplayerStarted = True
-            data.gameBeginning = False
-
-    if data.trainingStarted:
-        print(data.mainBoard.clicked)
-        if data.mainBoard.clicked:
-            data.mainBoard.moveClick(event.x, event.y, data.turn)
-        else:
-            data.mainBoard.mouseClick(event.x, event.y, data.turn, data.player)
+        moveWithMouse(event, data)
 
 
 def keyPressed(event, data):
@@ -282,31 +315,19 @@ def timerFired(data):
 
 def redrawAll(canvas, data):
     if data.gameBeginning:
-        canvas.create_rectangle(0, 0, data.width, data.height,
-                                fill='white', width=0)
         startScreen(canvas, data)
+
     if data.tutorialStarted:
-        canvas.create_rectangle(0, 0, data.width, data.height,
-                                fill='white', width=0)
         tutorialScreen(canvas, data)
+
     if data.trainingStarted:
-        canvas.create_rectangle(0, 0, data.width, data.height,
-                                fill='white', width=0)
         trainingScreen(canvas, data)
+
     if data.competitiveStarted:
-        canvas.create_rectangle(0, 0, data.width, data.height,
-                                fill='white', width=0)
         competitiveScreen(canvas, data)
+
     if data.multiplayerStarted:
-        canvas.create_rectangle(0, 0, data.width, data.height,
-                                fill='white', width=0)
         multiplayerScreen(canvas, data)
-        if data.mainBoard.clicked:
-            canvas.create_rectangle(data.mainBoard.margin+data.mainBoard.rowClick*data.mainBoard.cellWidth,
-                                    data.mainBoard.margin+data.mainBoard.colClick*data.mainBoard.cellHeight,
-                                    data.mainBoard.margin+(data.mainBoard.rowClick+1)*data.mainBoard.cellWidth,
-                                    data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellHeight,
-                                    fill = "yellow")
 
 ####################################
 # use the run function as-is

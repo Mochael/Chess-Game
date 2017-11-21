@@ -329,6 +329,10 @@ class Queen(object):
                     break
             self.moves.append([self.posRow+adder, self.posCol-adder])
 
+    def getMoves(self, board):
+        getDiagonalMoves(self, board)
+        getStraightMoves(self, board)
+
 class King(object):
     def __init__(self, color, posRow, posCol):
         self.color = color

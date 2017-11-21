@@ -14,6 +14,7 @@ class Board(object):
         self.clicked = False
         self.rowClick = None
         self.colClick = None
+        self.drawings = {}
 
     def drawBoard(self, canvas):
         for row in range(8):
@@ -37,16 +38,18 @@ class Board(object):
                         canvas.create_rectangle(self.margin+col*self.cellWidth, self.margin+row*self.cellHeight,
                         self.margin+(col+1)*self.cellWidth, self.margin+(row+1)*self.cellHeight, fill = "tan",
                         width = self.cellHeight//25)
-        # Input drawPieces(self) here
+        self.drawPieces(canvas)
 
-    def drawPieces(self):
+    def drawPieces(self, canvas):
         self.margin = 20
         for row in range(len(self.board)):
             for col in range(len(self.board[0])):
                 xc = self.margin+self.cellWidth*col-self.cellWidth/2
                 yc = self.margin+self.cellHeight*row-self.cellHeight/2
                 if self.board[row][col] != None:
-                    self.board[row][col].image
+                    self.drawings[(row,col)] = self.board[row][col].image
+                    #photo = ImageTk.PhotoImage(Image.open(self.board[row][col].image))
+                    #canvas.create_image(xc, yc, image = photo)
 
     def makeBoard(self):
         self.board = []
@@ -72,29 +75,31 @@ class Board(object):
                 self.board[0][k] = King("Black", 0, k)
         for l in range(8):
             if l%7 == 0:
-                self.board[7][l] = Rook("Black", 0, l)
+                self.board[7][l] = Rook("White", 0, l)
             elif l == 1 or l == 6:
-                self.board[7][l] = Knight("Black", 0, l)
+                self.board[7][l] = Knight("White", 0, l)
             elif l == 2 or l == 5:
-                self.board[7][l] = Bishop("Black", 0, l)
+                self.board[7][l] = Bishop("White", 0, l)
             elif l == 3:
-                self.board[7][l] = Queen("Black", 0, l)
+                self.board[7][l] = Queen("White", 0, l)
             elif l == 4:
-                self.board[7][l] = King("Black", 0, l)
+                self.board[7][l] = King("White", 0, l)
 
     def mouseClick(self, eventX, eventY, turn, player):
         if turn == player:
             if (self.margin <= eventX <= self.width-self.margin and 
             self.margin <= eventY <= self.height-self.margin):
-                self.rowClick = (eventY-self.margin)/((self.height-2*self.margin)//8)
-                self.colClick = (eventX-self.margin)/((self.width-2*self.margin)//8)
+                self.rowClick = int((eventY-self.margin)/((self.height-2*self.margin)/8))
+                self.colClick = int((eventX-self.margin)/((self.width-2*self.margin)/8))
+                print(self.rowClick)
+                print(self.colClick)
                 if self.board[self.rowClick][self.colClick] != None and self.board[self.rowClick][self.colClick].color == player:
                     self.clicked = True
-                    canvas.create_rectangle(self.margin+self.rowClick*self.cellWidth,
-                                             self.margin+self.colClick*self.cellHeight,
-                                             self.margin+(self.rowClick+1)*self.cellWidth,
-                                             self.margin+(self.colClick+1)*self.cellHeight,
-                                             fill = "yellow")
+#                    canvas.create_rectangle(self.margin+self.rowClick*self.cellWidth,
+#                                             self.margin+self.colClick*self.cellHeight,
+#                                             self.margin+(self.rowClick+1)*self.cellWidth,
+#                                             self.margin+(self.colClick+1)*self.cellHeight,
+#                                             fill = "yellow")
                 else:
                     self.clicked = False
             else:
@@ -104,8 +109,8 @@ class Board(object):
 
 # Run moveClick before mouseClick and only run if self.clicked = True.
     def moveClick(self, eventX, eventY, turn):
-        rowMove = (eventY-self.margin)/((self.height-2*self.margin)//8)
-        colMove = (eventX-self.margin)/((self.width-2*self.margin)//8)
+        rowMove = int((eventY-self.margin)/((self.height-2*self.margin)/8))
+        colMove = int((eventX-self.margin)/((self.width-2*self.margin)/8))
         self.board[self.rowClick][self.colClick].getMoves
         if [rowMove, colMove] in self.board[self.rowClick][self.colClick].moves:
             tempB = copy.deepcopy(self.board)
@@ -114,5 +119,8 @@ class Board(object):
             if not isCheck(tempB, turn):
                 self.board[rowMove][colMove] = self.board[self.rowClick][self.colClick]
                 self.board[self.rowClick][self.colClick] = None
+        self.clicked = False
+        self.rowClick = None
+        self.colClick = None
         # Set rowClick and colClick back to None after turn ends
                     

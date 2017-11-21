@@ -1,6 +1,7 @@
 from PIL import Image, ImageTk
 
-#photo = ImageTk.PhotoImage(Image.open("someFile.jpg"))
+# photo = ImageTk.PhotoImage(Image.open("someFile.jpg"))
+# Do canvas.create_image(xcenter, ycenter, image = photo)
 
 # Identifies if a player is in check.
 def isCheck(board, turn):
@@ -77,7 +78,10 @@ class Pawn(object):
         self.color = color
         self.posRow = posRow
         self.posCol = posCol
-        self.image = ImageTk.PhotoImage(Image.open("someFile.jpg"))
+        if self.color == "Black":
+            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/BlackPawn.png"
+        else:
+            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/WhitePawn.png"
         self.moves = []
         self.takeMoves = []
     
@@ -132,7 +136,10 @@ class Rook(object):
         self.color = color
         self.posRow = posRow
         self.posCol = posCol
-        self.image = (posRow, posCol, 10, "red")
+        if self.color == "Black":
+            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/BlackRook.png"
+        else:
+            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/WhiteRook.png"
         self.moves = []
     
     def __repr__(self):
@@ -171,7 +178,10 @@ class Knight(object):
         self.color = color
         self.posRow = posRow
         self.posCol = posCol
-        self.image = (posRow, posCol, 10, "red")
+        if self.color == "Black":
+            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/BlackKnight.png"
+        else:
+            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/WhiteKnight.png"
         self.moves = []
 
     def __repr__(self):
@@ -193,7 +203,10 @@ class Bishop(object):
         self.color = color
         self.posRow = posRow
         self.posCol = posCol
-        self.image = (posRow, posCol, 10, "red")
+        if self.color == "Black":
+            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/BlackBishop.png"
+        else:
+            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/WhiteBishop.png"
         self.moves = []
     
     def __repr__(self):
@@ -243,7 +256,10 @@ class Queen(object):
         self.color = color
         self.posRow = posRow
         self.posCol = posCol
-        self.image = (posRow, posCol, 10, "red")
+        if self.color == "Black":
+            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/BlackQueen.png"
+        else:
+            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/WhiteQueen.png"
         self.moves = []
     
     def __repr__(self):
@@ -318,7 +334,10 @@ class King(object):
         self.color = color
         self.posRow = posRow
         self.posCol = posCol
-        self.image = (posRow, posCol, 10, "red")
+        if self.color == "Black":
+            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/BlackKing.png"
+        else:
+            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/WhiteKing.png"
         self.moves = []
 
     def __repr__(self):

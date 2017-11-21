@@ -133,6 +133,7 @@ class Neuron(object):
 # Difference in AI difficulties could be how far the AI can see into the future with its move predictions.
 
 from tkinter import *
+from PIL import Image, ImageTk
 import ChessBoard as CB
 import BackEndChess as BackEnd
 
@@ -185,18 +186,21 @@ def trainingScreen(canvas, data):
     canvas.create_text(15, 15, 
                        text = "Back",
                        font = "courier "+str(int(data.width/25)))
+    drawImages(canvas, data)
 
 def competitiveScreen(canvas, data):
     data.mainBoard.drawBoard(canvas)
     canvas.create_text(15, 15, 
                        text = "Back",
                        font = "courier "+str(int(data.width/25)))
+    drawImages(canvas, data)
 
 def multiplayerScreen(canvas, data):
     data.mainBoard.drawBoard(canvas)
     canvas.create_text(15, 15, 
                        text = "Back",
                        font = "courier "+str(int(data.width/25)))
+    drawImages(canvas, data)
 
 ####################################
 # customize these functions
@@ -218,31 +222,56 @@ def init(data):
     data.y4 = data.height/4*3
     data.r = 50
     data.mainBoard = CB.Board(data.width, data.height)
+    data.mainBoard.makeBoard()
+    data.turn = "White"
+    data.player = "White"
+
+def initialize(canvas, data):
+    canvas.shapes = data.mainBoard.drawings
+
+def drawImages(canvas, data):
+    for key in canvas.shapes:
+        im = Image.open(canvas.shapes[key])
+        ph = ImageTk.PhotoImage(im)
+        label = Label(canvas, image=ph)
+        label.image=ph  #need to keep the reference of your image to avoid garbage collection
+        canvas.create_image(key[0]*data.mainBoard.cellWidth+data.mainBoard.cellWidth//2, 
+                            key[1]*data.mainBoard.cellHeight+data.mainBoard.cellHeight//2,
+                            image=ph)
 
 def mousePressed(event, data):
     if not data.gameBeginning:
         if 0 <= event.x <= 30:
             if 0 <= event.y <= 30:
                 init(data)
+
     if data.x1-data.r <= event.x <= data.x1+data.r:
         if data.y1-data.r <= event.y <= data.y1+data.r:
             data.tutorialStarted = True
             data.gameBeginning = False
+
     if data.x2-data.r <= event.x <= data.x2+data.r:
         if data.y2-data.r <= event.y <= data.y2+data.r:
             data.trainingStarted = True
             data.gameBeginning = False
-            multiplayerScreen(canvas, data)
+
     if data.x3-data.r <= event.x <= data.x3+data.r:
         if data.y3-data.r <= event.y <= data.y3+data.r:
             data.competitiveStarted = True
             data.gameBeginning = False
-            multiplayerScreen(canvas, data)
+
     if data.x4-data.r <= event.x <= data.x4+data.r:
         if data.y4-data.r <= event.y <= data.y4+data.r:
             data.multiplayerStarted = True
             data.gameBeginning = False
-            multiplayerScreen(canvas, data)
+
+    if data.trainingStarted:
+        print(data.mainBoard.clicked)
+        if data.mainBoard.clicked:
+            data.mainBoard.moveClick(event.x, event.y, data.turn)
+        else:
+            data.mainBoard.mouseClick(event.x, event.y, data.turn, data.player)
+
 
 def keyPressed(event, data):
     # use event.char and event.keysym
@@ -272,6 +301,12 @@ def redrawAll(canvas, data):
         canvas.create_rectangle(0, 0, data.width, data.height,
                                 fill='white', width=0)
         multiplayerScreen(canvas, data)
+        if data.mainBoard.clicked:
+            canvas.create_rectangle(data.mainBoard.margin+data.mainBoard.rowClick*data.mainBoard.cellWidth,
+                                    data.mainBoard.margin+data.mainBoard.colClick*data.mainBoard.cellHeight,
+                                    data.mainBoard.margin+(data.mainBoard.rowClick+1)*data.mainBoard.cellWidth,
+                                    data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellHeight,
+                                    fill = "yellow")
 
 ####################################
 # use the run function as-is
@@ -303,12 +338,13 @@ def run(width=300, height=300):
     data = Struct()
     data.width = width
     data.height = height
-    data.timerDelay = 100 # milliseconds
+    data.timerDelay = 10000 # milliseconds
     init(data)
     # create the root and the canvas
     root = Tk()
     canvas = Canvas(root, width=data.width, height=data.height)
     canvas.pack()
+    initialize(canvas, data)
     # set up events
     root.bind("<Button-1>", lambda event:
                             mousePressedWrapper(event, canvas, data))

@@ -14,10 +14,10 @@ def isCheck(board, turn):
                     break
         for row in range(len(board)):
             for col in range(len(board[0])):
-                if board[row][col].color == "Black":
-                    board[row][col].getMoves
-                    if [kingRow, kingCol] in board[row][col].moves:
-                        return True
+                if board[row][col] != None and board[row][col].color == "Black":
+                        board[row][col].getMoves
+                        if [kingRow, kingCol] in board[row][col].moves:
+                            return True
     else:
         for row in range(len(board)):
             for col in range(len(board[0])):
@@ -27,7 +27,7 @@ def isCheck(board, turn):
                     break
         for row in range(len(board)):
             for col in range(len(board[0])):
-                if board[row][col].color == "White":
+                if board[row][col] != None and board[row][col].color == "White":
                     board[row][col].getMoves
                     if [kingRow, kingCol] in board[row][col].moves:
                         return True

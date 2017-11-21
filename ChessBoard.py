@@ -39,16 +39,18 @@ class Board(object):
                         canvas.create_rectangle(self.margin+col*self.cellWidth, self.margin+row*self.cellHeight,
                         self.margin+(col+1)*self.cellWidth, self.margin+(row+1)*self.cellHeight, fill = "tan",
                         width = self.cellHeight//25)
-        self.drawPieces(canvas)
+        self.drawPieces()
 
-    def drawPieces(self, canvas):
+    def drawPieces(self):
+        self.drawings = {}
         self.margin = 20
         for row in range(len(self.board)):
             for col in range(len(self.board[0])):
-                xc = self.margin+self.cellWidth*col-self.cellWidth/2
-                yc = self.margin+self.cellHeight*row-self.cellHeight/2
+                #xc = self.margin+self.cellWidth*col-self.cellWidth/2
+                #yc = self.margin+self.cellHeight*row-self.cellHeight/2
                 if self.board[row][col] != None:
                     self.drawings[(row,col)] = self.board[row][col].image
+        print("THATS ANOTHER ONE")
                     #photo = ImageTk.PhotoImage(Image.open(self.board[row][col].image))
                     #canvas.create_image(xc, yc, image = photo)
 
@@ -100,9 +102,7 @@ class Board(object):
         rowMove = int((eventY-self.margin)/((self.height-2*self.margin)/8))
         colMove = int((eventX-self.margin)/((self.width-2*self.margin)/8))
         if self.board[rowMove][colMove] == None or self.board[rowMove][colMove].color != player:
-            print("UEBFEUBFUEBF")
             self.board[self.rowClick][self.colClick].getMoves(self.board)
-            print(self.board[self.rowClick][self.colClick].moves)
             if [rowMove, colMove] in self.board[self.rowClick][self.colClick].moves:
                 tempB = copy.deepcopy(self.board)
                 tempB[rowMove][colMove] = tempB[self.rowClick][self.colClick]
@@ -110,6 +110,7 @@ class Board(object):
                 if not isCheck(tempB, self.turn):
                     self.board[rowMove][colMove] = self.board[self.rowClick][self.colClick]
                     self.board[self.rowClick][self.colClick] = None
+                    self.drawPieces()
                     if self.turn == "White":
                         self.turn = "Black"
                     else:

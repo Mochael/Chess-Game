@@ -196,6 +196,7 @@ def trainingScreen(canvas, data):
                                 data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellWidth,
                                 data.mainBoard.margin+(data.mainBoard.rowClick+1)*data.mainBoard.cellHeight,
                                 fill = "yellow")
+    initialize(canvas, data)
     drawImages(canvas, data)
 
 def competitiveScreen(canvas, data):
@@ -211,6 +212,7 @@ def competitiveScreen(canvas, data):
                                 data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellWidth,
                                 data.mainBoard.margin+(data.mainBoard.rowClick+1)*data.mainBoard.cellHeight,
                                 fill = "yellow")
+    initialize(canvas, data)
     drawImages(canvas, data)
 
 def multiplayerScreen(canvas, data):
@@ -226,6 +228,7 @@ def multiplayerScreen(canvas, data):
                                 data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellWidth,
                                 data.mainBoard.margin+(data.mainBoard.rowClick+1)*data.mainBoard.cellHeight,
                                 fill = "yellow")
+    initialize(canvas, data)
     drawImages(canvas, data)
 
 
@@ -355,7 +358,7 @@ def run(width=300, height=300):
     data = Struct()
     data.width = width
     data.height = height
-    data.timerDelay = 1000 # milliseconds
+    data.timerDelay = 10000 # milliseconds
     init(data)
     # create the root and the canvas
     root = Tk()

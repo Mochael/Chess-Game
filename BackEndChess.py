@@ -106,27 +106,29 @@ class Pawn(object):
             if board[move[0]][move[1]] != None:
                 self.moves.remove(move)
         self.findTakeMoves(board)
+        print(self.moves)
     
     # Finds possible diagonal moves for taking pieces with a pawn.
     def findTakeMoves(self, board):
+        print("running TakeMoves")
         if self.color == "Black":
-            self.takeMoves.append(board[self.posRow+1][self.posCol-1])
-            self.takeMoves.append(board[self.posRow+1][self.posCol+1])
+            self.takeMoves.append([self.posRow+1, self.posCol-1])
+            self.takeMoves.append([self.posRow+1, self.posCol+1])
             if self.posCol == 0:
-                self.takeMoves.remove(board[self.posRow+1][self.posCol-1])
+                self.takeMoves.remove([self.posRow+1, self.posCol-1])
             if self.posCol == len(board)-1:
-                self.takeMoves.remove(board[self.posRow+1][self.posCol+1])
+                self.takeMoves.remove([self.posRow+1, self.posCol+1])
         else:
-            self.takeMoves.append(board[self.posRow-1][self.posCol-1])
-            self.takeMoves.append(board[self.posRow-1][self.posCol+1])
+            self.takeMoves.append([self.posRow-1, self.posCol-1])
+            self.takeMoves.append([self.posRow-1, self.posCol+1])
             if self.posCol == 0:
-                self.takeMoves.remove(board[self.posRow-1][self.posCol-1])
+                self.takeMoves.remove([self.posRow-1, self.posCol-1])
             if self.posCol == len(board)-1:
-                self.takeMoves.remove(board[self.posRow-1][self.posCol+1])
+                self.takeMoves.remove([self.posRow-1, self.posCol+1])
         for i in range(len(self.takeMoves)):
-            if self.takeMoves[i] != None:
-                if self.color != self.takeMoves[i].color:
-                    self.moves.append([otherPos[0],otherPos[1]])
+            if (board[self.takeMoves[i][0]][self.takeMoves[i][1]] != None 
+            and self.color != board[self.takeMoves[i][0]][self.takeMoves[i][1]].color):
+                self.moves.append(self.takeMoves[i])
 
 
 class Rook(object):

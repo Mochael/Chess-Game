@@ -50,7 +50,6 @@ class Board(object):
                 #yc = self.margin+self.cellHeight*row-self.cellHeight/2
                 if self.board[row][col] != None:
                     self.drawings[(row,col)] = self.board[row][col].image
-        print("THATS ANOTHER ONE")
                     #photo = ImageTk.PhotoImage(Image.open(self.board[row][col].image))
                     #canvas.create_image(xc, yc, image = photo)
 
@@ -109,6 +108,8 @@ class Board(object):
                 tempB[self.rowClick][self.colClick] = None
                 if not isCheck(tempB, self.turn):
                     self.board[rowMove][colMove] = self.board[self.rowClick][self.colClick]
+                    self.board[rowMove][colMove].posRow = rowMove
+                    self.board[rowMove][colMove].posCol = colMove
                     self.board[self.rowClick][self.colClick] = None
                     self.drawPieces()
                     if self.turn == "White":
@@ -118,6 +119,3 @@ class Board(object):
         self.clicked = False
         self.rowClick = None
         self.colClick = None
-        
-            # Set rowClick and colClick back to None after turn ends
-                    

@@ -233,32 +233,29 @@ def multiplayerScreen(canvas, data):
 
 
 def gameMode(event, data):
-    if not data.gameBeginning:
+    if data.mode != "beginning":
         if 0 <= event.x <= 30:
             if 0 <= event.y <= 30:
                 init(data)
     if data.x1-data.r <= event.x <= data.x1+data.r:
         if data.y1-data.r <= event.y <= data.y1+data.r:
-            data.tutorialStarted = True
-            data.gameBeginning = False
+            data.mode = "tutorial"
     if data.x2-data.r <= event.x <= data.x2+data.r:
         if data.y2-data.r <= event.y <= data.y2+data.r:
-            data.trainingStarted = True
-            data.gameBeginning = False
+            data.mode = "training"
     if data.x3-data.r <= event.x <= data.x3+data.r:
         if data.y3-data.r <= event.y <= data.y3+data.r:
-            data.competitiveStarted = True
-            data.gameBeginning = False
+            data.mode = "competitive"
     if data.x4-data.r <= event.x <= data.x4+data.r:
         if data.y4-data.r <= event.y <= data.y4+data.r:
-            data.multiplayerStarted = True
-            data.gameBeginning = False
+            data.mode = "multiplayer"
 
 def moveWithMouse(event, data):
     if data.mainBoard.clicked:
         data.mainBoard.moveClick(event.x, event.y, data.player)
     else:
         data.mainBoard.mouseClick(event.x, event.y, data.player)
+        data.player = data.mainBoard.turn
 
 
 ####################################
@@ -266,11 +263,7 @@ def moveWithMouse(event, data):
 ####################################
 
 def init(data):
-    data.gameBeginning = True
-    data.tutorialStarted = False
-    data.trainingStarted = False
-    data.competitiveStarted = False
-    data.multiplayerStarted = False
+    data.mode = "beginning"
     data.x1 = data.width/19*2
     data.y1 = data.height/4*3
     data.x2 = data.width/20*7
@@ -300,9 +293,9 @@ def drawImages(canvas, data):
                             image=ph)
 
 def mousePressed(event, data):
-    gameMode(event, data)
-    if not data.gameBeginning:
+    if data.mode != "beginning":
         moveWithMouse(event, data)
+    gameMode(event, data)
 
 
 def keyPressed(event, data):
@@ -313,19 +306,19 @@ def timerFired(data):
     pass
 
 def redrawAll(canvas, data):
-    if data.gameBeginning:
+    if data.mode == "beginning":
         startScreen(canvas, data)
 
-    if data.tutorialStarted:
+    if data.mode == "tutorial":
         tutorialScreen(canvas, data)
 
-    if data.trainingStarted:
+    if data.mode == "training":
         trainingScreen(canvas, data)
 
-    if data.competitiveStarted:
+    if data.mode == "competitive":
         competitiveScreen(canvas, data)
 
-    if data.multiplayerStarted:
+    if data.mode == "multiplayer":
         multiplayerScreen(canvas, data)
 
 ####################################

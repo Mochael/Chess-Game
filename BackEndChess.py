@@ -117,24 +117,28 @@ class Rook(object):
             if board[i][self.posCol] != None:
                 if board[i][self.posCol].color != self.color:
                     self.moves.append([i, self.posCol])
+                print("1",self.moves)
                 break
-            self.moves.append([i,self.posCol])
+            self.moves.append([i, self.posCol])
         for j in range(self.posCol-1, -1, -1):
             if board[self.posRow][j] != None:
                 if board[self.posRow][j].color != self.color:
                     self.moves.append([self.posCol, j])
+                print("2",self.moves)
                 break
             self.moves.append([self.posRow,j])
-        for k in range(self.posRow+1, len(board)):
+        for k in range(self.posRow+1, 8, 1):
             if board[k][self.posCol] != None:
                 if board[k][self.posCol].color != self.color:
                     self.moves.append([k, self.posCol])
+                print("3", self.moves)
                 break
             self.moves.append([k,self.posCol])
-        for m in range(self.posCol+1, len(board[0])):
+        for m in range(self.posCol+1, 8, 1):
             if board[self.posRow][m] != None:
                 if board[self.posRow][m].color != self.color:
                     self.moves.append([self.posRow, m])
+                print("4", self.moves)
                 break
             self.moves.append([self.posRow,m])
         
@@ -246,13 +250,13 @@ class Queen(object):
                     self.moves.append([self.posCol, j])
                 break
             self.moves.append([self.posRow,j])
-        for k in range(self.posRow+1, len(board)):
+        for k in range(self.posRow+1, 8):
             if board[k][self.posCol] != None:
                 if board[k][self.posCol].color != self.color:
                     self.moves.append([k, self.posCol])
                 break
             self.moves.append([k,self.posCol])
-        for m in range(self.posCol+1, len(board[0])):
+        for m in range(self.posCol+1, 8):
             if board[self.posRow][m] != None:
                 if board[self.posRow][m].color != self.color:
                     self.moves.append([self.posRow, m])

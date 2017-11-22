@@ -254,9 +254,9 @@ def gameMode(event, data):
 def moveWithMouse(event, data):
     if data.mainBoard.clicked:
         data.mainBoard.moveClick(event.x, event.y, data.player)
+        data.player = data.mainBoard.turn
     else:
         data.mainBoard.mouseClick(event.x, event.y, data.player)
-        data.player = data.mainBoard.turn
 
 
 ####################################

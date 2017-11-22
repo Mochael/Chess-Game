@@ -94,6 +94,7 @@ class Board(object):
                 self.rowClick = int((eventY-self.margin)/((self.height-2*self.margin)/8))
                 self.colClick = int((eventX-self.margin)/((self.width-2*self.margin)/8))
                 if self.board[self.rowClick][self.colClick] != None and self.board[self.rowClick][self.colClick].color == player:
+                    print("SWELL", self.board)
                     self.clicked = True
                     self.board[self.rowClick][self.colClick].getMoves(self.board)
                     print(self.board[self.rowClick][self.colClick].moves)
@@ -103,7 +104,6 @@ class Board(object):
         rowMove = int((eventY-self.margin)/((self.height-2*self.margin)/8))
         colMove = int((eventX-self.margin)/((self.width-2*self.margin)/8))
         if self.board[rowMove][colMove] == None or self.board[rowMove][colMove].color != player:
-#            self.board[self.rowClick][self.colClick].getMoves(self.board)
             if [rowMove, colMove] in self.board[self.rowClick][self.colClick].moves:
                 tempB = copy.deepcopy(self.board)
                 tempB[rowMove][colMove] = tempB[self.rowClick][self.colClick]
@@ -111,6 +111,8 @@ class Board(object):
                 tempB[rowMove][colMove].posCol = colMove
                 tempB[self.rowClick][self.colClick] = None
                 if not isCheck(tempB, self.turn):
+#                    self.board[self.rowClick][self.colClick].getMoves(self.board)
+#                    print(self.board[rowMove][colMove].moves)
                     self.board[rowMove][colMove] = self.board[self.rowClick][self.colClick]
                     self.board[rowMove][colMove].posRow = rowMove
                     self.board[rowMove][colMove].posCol = colMove
@@ -120,11 +122,11 @@ class Board(object):
                         self.turn = "Black"
                     else:
                         self.turn = "White"
-                    if isCheck(self.board, self.turn) and isCheckMate(self.board, self.turn):
-                        print("CHECKMATE")
-                    else:
-                        if isCheckMate(self.board, self.turn):
-                            print("STALEMATE")
+#                    if isCheck(self.board, self.turn) and isCheckMate(self.board, self.turn):
+#                        print("CHECKMATE")
+#                    else:
+#                        if isCheckMate(self.board, self.turn):
+#                            print("STALEMATE")
         self.clicked = False
         self.rowClick = None
         self.colClick = None

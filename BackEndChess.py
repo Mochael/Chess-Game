@@ -8,7 +8,7 @@ def isCheck(board, turn):
     if turn == "White":
         for row in range(len(board)):
             for col in range(len(board[0])):
-                if type(board[row][col]) == King and board[row][col].color == "White":
+                if isinstance(board[row][col], King) and board[row][col].color == "White":
                     kingRow = row
                     kingCol = col
                     break
@@ -21,7 +21,7 @@ def isCheck(board, turn):
     else:
         for row in range(len(board)):
             for col in range(len(board[0])):
-                if type(board[row][col]) == King and board[row][col].color == "Black":
+                if isinstance(board[row][col], King) and board[row][col].color == "Black":
                     kingRow = row
                     kingCol = col
                     break
@@ -38,40 +38,29 @@ def isCheckMate(board, turn):
     if turn == "White":
         for row in range(len(board)):
             for col in range(len(board[0])):
-                if type(board[row][col]) == King and board[row][col].color == "White":
-                    kingRow = row
-                    kingCol = col
-                    break
-        board[kingRow][kingCol].getMoves
-        moveCount = len(board[kingRow][kingCol].moves)
-        for move in board[kingRow][kingCol].moves:
-            for row in range(len(board)):
-                for col in range(len(board[0])):
-                    if board[row][col] != None and board[row][col].color == "Black":
-                        board[row][col].getMoves
-                        if move in board[row][col].moves:
-                            moveCount -= 1
-                            if moveCount == 0:
-                                return True
-    if turn == "Black":
+                if board[row][col] != None and board[row][col].color == "White":
+                    tempB = copy.deepcopy(board)
+                    for move in board[row][col].moves:
+                        tempB[move[0]][move[1]] = board[row][col]
+                        tempB[move[0]][move[1]].posRow = move[0]
+                        tempB[move[0]][move[1]].posCol = move[1]
+                        tempB[row][col] = None
+                if not isCheck(tempB, turn):
+                    return False
+        return True
+    else:
         for row in range(len(board)):
             for col in range(len(board[0])):
-                if type(board[row][col]) == King and board[row][col].color == "Black":
-                    kingRow = row
-                    kingCol = col
-                    break
-        board[kingRow][kingCol].getMoves
-        moveCount = len(board[kingRow][kingCol].moves)
-        for move in board[kingRow][kingCol].moves:
-            for row in range(len(board)):
-                for col in range(len(board[0])):
-                    if board[row][col] != None and board[row][col].color == "White":
-                        board[row][col].getMoves
-                        if move in board[row][col].moves:
-                            moveCount -= 1
-                            if moveCount == 0:
-                                return True
-    return False
+                if board[row][col] != None and board[row][col].color == "Black":
+                    tempB = copy.deepcopy(board)
+                    for move in board[row][col].moves:
+                        tempB[move[0]][move[1]] = board[row][col]
+                        tempB[move[0]][move[1]].posRow = move[0]
+                        tempB[move[0]][move[1]].posCol = move[1]
+                        tempB[row][col] = None
+                if not isCheck(tempB, turn):
+                    return False
+        return True
 
 class Pawn(object):
     def __init__(self, color, posRow, posCol):
@@ -89,6 +78,7 @@ class Pawn(object):
         return self.color+" Pawn"
 
     def getMoves(self, board):
+        self.moves = []
         # Black pieces start at the top of the board.
         if self.color == "Black":
             if self.posRow == 1:
@@ -106,11 +96,10 @@ class Pawn(object):
             if board[move[0]][move[1]] != None:
                 self.moves.remove(move)
         self.findTakeMoves(board)
-        print(self.moves)
     
     # Finds possible diagonal moves for taking pieces with a pawn.
     def findTakeMoves(self, board):
-        print("running TakeMoves")
+        self.takeMoves = []
         if self.color == "Black":
             self.takeMoves.append([self.posRow+1, self.posCol-1])
             self.takeMoves.append([self.posRow+1, self.posCol+1])
@@ -147,25 +136,26 @@ class Rook(object):
 
     # Finds all legal moves.
     def getMoves(self, board):
-        for i in range(self.posRow-1, -1):
+        self.moves = []
+        for i in range(self.posRow-1, -1, -1):
             if board[i][self.posCol] != None:
                 if board[i][self.posCol].color != self.color:
                     self.moves.append([i, self.posCol])
                 break
             self.moves.append([i,self.posCol])
-        for j in range(self.posCol-1, -1):
+        for j in range(self.posCol-1, -1, -1):
             if board[self.posRow][j] != None:
                 if board[self.posRow][j].color != self.color:
                     self.moves.append([self.posCol, j])
                 break
             self.moves.append([self.posRow,j])
-        for k in range(self.posRow, len(board)):
+        for k in range(self.posRow+1, len(board)):
             if board[k][self.posCol] != None:
                 if board[k][self.posCol] != self.color:
                     self.moves.append([k, self.posCol])
                 break
             self.moves.append([k,self.posCol])
-        for m in range(self.posCol, len(board[0])):
+        for m in range(self.posCol+1, len(board[0])):
             if board[self.posRow][m] != None:
                 if board[self.posRow][m] != self.color:
                     self.moves.append([self.posRow, m])
@@ -189,6 +179,7 @@ class Knight(object):
 
     # Finds all moves.
     def getMoves(self, board, counter = 0):
+        self.moves = []
         for move in [[-1,-2],[-1,2],[-2,-1],[-2,1],[1,-2],[1,2],[2,-1],[2,1]]:
             if 0 <= self.posRow+move[0] <= 7 and 0 <= self.posCol+move[1] <= 7:
                 if board[self.posRow+move[0]][self.posCol+move[1]] == None:
@@ -213,9 +204,10 @@ class Bishop(object):
         return self.color+" Bishop"
     
     def getMoves(self, board):
+        self.moves = []
         adder = 0
         # Going diagonally down and to the right.
-        while(self.posRow+adder <= 7 and self.posCol+adder <= 7):
+        while(self.posRow+adder <= 6 and self.posCol+adder <= 6):
             adder += 1
             if board[self.posRow+adder][self.posCol+adder] != None:
                 if board[self.posRow+adder][self.posCol+adder].color != self.color:
@@ -224,7 +216,7 @@ class Bishop(object):
             self.moves.append([self.posRow+adder, self.posCol+adder])
         adder = 0
         # Up and to the left.
-        while(self.posRow+adder >= 0 and self.posCol+adder >= 0):
+        while(self.posRow+adder >= 1 and self.posCol+adder >= 1):
             adder -= 1
             if board[self.posRow+adder][self.posCol+adder] != None:
                 if board[self.posRow+adder][self.posCol+adder].color != self.color:
@@ -233,7 +225,7 @@ class Bishop(object):
             self.moves.append([self.posRow+adder, self.posCol+adder])
         adder = 0
         # Up and to the right.
-        while(self.posRow-adder >= 0 and self.posCol+adder <= 7):
+        while(self.posRow-adder >= 1 and self.posCol+adder <= 6):
             adder += 1
             if board[self.posRow-adder][self.posCol+adder] != None:
                 if board[self.posRow-adder][self.posCol+adder].color != self.color:
@@ -242,7 +234,7 @@ class Bishop(object):
             self.moves.append([self.posRow-adder, self.posCol+adder])
         adder = 0
         # Down and to the left.
-        while(self.posRow+adder <= 7 and self.posCol+adder >= 0):
+        while(self.posRow+adder <= 6 and self.posCol+adder >= 1):
             adder += 1
             if board[self.posRow+adder][self.posCol-adder] != None:
                 if board[self.posRow+adder][self.posCol-adder].color != self.color:
@@ -266,25 +258,25 @@ class Queen(object):
         return self.color+" Queen"
 
     def getStraightMoves(self, board):
-        for i in range(self.posRow-1, -1):
+        for i in range(self.posRow-1, -1, -1):
             if board[i][self.posCol] != None:
                 if board[i][self.posCol].color != self.color:
                     self.moves.append([i, self.posCol])
                 break
             self.moves.append([i,self.posCol])
-        for j in range(self.posCol-1, -1):
+        for j in range(self.posCol-1, -1, -1):
             if board[self.posRow][j] != None:
                 if board[self.posRow][j].color != self.color:
                     self.moves.append([self.posCol, j])
                 break
             self.moves.append([self.posRow,j])
-        for k in range(self.posRow, len(board)):
+        for k in range(self.posRow+1, len(board)):
             if board[k][self.posCol] != None:
                 if board[k][self.posCol] != self.color:
                     self.moves.append([k, self.posCol])
                 break
             self.moves.append([k,self.posCol])
-        for m in range(self.posCol, len(board[0])):
+        for m in range(self.posCol+1, len(board[0])):
             if board[self.posRow][m] != None:
                 if board[self.posRow][m] != self.color:
                     self.moves.append([self.posRow, m])
@@ -294,7 +286,7 @@ class Queen(object):
     def getDiagonalMoves(self, board):
         adder = 0
         # Going diagonally down and to the right.
-        while(self.posRow+adder <= 7 and self.posCol+adder <= 7):
+        while(self.posRow+adder <= 6 and self.posCol+adder <= 6):
             adder += 1
             if board[self.posRow+adder][self.posCol+adder] != None:
                 if board[self.posRow+adder][self.posCol+adder].color != self.color:
@@ -303,7 +295,7 @@ class Queen(object):
             self.moves.append([self.posRow+adder, self.posCol+adder])
         adder = 0
         # Up and to the left.
-        while(self.posRow+adder >= 0 and self.posCol+adder >= 0):
+        while(self.posRow+adder >= 1 and self.posCol+adder >= 1):
             adder -= 1
             if board[self.posRow+adder][self.posCol+adder] != None:
                 if board[self.posRow+adder][self.posCol+adder].color != self.color:
@@ -312,7 +304,7 @@ class Queen(object):
             self.moves.append([self.posRow+adder, self.posCol+adder])
         adder = 0
         # Up and to the right.
-        while(self.posRow-adder >= 0 and self.posCol+adder <= 7):
+        while(self.posRow-adder >= 1 and self.posCol+adder <= 6):
             adder += 1
             if board[self.posRow-adder][self.posCol+adder] != None:
                 if board[self.posRow-adder][self.posCol+adder].color != self.color:
@@ -321,7 +313,7 @@ class Queen(object):
             self.moves.append([self.posRow-adder, self.posCol+adder])
         adder = 0
         # Down and to the left.
-        while(self.posRow+adder <= 7 and self.posCol+adder >= 0):
+        while(self.posRow+adder <= 6 and self.posCol+adder >= 1):
             adder += 1
             if board[self.posRow+adder][self.posCol-adder] != None:
                 if board[self.posRow+adder][self.posCol-adder].color != self.color:
@@ -330,8 +322,9 @@ class Queen(object):
             self.moves.append([self.posRow+adder, self.posCol-adder])
 
     def getMoves(self, board):
-        getDiagonalMoves(self, board)
-        getStraightMoves(self, board)
+        self.moves = []
+        self.getDiagonalMoves(board)
+        self.getStraightMoves(board)
 
 class King(object):
     def __init__(self, color, posRow, posCol):
@@ -348,6 +341,7 @@ class King(object):
         return self.color+" King"
 
     def getMoves(self, board):
+        self.moves = []
         for i in range(-1, 2):
             if 0 <= self.posRow-1 <= 7 and 0 <= self.posCol+i <= 7:
                 self.moves.append([self.posRow-1, self.posCol+i])
@@ -365,9 +359,9 @@ class King(object):
         if 0 <= self.posRow <= 7 and 0 <= self.posCol-1 <= 7:
             if (board[self.posRow][self.posCol-1] == None or 
             board[self.posRow][self.posCol-1].color != self.color):
-                self.moves.append([self.posRow][self.posCol-1])
+                self.moves.append([self.posRow, self.posCol-1])
 
         if 0 <= self.posRow <= 7 and 0 <= self.posCol+1 <= 7:
             if (board[self.posRow][self.posCol+1] == None or 
             board[self.posRow][self.posCol+1].color != self.color):
-                self.moves.append([self.posRow][self.posCol+1])
+                self.moves.append([self.posRow, self.posCol+1])

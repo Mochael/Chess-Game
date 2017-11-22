@@ -237,18 +237,19 @@ def gameMode(event, data):
         if 0 <= event.x <= 30:
             if 0 <= event.y <= 30:
                 init(data)
-    if data.x1-data.r <= event.x <= data.x1+data.r:
-        if data.y1-data.r <= event.y <= data.y1+data.r:
-            data.mode = "tutorial"
-    if data.x2-data.r <= event.x <= data.x2+data.r:
-        if data.y2-data.r <= event.y <= data.y2+data.r:
-            data.mode = "training"
-    if data.x3-data.r <= event.x <= data.x3+data.r:
-        if data.y3-data.r <= event.y <= data.y3+data.r:
-            data.mode = "competitive"
-    if data.x4-data.r <= event.x <= data.x4+data.r:
-        if data.y4-data.r <= event.y <= data.y4+data.r:
-            data.mode = "multiplayer"
+    else:
+        if data.x1-data.r <= event.x <= data.x1+data.r:
+            if data.y1-data.r <= event.y <= data.y1+data.r:
+                data.mode = "tutorial"
+        if data.x2-data.r <= event.x <= data.x2+data.r:
+            if data.y2-data.r <= event.y <= data.y2+data.r:
+                data.mode = "training"
+        if data.x3-data.r <= event.x <= data.x3+data.r:
+            if data.y3-data.r <= event.y <= data.y3+data.r:
+                data.mode = "competitive"
+        if data.x4-data.r <= event.x <= data.x4+data.r:
+            if data.y4-data.r <= event.y <= data.y4+data.r:
+                data.mode = "multiplayer"
 
 def moveWithMouse(event, data):
     if data.mainBoard.clicked:

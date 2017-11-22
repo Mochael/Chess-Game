@@ -77,15 +77,15 @@ class Board(object):
                 self.board[0][k] = King("Black", 0, k)
         for l in range(8):
             if l%7 == 0:
-                self.board[7][l] = Rook("White", 0, l)
+                self.board[7][l] = Rook("White", 7, l)
             elif l == 1 or l == 6:
-                self.board[7][l] = Knight("White", 0, l)
+                self.board[7][l] = Knight("White", 7, l)
             elif l == 2 or l == 5:
-                self.board[7][l] = Bishop("White", 0, l)
+                self.board[7][l] = Bishop("White", 7, l)
             elif l == 3:
-                self.board[7][l] = Queen("White", 0, l)
+                self.board[7][l] = Queen("White", 7, l)
             elif l == 4:
-                self.board[7][l] = King("White", 0, l)
+                self.board[7][l] = King("White", 7, l)
 
     def mouseClick(self, eventX, eventY, player):
         if self.turn == player:
@@ -116,6 +116,9 @@ class Board(object):
                         self.turn = "Black"
                     else:
                         self.turn = "White"
+                else:
+                    if isCheckMate(board, self.turn):
+                        print("THE GAME SHOULD END NOW")
         self.clicked = False
         self.rowClick = None
         self.colClick = None

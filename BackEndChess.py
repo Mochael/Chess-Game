@@ -1,67 +1,43 @@
 from PIL import Image, ImageTk
-
+import copy
 # photo = ImageTk.PhotoImage(Image.open("someFile.jpg"))
 # Do canvas.create_image(xcenter, ycenter, image = photo)
 
 # Identifies if a player is in check.
 def isCheck(board, turn):
-    if turn == "White":
-        for row in range(len(board)):
-            for col in range(len(board[0])):
-                if isinstance(board[row][col], King) and board[row][col].color == "White":
-                    kingRow = row
-                    kingCol = col
-                    break
-        for row in range(len(board)):
-            for col in range(len(board[0])):
-                if board[row][col] != None and board[row][col].color == "Black":
-                        board[row][col].getMoves
-                        if [kingRow, kingCol] in board[row][col].moves:
-                            return True
-    else:
-        for row in range(len(board)):
-            for col in range(len(board[0])):
-                if isinstance(board[row][col], King) and board[row][col].color == "Black":
-                    kingRow = row
-                    kingCol = col
-                    break
-        for row in range(len(board)):
-            for col in range(len(board[0])):
-                if board[row][col] != None and board[row][col].color == "White":
-                    board[row][col].getMoves
+    print("THIS SHIT RUNS HOMIE")
+    for row in range(len(board)):
+        for col in range(len(board[0])):
+            if isinstance(board[row][col], King) and board[row][col].color == turn:
+                kingRow = row
+                kingCol = col
+                print(kingRow, kingCol)
+                break
+    for row in range(len(board)):
+        for col in range(len(board[0])):
+            if board[row][col] != None and board[row][col].color != turn:
+                    board[row][col].getMoves(board)
                     if [kingRow, kingCol] in board[row][col].moves:
+                        print("CHECKED BEOTCH")
                         return True
     return False
 
 # Run this function for both stalemate and checkmate. However, only run for checkmate if player is first in check.
 def isCheckMate(board, turn):
-    if turn == "White":
-        for row in range(len(board)):
-            for col in range(len(board[0])):
-                if board[row][col] != None and board[row][col].color == "White":
-                    tempB = copy.deepcopy(board)
-                    for move in board[row][col].moves:
-                        tempB[move[0]][move[1]] = board[row][col]
-                        tempB[move[0]][move[1]].posRow = move[0]
-                        tempB[move[0]][move[1]].posCol = move[1]
-                        tempB[row][col] = None
+    for row in range(len(board)):
+        for col in range(len(board[0])):
+            if board[row][col] != None and board[row][col].color == turn:
+                tempB = copy.deepcopy(board)
+                board[row][col].getMoves(board)
+                for move in board[row][col].moves:
+                    tempB[move[0]][move[1]] = board[row][col]
+                    tempB[move[0]][move[1]].posRow = move[0]
+                    tempB[move[0]][move[1]].posCol = move[1]
+                    tempB[row][col] = None
                 if not isCheck(tempB, turn):
                     return False
-        return True
-    else:
-        for row in range(len(board)):
-            for col in range(len(board[0])):
-                if board[row][col] != None and board[row][col].color == "Black":
-                    tempB = copy.deepcopy(board)
-                    for move in board[row][col].moves:
-                        tempB[move[0]][move[1]] = board[row][col]
-                        tempB[move[0]][move[1]].posRow = move[0]
-                        tempB[move[0]][move[1]].posCol = move[1]
-                        tempB[row][col] = None
-                if not isCheck(tempB, turn):
-                    return False
-        return True
-
+    return True
+   
 class Pawn(object):
     def __init__(self, color, posRow, posCol):
         self.color = color

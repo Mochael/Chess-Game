@@ -120,9 +120,11 @@ class Board(object):
                         self.turn = "Black"
                     else:
                         self.turn = "White"
-                else:
-                    if isCheckMate(board, self.turn):
-                        print("THE GAME SHOULD END NOW")
+                    if isCheck(self.board, self.turn) and isCheckMate(self.board, self.turn):
+                        print("CHECKMATE")
+                    else:
+                        if isCheckMate(self.board, self.turn):
+                            print("STALEMATE")
         self.clicked = False
         self.rowClick = None
         self.colClick = None

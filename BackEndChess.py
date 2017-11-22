@@ -27,15 +27,15 @@ def isCheckMate(board, turn):
     for row in range(len(board)):
         for col in range(len(board[0])):
             if board[row][col] != None and board[row][col].color == turn:
-                tempB = copy.deepcopy(board)
                 board[row][col].getMoves(board)
                 for move in board[row][col].moves:
+                    tempB = copy.deepcopy(board)
                     tempB[move[0]][move[1]] = board[row][col]
                     tempB[move[0]][move[1]].posRow = move[0]
                     tempB[move[0]][move[1]].posCol = move[1]
                     tempB[row][col] = None
-                if not isCheck(tempB, turn):
-                    return False
+                    if not isCheck(tempB, turn):
+                        return False
     return True
    
 class Pawn(object):
@@ -123,7 +123,7 @@ class Rook(object):
         for j in range(self.posCol-1, -1, -1):
             if board[self.posRow][j] != None:
                 if board[self.posRow][j].color != self.color:
-                    self.moves.append([self.posCol, j])
+                    self.moves.append([self.posRow, j])
                 print("2",self.moves)
                 break
             self.moves.append([self.posRow,j])
@@ -247,7 +247,7 @@ class Queen(object):
         for j in range(self.posCol-1, -1, -1):
             if board[self.posRow][j] != None:
                 if board[self.posRow][j].color != self.color:
-                    self.moves.append([self.posCol, j])
+                    self.moves.append([self.posRow, j])
                 break
             self.moves.append([self.posRow,j])
         for k in range(self.posRow+1, 8):

@@ -95,16 +95,20 @@ class Board(object):
                 self.colClick = int((eventX-self.margin)/((self.width-2*self.margin)/8))
                 if self.board[self.rowClick][self.colClick] != None and self.board[self.rowClick][self.colClick].color == player:
                     self.clicked = True
+                    self.board[self.rowClick][self.colClick].getMoves(self.board)
+                    print(self.board[self.rowClick][self.colClick].moves)
 
 # Run moveClick before mouseClick and only run if self.clicked = True.
     def moveClick(self, eventX, eventY, player):
         rowMove = int((eventY-self.margin)/((self.height-2*self.margin)/8))
         colMove = int((eventX-self.margin)/((self.width-2*self.margin)/8))
         if self.board[rowMove][colMove] == None or self.board[rowMove][colMove].color != player:
-            self.board[self.rowClick][self.colClick].getMoves(self.board)
+#            self.board[self.rowClick][self.colClick].getMoves(self.board)
             if [rowMove, colMove] in self.board[self.rowClick][self.colClick].moves:
                 tempB = copy.deepcopy(self.board)
                 tempB[rowMove][colMove] = tempB[self.rowClick][self.colClick]
+                tempB[rowMove][colMove].posRow = rowMove
+                tempB[rowMove][colMove].posCol = colMove
                 tempB[self.rowClick][self.colClick] = None
                 if not isCheck(tempB, self.turn):
                     self.board[rowMove][colMove] = self.board[self.rowClick][self.colClick]

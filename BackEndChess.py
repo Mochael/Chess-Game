@@ -151,13 +151,13 @@ class Rook(object):
             self.moves.append([self.posRow,j])
         for k in range(self.posRow+1, len(board)):
             if board[k][self.posCol] != None:
-                if board[k][self.posCol] != self.color:
+                if board[k][self.posCol].color != self.color:
                     self.moves.append([k, self.posCol])
                 break
             self.moves.append([k,self.posCol])
         for m in range(self.posCol+1, len(board[0])):
             if board[self.posRow][m] != None:
-                if board[self.posRow][m] != self.color:
+                if board[self.posRow][m].color != self.color:
                     self.moves.append([self.posRow, m])
                 break
             self.moves.append([self.posRow,m])
@@ -212,7 +212,7 @@ class Bishop(object):
             if board[self.posRow+adder][self.posCol+adder] != None:
                 if board[self.posRow+adder][self.posCol+adder].color != self.color:
                     self.moves.append([self.posRow+adder, self.posCol+adder])
-                    break
+                break
             self.moves.append([self.posRow+adder, self.posCol+adder])
         adder = 0
         # Up and to the left.
@@ -221,7 +221,7 @@ class Bishop(object):
             if board[self.posRow+adder][self.posCol+adder] != None:
                 if board[self.posRow+adder][self.posCol+adder].color != self.color:
                     self.moves.append([self.posRow+adder, self.posCol+adder])
-                    break
+                break
             self.moves.append([self.posRow+adder, self.posCol+adder])
         adder = 0
         # Up and to the right.
@@ -230,16 +230,16 @@ class Bishop(object):
             if board[self.posRow-adder][self.posCol+adder] != None:
                 if board[self.posRow-adder][self.posCol+adder].color != self.color:
                     self.moves.append([self.posRow-adder, self.posCol+adder])
-                    break
+                break
             self.moves.append([self.posRow-adder, self.posCol+adder])
         adder = 0
         # Down and to the left.
-        while(self.posRow+adder <= 6 and self.posCol+adder >= 1):
+        while(self.posRow+adder <= 6 and self.posCol-adder >= 1):
             adder += 1
             if board[self.posRow+adder][self.posCol-adder] != None:
                 if board[self.posRow+adder][self.posCol-adder].color != self.color:
                     self.moves.append([self.posRow+adder, self.posCol-adder])
-                    break
+                break
             self.moves.append([self.posRow+adder, self.posCol-adder])
 
 
@@ -272,13 +272,13 @@ class Queen(object):
             self.moves.append([self.posRow,j])
         for k in range(self.posRow+1, len(board)):
             if board[k][self.posCol] != None:
-                if board[k][self.posCol] != self.color:
+                if board[k][self.posCol].color != self.color:
                     self.moves.append([k, self.posCol])
                 break
             self.moves.append([k,self.posCol])
         for m in range(self.posCol+1, len(board[0])):
             if board[self.posRow][m] != None:
-                if board[self.posRow][m] != self.color:
+                if board[self.posRow][m].color != self.color:
                     self.moves.append([self.posRow, m])
                 break
             self.moves.append([self.posRow,m])
@@ -291,7 +291,7 @@ class Queen(object):
             if board[self.posRow+adder][self.posCol+adder] != None:
                 if board[self.posRow+adder][self.posCol+adder].color != self.color:
                     self.moves.append([self.posRow+adder, self.posCol+adder])
-                    break
+                break
             self.moves.append([self.posRow+adder, self.posCol+adder])
         adder = 0
         # Up and to the left.
@@ -300,7 +300,7 @@ class Queen(object):
             if board[self.posRow+adder][self.posCol+adder] != None:
                 if board[self.posRow+adder][self.posCol+adder].color != self.color:
                     self.moves.append([self.posRow+adder, self.posCol+adder])
-                    break
+                break
             self.moves.append([self.posRow+adder, self.posCol+adder])
         adder = 0
         # Up and to the right.
@@ -309,16 +309,16 @@ class Queen(object):
             if board[self.posRow-adder][self.posCol+adder] != None:
                 if board[self.posRow-adder][self.posCol+adder].color != self.color:
                     self.moves.append([self.posRow-adder, self.posCol+adder])
-                    break
+                break
             self.moves.append([self.posRow-adder, self.posCol+adder])
         adder = 0
         # Down and to the left.
-        while(self.posRow+adder <= 6 and self.posCol+adder >= 1):
+        while(self.posRow+adder <= 6 and self.posCol-adder >= 1):
             adder += 1
             if board[self.posRow+adder][self.posCol-adder] != None:
                 if board[self.posRow+adder][self.posCol-adder].color != self.color:
                     self.moves.append([self.posRow+adder, self.posCol-adder])
-                    break
+                break
             self.moves.append([self.posRow+adder, self.posCol-adder])
 
     def getMoves(self, board):

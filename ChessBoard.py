@@ -16,6 +16,8 @@ class Board(object):
         self.colClick = None
         self.drawings = {}
         self.turn = "White"
+        self.okCastleWhite = True
+        self.okCastleBlack = True
 
     def drawBoard(self, canvas):
         for row in range(8):
@@ -94,39 +96,89 @@ class Board(object):
                 self.rowClick = int((eventY-self.margin)/((self.height-2*self.margin)/8))
                 self.colClick = int((eventX-self.margin)/((self.width-2*self.margin)/8))
                 if self.board[self.rowClick][self.colClick] != None and self.board[self.rowClick][self.colClick].color == player:
-                    print("SWELL", self.board)
                     self.clicked = True
                     self.board[self.rowClick][self.colClick].getMoves(self.board)
-                    print(self.board[self.rowClick][self.colClick].moves)
 
 # Run moveClick before mouseClick and only run if self.clicked = True.
     def moveClick(self, eventX, eventY, player):
         rowMove = int((eventY-self.margin)/((self.height-2*self.margin)/8))
         colMove = int((eventX-self.margin)/((self.width-2*self.margin)/8))
         if self.board[rowMove][colMove] == None or self.board[rowMove][colMove].color != player:
-            if [rowMove, colMove] in self.board[self.rowClick][self.colClick].moves:
+            if (player == "White" and self.okCastleWhite and self.board[7][5] == None and 
+            self.rowClick == 7 and self.colClick == 4 and rowMove == 7 and colMove == 6):
+                print("Not correct, White Castle")
+                tempB = copy.deepcopy(self.board)
+                if not isCheck(tempB, self.turn):
+                    tempB[rowMove][colMove] = tempB[self.rowClick][self.colClick]
+                    tempB[rowMove][colMove].posRow = rowMove
+                    tempB[rowMove][colMove].posCol = colMove
+                    tempB[self.rowClick][self.colClick] = None
+                    if not isCheck(tempB, self.turn):
+                        self.makingMoves(rowMove, colMove, player, True)
+            elif (player == "Black" and self.okCastleBlack and self.board[0][5] == None and 
+            self.rowClick == 0 and self.colClick == 4 and rowMove == 0 and colMove == 6):
+                print("Not correct, Black Castle")
+                tempB = copy.deepcopy(self.board)
+                if not isCheck(tempB, self.turn):
+                    tempB[rowMove][colMove] = tempB[self.rowClick][self.colClick]
+                    tempB[rowMove][colMove].posRow = rowMove
+                    tempB[rowMove][colMove].posCol = colMove
+                    tempB[self.rowClick][self.colClick] = None
+                    if not isCheck(tempB, self.turn):
+                        self.makingMoves(rowMove, colMove, player, True)
+            elif [rowMove, colMove] in self.board[self.rowClick][self.colClick].moves:
+                print("correct, no Castle")
                 tempB = copy.deepcopy(self.board)
                 tempB[rowMove][colMove] = tempB[self.rowClick][self.colClick]
                 tempB[rowMove][colMove].posRow = rowMove
                 tempB[rowMove][colMove].posCol = colMove
                 tempB[self.rowClick][self.colClick] = None
                 if not isCheck(tempB, self.turn):
-#                    self.board[self.rowClick][self.colClick].getMoves(self.board)
-#                    print(self.board[rowMove][colMove].moves)
-                    self.board[rowMove][colMove] = self.board[self.rowClick][self.colClick]
-                    self.board[rowMove][colMove].posRow = rowMove
-                    self.board[rowMove][colMove].posCol = colMove
-                    self.board[self.rowClick][self.colClick] = None
-                    self.drawPieces()
-                    if self.turn == "White":
-                        self.turn = "Black"
-                    else:
-                        self.turn = "White"
-                    if isCheck(self.board, self.turn) and isCheckMate(self.board, self.turn):
-                        print("CHECKMATE")
-                    else:
-                        if isCheckMate(self.board, self.turn):
-                            print("STALEMATE")
+                    self.makingMoves(rowMove, colMove, player)
         self.clicked = False
         self.rowClick = None
         self.colClick = None
+
+    def makingMoves(self, rowMove, colMove, player, castling = False):
+        if player == "White":
+            if (self.rowClick == 7 and self.colClick == 7) or (self.rowClick == 7 and self.colClick == 4):
+                self.okCastleWhite = False
+        if player == "Black":
+            if (self.rowClick == 0 and self.colClick == 7) or (self.rowClick == 0 and self.colClick == 4):
+                self.okCastleBlack = False
+        print(castling)
+        if castling:
+            print("Not correct, castling")
+            if player == "White":
+                self.board[7][5] = self.board[7][7]
+                self.board[7][5].posRow = 7
+                self.board[7][5].posCol = 5
+                self.board[7][7] = None
+                self.board[7][6] = self.board[7][4]
+                self.board[7][5].posRow = 7
+                self.board[7][5].posCol = 6
+                self.board[7][4] = None
+            else:
+                self.board[0][5] = self.board[0][7]
+                self.board[0][5].posRow = 0
+                self.board[0][5].posCol = 5
+                self.board[0][7] = None
+                self.board[0][6] = self.board[0][4]
+                self.board[0][5].posRow = 0
+                self.board[0][5].posCol = 6
+                self.board[0][4] = None
+        else:
+            self.board[rowMove][colMove] = self.board[self.rowClick][self.colClick]
+            self.board[rowMove][colMove].posRow = rowMove
+            self.board[rowMove][colMove].posCol = colMove
+            self.board[self.rowClick][self.colClick] = None
+        self.drawPieces()
+        if self.turn == "White":
+            self.turn = "Black"
+        else:
+            self.turn = "White"
+        if isCheck(self.board, self.turn) and isCheckMate(self.board, self.turn):
+            print("CHECKMATE")
+        else:
+            if isCheckMate(self.board, self.turn):
+                print("STALEMATE")

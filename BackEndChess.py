@@ -5,20 +5,18 @@ import copy
 
 # Identifies if a player is in check.
 def isCheck(board, turn):
-    print("THIS SHIT RUNS HOMIE")
     for row in range(len(board)):
         for col in range(len(board[0])):
             if isinstance(board[row][col], King) and board[row][col].color == turn:
                 kingRow = row
                 kingCol = col
-                print(kingRow, kingCol)
                 break
     for row in range(len(board)):
         for col in range(len(board[0])):
             if board[row][col] != None and board[row][col].color != turn:
                     board[row][col].getMoves(board)
                     if [kingRow, kingCol] in board[row][col].moves:
-                        print("CHECKED BEOTCH")
+                        print("CHECKED")
                         return True
     return False
 
@@ -117,28 +115,24 @@ class Rook(object):
             if board[i][self.posCol] != None:
                 if board[i][self.posCol].color != self.color:
                     self.moves.append([i, self.posCol])
-                print("1",self.moves)
                 break
             self.moves.append([i, self.posCol])
         for j in range(self.posCol-1, -1, -1):
             if board[self.posRow][j] != None:
                 if board[self.posRow][j].color != self.color:
                     self.moves.append([self.posRow, j])
-                print("2",self.moves)
                 break
             self.moves.append([self.posRow,j])
         for k in range(self.posRow+1, 8, 1):
             if board[k][self.posCol] != None:
                 if board[k][self.posCol].color != self.color:
                     self.moves.append([k, self.posCol])
-                print("3", self.moves)
                 break
             self.moves.append([k,self.posCol])
         for m in range(self.posCol+1, 8, 1):
             if board[self.posRow][m] != None:
                 if board[self.posRow][m].color != self.color:
                     self.moves.append([self.posRow, m])
-                print("4", self.moves)
                 break
             self.moves.append([self.posRow,m])
         

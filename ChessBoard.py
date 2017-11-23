@@ -98,6 +98,7 @@ class Board(object):
                 if self.board[self.rowClick][self.colClick] != None and self.board[self.rowClick][self.colClick].color == player:
                     self.clicked = True
                     self.board[self.rowClick][self.colClick].getMoves(self.board)
+                    print(self.board[self.rowClick][self.colClick].moves)
 
 # Run moveClick before mouseClick and only run if self.clicked = True.
     def moveClick(self, eventX, eventY, player):
@@ -106,7 +107,6 @@ class Board(object):
         if self.board[rowMove][colMove] == None or self.board[rowMove][colMove].color != player:
             if (player == "White" and self.okCastleWhite and self.board[7][5] == None and 
             self.rowClick == 7 and self.colClick == 4 and rowMove == 7 and colMove == 6):
-                print("Not correct, White Castle")
                 tempB = copy.deepcopy(self.board)
                 if not isCheck(tempB, self.turn):
                     tempB[rowMove][colMove] = tempB[self.rowClick][self.colClick]
@@ -117,7 +117,6 @@ class Board(object):
                         self.makingMoves(rowMove, colMove, player, True)
             elif (player == "Black" and self.okCastleBlack and self.board[0][5] == None and 
             self.rowClick == 0 and self.colClick == 4 and rowMove == 0 and colMove == 6):
-                print("Not correct, Black Castle")
                 tempB = copy.deepcopy(self.board)
                 if not isCheck(tempB, self.turn):
                     tempB[rowMove][colMove] = tempB[self.rowClick][self.colClick]
@@ -127,7 +126,6 @@ class Board(object):
                     if not isCheck(tempB, self.turn):
                         self.makingMoves(rowMove, colMove, player, True)
             elif [rowMove, colMove] in self.board[self.rowClick][self.colClick].moves:
-                print("correct, no Castle")
                 tempB = copy.deepcopy(self.board)
                 tempB[rowMove][colMove] = tempB[self.rowClick][self.colClick]
                 tempB[rowMove][colMove].posRow = rowMove
@@ -146,9 +144,7 @@ class Board(object):
         if player == "Black":
             if (self.rowClick == 0 and self.colClick == 7) or (self.rowClick == 0 and self.colClick == 4):
                 self.okCastleBlack = False
-        print(castling)
         if castling:
-            print("Not correct, castling")
             if player == "White":
                 self.board[7][5] = self.board[7][7]
                 self.board[7][5].posRow = 7
@@ -177,8 +173,9 @@ class Board(object):
             self.turn = "Black"
         else:
             self.turn = "White"
-        if isCheck(self.board, self.turn) and isCheckMate(self.board, self.turn):
+        newTempB = copy.deepcopy(self.board)
+        if isCheck(newTempB, self.turn) and isCheckMate(newTempB, self.turn):
             print("CHECKMATE")
         else:
-            if isCheckMate(self.board, self.turn):
+            if isCheckMate(newTempB, self.turn):
                 print("STALEMATE")

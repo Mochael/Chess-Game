@@ -14,6 +14,15 @@
 
 import random
 
+
+
+# 16 inputs for each white piece position
+# 16 inputs for each black piece position
+# 5 inputs for count of each white piece type (excluding king)
+# 5 inputs for count of each black piece type (excluding king)
+# 42 total input neurons
+
+# Multiply output of neural net by 30 to match stockfish
 ##### Network Functions #####
 def makeGlobalInputs():
     pass
@@ -36,7 +45,7 @@ class Net(object):
                 numOutputs = 0
             else:
                 numOutputs = topology[layerNum+1]
-            for neuronNum in range(topology[layerNum]):
+            for neuronNum in range(topology[layerNum]+1):
                 tempLayers.append(Neuron(numOutputs, neuronNum))
                 print("Made a Neuron!")
             self.layers.append(tempLayers)
@@ -139,6 +148,6 @@ class Neuron(object):
         self.outputVal = transferFunction(sum)
 
 # We need to declare the topology (outline of network, [3,2,1] indicates 3 layer network with 3 input neurons, 2 neurons in a single hidden layer, and 1 output neuron.
-topology = [ 3, 2, 1 ]
-numLayers = len(topology)
-print(Net(topology))
+topology = [ 4, 3, 2, 1 ]
+
+network = Net(topology)

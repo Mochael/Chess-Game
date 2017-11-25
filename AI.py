@@ -30,37 +30,83 @@ import chess
 import chess.uci
 import chess.pgn
 import sys
+import string
 
-arguments = sys.argv
-pgnfilename = str(arguments[1])
+
+
+#arguments = sys.argv
+#print(arguments)
+#pgnfilename = str(arguments[1])
+
+'''infile = open("/Users/michaelkronovet/Desktop/adams_kasparov_2005.pgn")
+lines = infile.readlines()
+for line in lines:
+    count = line.count(". ")
+    for i in range(count):
+        line.replace(". ", ".")
+print(infile)'''
+
 
 #Read pgn file:
-with open(pgnfilename) as f:
-    game = chess.pgn.read_game(f)
+with open("/Users/michaelkronovet/Desktop/adams_kasparov_2005.pgn") as f:
+    first_game = chess.pgn.read_game(f)
+    #print(first_game)
+    second_game = chess.pgn.read_game(f)
+    #print("THISIISISISISI",second_game)
 
 #Go to the end of the game and create a chess.Board() from it:
-game = game.end()
-board = game.board()
+first_game = first_game.end()
+board = first_game.board()
 
 #So if you want, here's also your PGN to FEN conversion:
-print('FEN of the last position of the game: ', board.fen())
+#print('FEN of the last position of the game: ', board.fen())
 
 #or if you want to loop over all game nodes:
 #while not game.is_end():
-    #node = game.variations[0]
-    #board = game.board() #print the board if you want, to make sure
-    #game = node         
-
-#Now we have our board ready, load your engine:
+#    node = game.variations[0]
+#    board = game.board() #print the board if you want, to make sure
+#    game = node
+    #Now we have our board ready, load your engine:
 handler = chess.uci.InfoHandler()
-engine = chess.uci.popen_engine('...\stockfish_8_x64') #give correct address of your engine here
+engine = chess.uci.popen_engine('/Users/michaelkronovet/Desktop/15-112/stockfish-8-mac/Mac/stockfish-8-64') #give correct address of your engine here
 engine.info_handlers.append(handler)
 
 #give your position to the engine:
 engine.position(board)
 
 #Set your evaluation time, in ms:
-evaltime = 5000 #so 5 seconds
+evaltime = 1000 #so 5 seconds
+evaluation = engine.go(movetime=evaltime)
+
+#print best move, evaluation and mainline:
+print('best move: ', board.san(evaluation[0]))
+print('evaluation value: ', handler.info["score"][1].cp/100.0)
+print('Corresponding line: ', board.variation_san(handler.info["pv"][1]))
+
+
+
+
+second_game = second_game.end()
+board = second_game.board()
+
+#So if you want, here's also your PGN to FEN conversion:
+print('FEN of the last position of the game: ', board.fen())
+
+#or if you want to loop over all game nodes:
+#while not game.is_end():
+#    node = game.variations[0]
+#    board = game.board() #print the board if you want, to make sure
+#    game = node
+    #Now we have our board ready, load your engine:
+handler = chess.uci.InfoHandler()
+engine = chess.uci.popen_engine('/Users/michaelkronovet/Desktop/15-112/stockfish-8-mac/Mac/stockfish-8-64') #give correct address of your engine here
+engine.info_handlers.append(handler)
+
+#give your position to the engine:
+engine.position(board)
+
+#Set your evaluation time, in ms:
+evaltime = 1000 #so 5 seconds
 evaluation = engine.go(movetime=evaltime)
 
 #print best move, evaluation and mainline:

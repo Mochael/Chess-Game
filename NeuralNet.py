@@ -15,14 +15,15 @@
 import random
 
 
-
 # 16 inputs for each white piece position
 # 16 inputs for each black piece position
 # 5 inputs for count of each white piece type (excluding king)
 # 5 inputs for count of each black piece type (excluding king)
 # 42 total input neurons
 
-# Multiply output of neural net by 30 to match stockfish
+# Positive evaluation val means winning position for white, negative means better for black
+
+# Multiply output of neural net by 30 (or 3000 if I take out /100) to match stockfish
 ##### Network Functions #####
 def makeGlobalInputs():
     pass

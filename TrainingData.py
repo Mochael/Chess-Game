@@ -31,7 +31,9 @@ import chess.uci
 import chess.pgn
 import sys
 import string
+#import NeuralNet
 
+#network = NeuralNet.Net([42, 42, 32, 16, 1])
 
 # I get my chess data from http://chessproblem.my-free-games.com/chess/games/Download-PGN.php
 
@@ -50,6 +52,30 @@ print(infile)'''
 
 #Read pgn file:
 with open("/Users/michaelkronovet/Desktop/15-112/AdamsOK.pgn") as f:
+    for i in range(100):
+        game = chess.pgn.read_game(f)
+        game = game.end()
+        board = game.board()
+        handler = chess.uci.InfoHandler()
+        engine = chess.uci.popen_engine('/Users/michaelkronovet/Desktop/15-112/stockfish-8-mac/Mac/stockfish-8-64') #give correct address of your engine here
+        engine.info_handlers.append(handler)
+
+        #give your position to the engine:
+        engine.position(board)
+
+        #Set your evaluation time, in ms:
+        evaltime = 1000 #so 5 seconds
+        evaluation = engine.go(movetime=evaltime)
+
+        print(board)
+#        print('best move: ', board.san(evaluation[0]))
+        print("LE SCORO", handler.info["score"])
+        # Do this for if a move has no value or something. Maybe this error won't come up when checking moves.
+        if handler.info["score"][1] == None:
+            continue
+        print('evaluation value: ', handler.info["score"][1].cp/100.0)
+
+'''
     first_game = chess.pgn.read_game(f)
 #   print(first_game)
     second_game = chess.pgn.read_game(f)
@@ -113,4 +139,4 @@ while not second_game.is_end():
     #print best move, evaluation and mainline:
     print('best move: ', board.san(evaluation[0]))
     print('evaluation value: ', handler.info["score"][1].cp/100.0)
-    print('Corresponding line: ', board.variation_san(handler.info["pv"][1]))
+    print('Corresponding line: ', board.variation_san(handler.info["pv"][1]))'''

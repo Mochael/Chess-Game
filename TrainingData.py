@@ -52,28 +52,47 @@ print(infile)'''
 
 #Read pgn file:
 with open("/Users/michaelkronovet/Desktop/15-112/AdamsOK.pgn") as f:
-    for i in range(100):
+    count = 0
+    for i in range(1):
         game = chess.pgn.read_game(f)
-        game = game.end()
-        board = game.board()
-        handler = chess.uci.InfoHandler()
-        engine = chess.uci.popen_engine('/Users/michaelkronovet/Desktop/15-112/stockfish-8-mac/Mac/stockfish-8-64') #give correct address of your engine here
-        engine.info_handlers.append(handler)
+        while not game.is_end():
+            count+= 1
+            if count == 19:
+                break
+            node = game.variations[0]
+            board = game.board() #print the board if you want, to make sure
+            game = node
+#        game = chess.pgn.read_game(f)
+#        game = game.end()
+#        board = game.board()
+# board.piece_map() makes dictionary of piece positions based on square number.
+# Bottom left corner is square 1, top right is square 64.
+# Goes from left to right and then after each row is done it moves up a column.
+#        print(board.piece_map())
+            handler = chess.uci.InfoHandler()
+            engine = chess.uci.popen_engine('/Users/michaelkronovet/Desktop/15-112/stockfish-8-mac/Mac/stockfish-8-64') #give correct address of your engine here
+            engine.info_handlers.append(handler)
 
-        #give your position to the engine:
-        engine.position(board)
+            #give your position to the engine:
+            engine.position(board)
 
-        #Set your evaluation time, in ms:
-        evaltime = 1000 #so 5 seconds
-        evaluation = engine.go(movetime=evaltime)
-
-        print(board)
-#        print('best move: ', board.san(evaluation[0]))
-        print("LE SCORO", handler.info["score"])
-        # Do this for if a move has no value or something. Maybe this error won't come up when checking moves.
-        if handler.info["score"][1] == None:
-            continue
-        print('evaluation value: ', handler.info["score"][1].cp/100.0)
+            #Set your evaluation time, in ms:
+            evaltime = 1000 #so 5 seconds
+            evaluation = engine.go(movetime=evaltime)
+            print(board)
+            if handler.info["score"][1] == None:
+                continue
+            evaluated = handler.info["score"][1].cp
+#            print('evaluation value: ', handler.info["score"][1].cp/100.0)
+            if board.turn == False:
+                evaluated *= -1
+            print("NEWEVALUATEDVALUE", evaluated)
+    #        print('best move: ', board.san(evaluation[0]))
+            print("LE SCORO", handler.info["score"])
+            # Do this for if a move has no value or something. Maybe this error won't come up when checking moves.
+            # This value is relative to who is making the move. negative means current player is losing pos means current player is winning.
+            if handler.info["score"][1] == None:
+                continue
 
 '''
     first_game = chess.pgn.read_game(f)

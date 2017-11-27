@@ -15,12 +15,6 @@
 import random
 
 
-# 16 inputs for each white piece position
-# 16 inputs for each black piece position
-# 5 inputs for count of each white piece type (excluding king)
-# 5 inputs for count of each black piece type (excluding king)
-# 42 total input neurons
-
 # Positive evaluation val means winning position for white, negative means better for black
 
 # Multiply output of neural net by 30 (or 3000 if I take out /100) to match stockfish
@@ -149,6 +143,12 @@ class Neuron(object):
         self.outputVal = transferFunction(sum)
 
 # We need to declare the topology (outline of network, [3,2,1] indicates 3 layer network with 3 input neurons, 2 neurons in a single hidden layer, and 1 output neuron.
-topology = [ 4, 3, 2, 1 ]
+# 64 input neurons for each board space. 0 means no piece. 
+# Black: -1 pawn, -2 bishop, -3 knight, -4 rook, -5 queen, -6 king
+# White: 1 pawn, 2 bishop, 3 knight, 4 rook, 5 queen, 6 king
+# 1 player input neuron to say who is moving (can make this the first input neuron where 10 white, -10 for black)
+# Two hidden layers, (most chess algorithms use two. )
+
+topology = [64, 44, 18, 1 ]
 
 network = Net(topology)

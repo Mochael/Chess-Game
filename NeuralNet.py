@@ -95,7 +95,6 @@ class Neuron(object):
     def __init__(self, numOutputs, myIndex):
         self.outputWeights = []
         self.myIndex = myIndex
-#        self.connects = connects
         self.outputVal = 0
         self.gradient = 0
         for i in range(numOutputs):
@@ -109,11 +108,10 @@ class Neuron(object):
 
     def updateInputWeights(self, prevL):
         for i in range(len(prevL)):
-            prevN = prevL[i]
-            oldDeltaWeight = prevN.outputWeights[self.myIndex][1]
-            newDeltaWeight = Neuron.eta*prevN.getOutputVal()*prevN.gradient+Neuron.alpha*oldDeltaWeight
-            prevN.outputWeights[self.myIndex][1] = newDeltaWeight
-            prevN.outputWeights[self.myIndex][0] += newDeltaWeight
+            oldDeltaWeight = prevL[i].outputWeights[self.myIndex][1]
+            newDeltaWeight = Neuron.eta*prevL[i].getOutputVal()*self.gradient+Neuron.alpha*oldDeltaWeight
+            prevL[i].outputWeights[self.myIndex][1] = newDeltaWeight
+            prevL[i].outputWeights[self.myIndex][0] += newDeltaWeight
 
     def sumDOW(self, nextLayer):
         sum = 0.0
@@ -127,7 +125,7 @@ class Neuron(object):
         
     def calcOutputGradients(self, targetVal):
         delta = targetVal-self.outputVal
-        gradient = delta*self.transferFunctionDerivative(self.outputVal)
+        self.gradient = delta*self.transferFunctionDerivative(self.outputVal)
 
     @staticmethod
     def transferFunction(x):
@@ -140,6 +138,7 @@ class Neuron(object):
     def feedForward(self, prevLayer):
         sum = 0.0
         for i in range(len(prevLayer)):
+            print("THIS IS WHY I CARE", prevLayer[i].getOutputVal())
             sum += prevLayer[i].getOutputVal()*prevLayer[i].outputWeights[self.myIndex][0]
         self.outputVal = self.transferFunction(sum)
 

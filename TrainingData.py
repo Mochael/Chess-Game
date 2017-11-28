@@ -32,6 +32,7 @@ import chess.pgn
 import sys
 import string
 import NeuralNet
+from substituteNet import *
 
 #network = NeuralNet.Net([42, 42, 32, 16, 1])
 
@@ -51,15 +52,32 @@ print(infile)'''
 
 
 #Read pgn file:
-topology = [64, 44, 18, 1 ]
-evalNet = NeuralNet.Net(topology)
+#topology = [64, 58, 1]
+#evalNet = NeuralNet.Net(topology)
+network = Network()
+inputNodes = [InputNode(i) for i in range(3)]
+hiddenNodes = [Node() for i in range(3)]
+outputNode = Node()
+
+# weights are all randomized
+for inputNode in inputNodes:
+    for node in hiddenNodes:
+        Edge(inputNode, node)
+
+for node in hiddenNodes:
+    Edge(node, outputNode)
+
+network.outputNode = outputNode
+network.inputNodes.extend(inputNodes)
+
+
 with open("/Users/michaelkronovet/Desktop/15-112/AdamsOK.pgn") as f:
-    count = 0
-    for i in range(1):
+    count = 0 
+    for i in range(4):
         game = chess.pgn.read_game(f)
         while not game.is_end():
             count+= 1
-            if count == 12:
+            if count == 20:
                 break
             node = game.variations[0]
             board = game.board()
@@ -71,7 +89,7 @@ with open("/Users/michaelkronovet/Desktop/15-112/AdamsOK.pgn") as f:
 # Bottom left corner is square 1, top right is square 64.
 # Goes from left to right and then after each row is done it moves up a column.
             piecePos = board.piece_map()
-            print(piecePos)
+#            print(piecePos)
             inputsL = []
             for i in range(64):
                 if i in piecePos:
@@ -81,12 +99,11 @@ with open("/Users/michaelkronovet/Desktop/15-112/AdamsOK.pgn") as f:
                         inputsL.append(piecePos[i].piece_type)
                 else:
                     inputsL.append(0)
-            print("Inputs: ", inputsL)
-            print("Inputs length", len(inputsL))
-
-            evalNet.feedForward(inputsL)
-            resultVals = evalNet.getResults()
-            print("Outputs: ", resultVals)
+#            print("Inputs: ", inputsL)
+            
+#            evalNet.feedForward(inputsL)
+#            resultVals = evalNet.getResults()
+#            print("Outputs: ", resultVals)
             
 # Pawn=1,Knight=2,Bishop=3,Rook=4,Queen=5,King=6
             handler = chess.uci.InfoHandler()
@@ -98,24 +115,28 @@ with open("/Users/michaelkronovet/Desktop/15-112/AdamsOK.pgn") as f:
             #Set your evaluation time, in ms:
             evaltime = 1000 #so 5 seconds
             evaluation = engine.go(movetime=evaltime)
-            print(board)
+#            print(board)
             if handler.info["score"][1] == None:
                 continue
             evaluated = handler.info["score"][1].cp
+            
 #            print('evaluation value: ', handler.info["score"][1].cp/100.0)
             if board.turn == False:
                 evaluated *= -1
-            print("target value: ", evaluated/100)
-            print(evalNet.layers[-1][0].getOutputVal())
+            L = [inputsL, evaluated/500]
+            print("TARGET", evaluated/500)
+            network.train(L, maxIterations=1)
+#            print("target value: ", evaluated/3000)
+#            print(evalNet.layers[-1][0].getOutputVal())
     #        print('best move: ', board.san(evaluation[0]))
-            evalNet.backProp([evaluated/100])
+#            evalNet.backProp([evaluated/3000])
             # Do this for if a move has no value or something. Maybe this error won't come up when checking moves.
             # This value is relative to who is making the move. negative means current player is losing pos means current player is winning.
-            print("Average error: ", evalNet.getRecentAverageError())
+#            print("Average error: ", evalNet.getRecentAverageError())
 
-firstWeights = []
+'''firstWeights = []
 secondWeights = []
-thirdWeights = []
+#thirdWeights = []
 
 for layer in range(len(topology)-1):
     for neuron in range(len(evalNet.layers[layer])):
@@ -123,18 +144,18 @@ for layer in range(len(topology)-1):
             firstWeights.append(evalNet.layers[layer][neuron].outputWeights)
         elif layer == 2:
             secondWeights.append(evalNet.layers[layer][neuron].outputWeights)
-        elif layer == 3:
-            thirdWeights.append(evalNet.layers[layer][neuron].outputWeights)
+#        elif layer == 3:
+#            thirdWeights.append(evalNet.layers[layer][neuron].outputWeights)
 
 open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsText.txt", "w").close()
-#file = open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsText.txt", "w")
-#file.write(str(firstWeights))
-#file.write(str(secondWeights))
-#file.write(str(thirdWeights))
+file = open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsText.txt", "w")
+file.write(str(firstWeights))
+file.write(str(secondWeights))
+file.write(str(thirdWeights))
 
 
 
-'''
+
     first_game = chess.pgn.read_game(f)
 #   print(first_game)
     second_game = chess.pgn.read_game(f)

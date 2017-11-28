@@ -12,6 +12,7 @@ from tkinter import *
 from PIL import Image, ImageTk
 import ChessBoard as CB
 import BackEndChess as BackEnd
+from MultiplayerChess import *
 
 def startScreen(canvas, data):
     canvas.create_text(data.width/2, data.height/4,
@@ -91,22 +92,6 @@ def competitiveScreen(canvas, data):
     initialize(canvas, data)
     drawImages(canvas, data)
 
-def multiplayerScreen(canvas, data):
-    canvas.create_rectangle(0, 0, data.width, data.height,
-                            fill='white', width=0)
-    data.mainBoard.drawBoard(canvas)
-    canvas.create_text(15, 15, 
-                       text = "Back",
-                       font = "courier "+str(int(data.width/25)))
-    if data.mainBoard.clicked:
-        canvas.create_rectangle(data.mainBoard.margin+data.mainBoard.colClick*data.mainBoard.cellWidth,
-                                data.mainBoard.margin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
-                                data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellWidth,
-                                data.mainBoard.margin+(data.mainBoard.rowClick+1)*data.mainBoard.cellHeight,
-                                fill = "yellow")
-    initialize(canvas, data)
-    drawImages(canvas, data)
-
 
 def gameMode(event, data):
     if data.mode != "beginning":
@@ -129,8 +114,11 @@ def gameMode(event, data):
 
 def moveWithMouse(event, data):
     if data.mainBoard.clicked:
-        data.mainBoard.moveClick(event.x, event.y, data.player)
-        data.player = data.mainBoard.turn
+        if data.mode == "training":
+            data.mainBoard.moveClick(event.x, event.y, data.player)
+            data.player = data.mainBoard.turn
+        else:
+            data.mainBoard.moveClick(event.x, event.y, data.player)
     else:
         data.mainBoard.mouseClick(event.x, event.y, data.player)
 

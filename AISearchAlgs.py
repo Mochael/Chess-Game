@@ -81,6 +81,3 @@ def maxPart(gameBoard, level, color):
                 bestMove = move
                 bestScore = score
     return bestScore
-
-
-# Genetic algorithm'''

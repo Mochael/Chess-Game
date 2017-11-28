@@ -31,7 +31,7 @@ import chess.uci
 import chess.pgn
 import sys
 import string
-#import NeuralNet
+import NeuralNet
 
 #network = NeuralNet.Net([42, 42, 32, 16, 1])
 
@@ -51,16 +51,17 @@ print(infile)'''
 
 
 #Read pgn file:
+evalNet = NeuralNet.Net([64, 44, 18, 1 ])
 with open("/Users/michaelkronovet/Desktop/15-112/AdamsOK.pgn") as f:
     count = 0
     for i in range(1):
         game = chess.pgn.read_game(f)
         while not game.is_end():
             count+= 1
-            if count == 19:
+            if count == 2:
                 break
             node = game.variations[0]
-            board = game.board() #print the board if you want, to make sure
+            board = game.board()
             game = node
 #        game = chess.pgn.read_game(f)
 #        game = game.end()
@@ -68,14 +69,31 @@ with open("/Users/michaelkronovet/Desktop/15-112/AdamsOK.pgn") as f:
 # board.piece_map() makes dictionary of piece positions based on square number.
 # Bottom left corner is square 1, top right is square 64.
 # Goes from left to right and then after each row is done it moves up a column.
-#        print(board.piece_map())
+            piecePos = board.piece_map()
+            print(piecePos)
+            inputsL = []
+            for i in range(64):
+                if i in piecePos:
+                    if piecePos[i].color == False:
+                        inputsL.append(-1*piecePos[i].piece_type)
+                    else:
+                        inputsL.append(piecePos[i].piece_type)
+                else:
+                    inputsL.append(0)
+            print("Inputs: ", inputsL)
+            print("Inputs length", len(inputsL))
+
+            evalNet.feedForward(inputsL)
+            resultVals = evalNet.getResults()
+            print("Outputs: ", resultVals)
+            
+# Pawn=1,Knight=2,Bishop=3,Rook=4,Queen=5,King=6
             handler = chess.uci.InfoHandler()
             engine = chess.uci.popen_engine('/Users/michaelkronovet/Desktop/15-112/stockfish-8-mac/Mac/stockfish-8-64') #give correct address of your engine here
             engine.info_handlers.append(handler)
 
             #give your position to the engine:
             engine.position(board)
-
             #Set your evaluation time, in ms:
             evaltime = 1000 #so 5 seconds
             evaluation = engine.go(movetime=evaltime)
@@ -86,13 +104,12 @@ with open("/Users/michaelkronovet/Desktop/15-112/AdamsOK.pgn") as f:
 #            print('evaluation value: ', handler.info["score"][1].cp/100.0)
             if board.turn == False:
                 evaluated *= -1
-            print("NEWEVALUATEDVALUE", evaluated)
+            print("target value: ", evaluated/100)
     #        print('best move: ', board.san(evaluation[0]))
-            print("LE SCORO", handler.info["score"])
+            evalNet.backProp([evaluated/100])
             # Do this for if a move has no value or something. Maybe this error won't come up when checking moves.
             # This value is relative to who is making the move. negative means current player is losing pos means current player is winning.
-            if handler.info["score"][1] == None:
-                continue
+            print("Average error: ", evalNet.getRecentAverageError())
 
 '''
     first_game = chess.pgn.read_game(f)

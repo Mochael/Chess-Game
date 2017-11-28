@@ -13,6 +13,7 @@
     # Where each piece attacks and defends
 
 import random
+import math
 
 
 # Positive evaluation val means winning position for white, negative means better for black
@@ -28,12 +29,12 @@ def makeAttackingInputs():
 
 class Net(object):
     def __init__(self, topology):
+        numLayers = len(topology)
         self.topology = topology
         self.layers = []
         self.recentAverageSmoothingFactor = 100.0
         self.error = 0
         self.recentAverageError = 0
-
         for layerNum in range(len(topology)):
             tempLayers = []
             if layerNum == len(topology)-1:
@@ -49,17 +50,18 @@ class Net(object):
     def getRecentAverageError(self):
         return self.recentAverageError
         
-    def getResults(self, resultVals):
+    def getResults(self):
         resultVals = []
         for i in range(len(self.layers[-1])-1):
             resultVals.append(self.layers[-1][i].getOutputVal())
+        return resultVals
 
     def backProp(self, targetVals):
         outputLayer = self.layers[-1]
         self.error = 0.0
-        for i in range(len(outputLayer.size())-1):
+        for i in range(len(outputLayer)-1):
             delta = targetVals[i]-outputLayer[i].getOutputVal()
-            self.error += delta*delta
+            self.error += delta**2
         self.error /= len(outputLayer)-1
         self.error = self.error**.5
         self.recentAverageError = (self.recentAverageError*self.recentAverageSmoothingFactor+self.error)/(self.recentAverageSmoothingFactor + 1.0)
@@ -80,7 +82,7 @@ class Net(object):
         assert(len(inputVals) == len(self.layers[0])-1)
         for i in range(len(inputVals)):
             self.layers[0][i].setOutputVal(inputVals[i])
-        for layerNum in range(len(self.layers)):
+        for layerNum in range(1, len(self.layers)):
             prevLayer = self.layers[layerNum - 1]
             for n in range(len(self.layers[layerNum])-1):
                 self.layers[layerNum][n].feedForward(prevLayer)
@@ -108,21 +110,23 @@ class Neuron(object):
 
     def updateInputWeights(self, prevL):
         for i in range(len(prevL)):
-            neuron = prevL[n]
-            oldDeltaWeight = self.outputWeights[myIndex][1]
-            newDeltaWeight = Neuron.eta*neuron.getOutputVal()*self.gradient+Neuron.alpha*oldDeltaWeight
-            self.outputWeights[self.myIndex][1] = newDeltaWeight
-            self.outputWeights[self.myIndex][0] += newDeltaWeight
+            prevN = prevL[i]
+            oldDeltaWeight = prevN.outputWeights[self.myIndex][1]
+            newDeltaWeight = Neuron.eta*prevN.getOutputVal()*prevN.gradient+Neuron.alpha*oldDeltaWeight
+            prevN.outputWeights[self.myIndex][1] = newDeltaWeight
+            prevN.outputWeights[self.myIndex][0] += newDeltaWeight
 
     def sumDOW(self, nextLayer):
         sum = 0.0
-        for i in range(len(nextLayer)):
-            sum += self.outputWeights[n][0]*nextLayer[n].gradient
+        for i in range(len(nextLayer)-1):
+            print("OUTPUT WEIGHTS", self.outputWeights)
+            print("NEXT LAYER", nextLayer)
+            sum += self.outputWeights[i][0]*nextLayer[i].gradient
         return sum
     
     def calcHiddenGradients(self, nextLayer):
-        dow = sumDOW(nextLayer)
-        self.gradient = dow*transferFunctionDerivative(self.outputVal)
+        dow = self.sumDOW(nextLayer)
+        self.gradient = dow*self.transferFunctionDerivative(self.outputVal)
         
     def calcOutputGradients(self, targetVal):
         delta = targetVal-self.outputVal
@@ -130,7 +134,7 @@ class Neuron(object):
 
     @staticmethod
     def transferFunction(x):
-        return tanh(x)
+        return math.tanh(x)
 
     @staticmethod
     def transferFunctionDerivative(x):
@@ -139,16 +143,15 @@ class Neuron(object):
     def feedForward(self, prevLayer):
         sum = 0.0
         for i in range(len(prevLayer)):
+            print("Output weights", prevLayer[i].outputWeights)
             sum += prevLayer[i].getOutputVal()*prevLayer[i].outputWeights[self.myIndex][0]
-        self.outputVal = transferFunction(sum)
+        self.outputVal = self.transferFunction(sum)
 
 # We need to declare the topology (outline of network, [3,2,1] indicates 3 layer network with 3 input neurons, 2 neurons in a single hidden layer, and 1 output neuron.
 # 64 input neurons for each board space. 0 means no piece. 
-# Black: -1 pawn, -2 bishop, -3 knight, -4 rook, -5 queen, -6 king
-# White: 1 pawn, 2 bishop, 3 knight, 4 rook, 5 queen, 6 king
+# Black: -1 pawn, -2 knight, -3 bishop, -4 rook, -5 queen, -6 king
+# White: 1 pawn, 2 knight, 3 bishop, 4 rook, 5 queen, 6 king
 # 1 player input neuron to say who is moving (can make this the first input neuron where 10 white, -10 for black)
 # Two hidden layers, (most chess algorithms use two. )
 
-topology = [64, 44, 18, 1 ]
-
-network = Net(topology)
+evalNet = Net([64, 44, 18, 1 ])

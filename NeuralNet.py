@@ -43,7 +43,6 @@ class Net(object):
                 numOutputs = topology[layerNum+1]
             for neuronNum in range(topology[layerNum]+1):
                 tempLayers.append(Neuron(numOutputs, neuronNum))
-                print("Made a Neuron!")
             self.layers.append(tempLayers)
             self.layers[-1][-1].setOutputVal(1.0)
 
@@ -60,7 +59,7 @@ class Net(object):
         outputLayer = self.layers[-1]
         self.error = 0.0
         for i in range(len(outputLayer)-1):
-            delta = targetVals[i]-outputLayer[i].getOutputVal()
+            delta = (targetVals[i]-outputLayer[i].getOutputVal())
             self.error += delta**2
         self.error /= len(outputLayer)-1
         self.error = self.error**.5
@@ -119,8 +118,6 @@ class Neuron(object):
     def sumDOW(self, nextLayer):
         sum = 0.0
         for i in range(len(nextLayer)-1):
-            print("OUTPUT WEIGHTS", self.outputWeights)
-            print("NEXT LAYER", nextLayer)
             sum += self.outputWeights[i][0]*nextLayer[i].gradient
         return sum
     
@@ -143,7 +140,6 @@ class Neuron(object):
     def feedForward(self, prevLayer):
         sum = 0.0
         for i in range(len(prevLayer)):
-            print("Output weights", prevLayer[i].outputWeights)
             sum += prevLayer[i].getOutputVal()*prevLayer[i].outputWeights[self.myIndex][0]
         self.outputVal = self.transferFunction(sum)
 
@@ -153,5 +149,3 @@ class Neuron(object):
 # White: 1 pawn, 2 knight, 3 bishop, 4 rook, 5 queen, 6 king
 # 1 player input neuron to say who is moving (can make this the first input neuron where 10 white, -10 for black)
 # Two hidden layers, (most chess algorithms use two. )
-
-evalNet = Net([64, 44, 18, 1 ])

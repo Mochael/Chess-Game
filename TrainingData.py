@@ -51,14 +51,15 @@ print(infile)'''
 
 
 #Read pgn file:
-evalNet = NeuralNet.Net([64, 44, 18, 1 ])
+topology = [64, 44, 18, 1 ]
+evalNet = NeuralNet.Net(topology)
 with open("/Users/michaelkronovet/Desktop/15-112/AdamsOK.pgn") as f:
     count = 0
     for i in range(1):
         game = chess.pgn.read_game(f)
         while not game.is_end():
             count+= 1
-            if count == 2:
+            if count == 12:
                 break
             node = game.variations[0]
             board = game.board()
@@ -105,11 +106,33 @@ with open("/Users/michaelkronovet/Desktop/15-112/AdamsOK.pgn") as f:
             if board.turn == False:
                 evaluated *= -1
             print("target value: ", evaluated/100)
+            print(evalNet.layers[-1][0].getOutputVal())
     #        print('best move: ', board.san(evaluation[0]))
             evalNet.backProp([evaluated/100])
             # Do this for if a move has no value or something. Maybe this error won't come up when checking moves.
             # This value is relative to who is making the move. negative means current player is losing pos means current player is winning.
             print("Average error: ", evalNet.getRecentAverageError())
+
+firstWeights = []
+secondWeights = []
+thirdWeights = []
+
+for layer in range(len(topology)-1):
+    for neuron in range(len(evalNet.layers[layer])):
+        if layer == 1:
+            firstWeights.append(evalNet.layers[layer][neuron].outputWeights)
+        elif layer == 2:
+            secondWeights.append(evalNet.layers[layer][neuron].outputWeights)
+        elif layer == 3:
+            thirdWeights.append(evalNet.layers[layer][neuron].outputWeights)
+
+open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsText.txt", "w").close()
+#file = open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsText.txt", "w")
+#file.write(str(firstWeights))
+#file.write(str(secondWeights))
+#file.write(str(thirdWeights))
+
+
 
 '''
     first_game = chess.pgn.read_game(f)

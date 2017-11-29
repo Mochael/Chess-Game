@@ -7,12 +7,14 @@
 # Multiplayer: user can play against different players online
 
 # Difference in AI difficulties could be how far the AI can see into the future with its move predictions.
-
 from tkinter import *
 from PIL import Image, ImageTk
 import ChessBoard as CB
 import BackEndChess as BackEnd
-from MultiplayerChess import *
+from Client import *
+import socket
+import threading
+from queue import Queue
 
 def startScreen(canvas, data):
     canvas.create_text(data.width/2, data.height/4,
@@ -114,11 +116,9 @@ def gameMode(event, data):
 
 def moveWithMouse(event, data):
     if data.mainBoard.clicked:
+        data.mainBoard.moveClick(event.x, event.y, data.player)
         if data.mode == "training":
-            data.mainBoard.moveClick(event.x, event.y, data.player)
             data.player = data.mainBoard.turn
-        else:
-            data.mainBoard.moveClick(event.x, event.y, data.player)
     else:
         data.mainBoard.mouseClick(event.x, event.y, data.player)
 
@@ -141,6 +141,7 @@ def init(data):
     data.mainBoard = CB.Board(data.width, data.height)
     data.mainBoard.makeBoard()
     data.player = "White"
+    data.moved = False
 
 def initialize(canvas, data):
     canvas.shapes = data.mainBoard.drawings
@@ -159,16 +160,20 @@ def drawImages(canvas, data):
 
 def mousePressed(event, data):
     if data.mode != "beginning":
-        moveWithMouse(event, data)
-    gameMode(event, data)
+        if data.mode == "multiplayer":
+            multiplayerMouse(event, data)
+        else:
+            moveWithMouse(event, data)
+    else:
+        gameMode(event, data)
 
 
 def keyPressed(event, data):
-    # use event.char and event.keysym
     pass
 
 def timerFired(data):
-    pass
+    if data.mode == "multiplayer":
+        clientTimerFired(data)
 
 def redrawAll(canvas, data):
     if data.mode == "beginning":
@@ -190,7 +195,7 @@ def redrawAll(canvas, data):
 # use the run function as-is
 ####################################
 
-def run(width=300, height=300):
+def run(width=300, height=300, serverMsg = None, server = None):
     def redrawAllWrapper(canvas, data):
         canvas.delete(ALL)
         canvas.create_rectangle(0, 0, data.width, data.height,
@@ -214,6 +219,8 @@ def run(width=300, height=300):
     # Set up data and call init
     class Struct(object): pass
     data = Struct()
+    data.server = server
+    data.serverMsg = serverMsg
     data.width = width
     data.height = height
     data.timerDelay = 10000 # milliseconds
@@ -233,4 +240,6 @@ def run(width=300, height=300):
     root.mainloop()  # blocks until window is closed
     print("bye!")
 
-run(400, 400)
+serverMsg = Queue(100)
+threading.Thread(target = handleServerMsg, args = (server, serverMsg)).start()
+run(400, 400, serverMsg, server)

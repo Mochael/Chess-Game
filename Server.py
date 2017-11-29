@@ -11,7 +11,6 @@ from queue import Queue
 HOST = "128.237.184.27" # put your IP address here if playing on multiple computers
 PORT = 50003
 BACKLOG = 2
-
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 server.bind((HOST,PORT))
 server.listen(BACKLOG)
@@ -31,7 +30,7 @@ def handleClient(client, serverChannel, cID, clientele):
         command = msg.split("\n")
     except:
       # we failed
-      return None
+      return
 
 def serverThread(clientele, serverChannel):
   while True:
@@ -56,7 +55,7 @@ playerNum = 0
 serverChannel = Queue(100)
 threading.Thread(target = serverThread, args = (clientele, serverChannel)).start()
 
-names = ["Rohan", "Eddie", "Kim", "Tara"]
+names = ["Rohan", "Eddie"]
 
 while True:
   client, address = server.accept()

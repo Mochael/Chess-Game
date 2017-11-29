@@ -176,6 +176,6 @@ class Board(object):
         newTempB = copy.deepcopy(self.board)
         if isCheck(newTempB, self.turn) and isCheckMate(newTempB, self.turn):
             print("CHECKMATE")
-        else:
-            if isCheckMate(newTempB, self.turn):
-                print("STALEMATE")
+#        else:
+#            if isCheckMate(newTempB, self.turn):
+#                print("STALEMATE")

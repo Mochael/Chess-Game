@@ -8,7 +8,9 @@
 
 # Difference in AI difficulties could be how far the AI can see into the future with its move predictions.
 from tkinter import *
-from PIL import Image, ImageTk
+import PIL.Image
+import PIL.ImageTk
+#from PIL import Image, ImageTk
 import ChessBoard as CB
 import BackEndChess as BackEnd
 from Client import *
@@ -94,6 +96,21 @@ def competitiveScreen(canvas, data):
     initialize(canvas, data)
     drawImages(canvas, data)
 
+def multiplayerScreen(canvas, data):
+    canvas.create_rectangle(0, 0, data.width, data.height,
+                            fill='white', width=0)
+    data.mainBoard.drawBoard(canvas)
+    canvas.create_text(15, 15, 
+                       text = "Back",
+                       font = "courier "+str(int(data.width/25)))
+    if data.mainBoard.clicked:
+        canvas.create_rectangle(data.mainBoard.margin+data.mainBoard.colClick*data.mainBoard.cellWidth,
+                                data.mainBoard.margin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
+                                data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellWidth,
+                                data.mainBoard.margin+(data.mainBoard.rowClick+1)*data.mainBoard.cellHeight,
+                                fill = "yellow")
+    initialize(canvas, data)
+    drawImages(canvas, data)
 
 def gameMode(event, data):
     if data.mode != "beginning":
@@ -113,12 +130,15 @@ def gameMode(event, data):
         if data.x4-data.r <= event.x <= data.x4+data.r:
             if data.y4-data.r <= event.y <= data.y4+data.r:
                 data.mode = "multiplayer"
+                multiplayerInit(data)
 
 def moveWithMouse(event, data):
     if data.mainBoard.clicked:
         data.mainBoard.moveClick(event.x, event.y, data.player)
         if data.mode == "training":
             data.player = data.mainBoard.turn
+        elif data.mode == "multiplayer":
+            sendMessage(data.mainBoard.board)
     else:
         data.mainBoard.mouseClick(event.x, event.y, data.player)
 
@@ -148,10 +168,10 @@ def initialize(canvas, data):
 
 def drawImages(canvas, data):
     for key in canvas.shapes:
-        im = Image.open(canvas.shapes[key])
+        im = PIL.Image.open(canvas.shapes[key])
         im = im.resize((data.width//5-2*data.mainBoard.margin, data.height//5-2*data.mainBoard.margin), 
-                        Image.ANTIALIAS)
-        ph = ImageTk.PhotoImage(im)
+                        PIL.Image.ANTIALIAS)
+        ph = PIL.ImageTk.PhotoImage(im)
         label = Label(canvas, image=ph)
         label.image=ph  #need to keep the reference of your image to avoid garbage collection
         canvas.create_image(int(key[1]*data.mainBoard.cellWidth+data.mainBoard.cellWidth*(19/20)), 
@@ -160,12 +180,9 @@ def drawImages(canvas, data):
 
 def mousePressed(event, data):
     if data.mode != "beginning":
-        if data.mode == "multiplayer":
-            multiplayerMouse(event, data)
-        else:
-            moveWithMouse(event, data)
-    else:
-        gameMode(event, data)
+        moveWithMouse(event, data)
+    gameMode(event, data)
+
 
 
 def keyPressed(event, data):

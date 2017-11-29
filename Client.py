@@ -33,22 +33,28 @@ def handleServerMsg(server, serverMsg):
 # Barebones timer, mouse, and keyboard events
 
 from tkinter import *
-from FinalProject import *
 import random
 ####################################
 # customize these functions
 ####################################
 
 def multiplayerInit(data):
-    data.me = ["White", data.mainBoard.board]
-    data.otherStrangers = dict()
+  data.me = ["White", data.mainBoard.board]
+  data.otherStrangers = dict()
 
-def multiplayerMouse(event, data):
+def sendMessage(board):
+  msg = "playerMoved %s \n" % str(board)
+  if (msg != ""):
+    print ("sending: ", msg,)
+# data.server.send(msg.encode())
+    server.send(msg.encode())
+
+'''def multiplayerMouse(event, data):
     moveWithMouse(event, data)
     msg = "playerMoved %l \n" % data.mainBoard.board
     if (msg != ""):
       print ("sending: ", msg,)
-      data.server.send(msg.encode())
+      data.server.send(msg.encode())'''
 
 def keyPressed(event, data):
     pass
@@ -78,19 +84,3 @@ def clientTimerFired(data):
       except:
         print("failed")
       serverMsg.task_done()
-
-def multiplayerScreen(canvas, data):
-    canvas.create_rectangle(0, 0, data.width, data.height,
-                            fill='white', width=0)
-    data.mainBoard.drawBoard(canvas)
-    canvas.create_text(15, 15, 
-                       text = "Back",
-                       font = "courier "+str(int(data.width/25)))
-    if data.mainBoard.clicked:
-        canvas.create_rectangle(data.mainBoard.margin+data.mainBoard.colClick*data.mainBoard.cellWidth,
-                                data.mainBoard.margin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
-                                data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellWidth,
-                                data.mainBoard.margin+(data.mainBoard.rowClick+1)*data.mainBoard.cellHeight,
-                                fill = "yellow")
-    initialize(canvas, data)
-    drawImages(canvas, data)

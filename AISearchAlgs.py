@@ -35,7 +35,11 @@ def minimaxSearch(board, AIcolor):
             if score > bestScore:
                 bestMove = [key, move]
                 bestScore = score
-    return bestMove
+    board[bestMove[1][0]][bestMove[1][1]] = bestMove[0]
+    board[bestMove[0].posRow][bestMove[0].posCol] = None
+    board[bestMove[1][0]][bestMove[1][1]].posRow = bestMove[1][0]
+    board[bestMove[1][0]][bestMove[1][1]].posCol = bestMove[1][1]
+    return board
 
 
 def minPart(gameBoard, level, color):

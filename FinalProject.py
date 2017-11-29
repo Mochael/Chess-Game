@@ -17,6 +17,7 @@ from Client import *
 import socket
 import threading
 from queue import Queue
+import AISearchAlgs as AI
 
 def startScreen(canvas, data):
     canvas.create_text(data.width/2, data.height/4,
@@ -138,7 +139,11 @@ def moveWithMouse(event, data):
         if data.mode == "training":
             data.player = data.mainBoard.turn
         elif data.mode == "multiplayer":
-            sendMessage(data.mainBoard.board)
+            sendMessage(data)
+        elif data.mode == "competitive":
+            newBoard = AI.minimaxSearch(data.mainBoard.board, "Black")
+            data.mainBoard.board = newBoard
+            data.mainBoard.turn = "White"
     else:
         data.mainBoard.mouseClick(event.x, event.y, data.player)
 
@@ -161,7 +166,7 @@ def init(data):
     data.mainBoard = CB.Board(data.width, data.height)
     data.mainBoard.makeBoard()
     data.player = "White"
-    data.moved = False
+    
 
 def initialize(canvas, data):
     canvas.shapes = data.mainBoard.drawings

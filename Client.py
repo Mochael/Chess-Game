@@ -42,12 +42,12 @@ def multiplayerInit(data):
   data.me = ["White", data.mainBoard.board]
   data.otherStrangers = dict()
 
-def sendMessage(board):
-  msg = "playerMoved %s \n" % str(board)
+def sendMessage(data):
+  msg = "playerMoved %s \n" % str(data.mainBoard.board)
   if (msg != ""):
     print ("sending: ", msg,)
 # data.server.send(msg.encode())
-    server.send(msg.encode())
+    data.server.send(msg.encode())
 
 '''def multiplayerMouse(event, data):
     moveWithMouse(event, data)
@@ -61,8 +61,9 @@ def keyPressed(event, data):
 
 def clientTimerFired(data):
     # timerFired receives instructions and executes them
-    while (serverMsg.qsize() > 0):
-      msg = serverMsg.get(False)
+    while (data.serverMsg.qsize() > 0):
+      msg = data.serverMsg.get(False)
+      print("MESSAGE", msg)
       try:
         print("received: ", msg, "\n")
         msg = msg.split()
@@ -83,4 +84,4 @@ def clientTimerFired(data):
 
       except:
         print("failed")
-      serverMsg.task_done()
+      data.serverMsg.task_done()

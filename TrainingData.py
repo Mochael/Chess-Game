@@ -121,6 +121,7 @@ with open("/Users/michaelkronovet/Desktop/15-112/AdamsOK.pgn") as f:
             evaluated = handler.info["score"][1].cp
             
 #            print('evaluation value: ', handler.info["score"][1].cp/100.0)
+# makes this 
             if board.turn == True:
                 evaluated *= -1
             L = [inputsL, evaluated/500]

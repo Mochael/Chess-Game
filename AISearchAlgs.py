@@ -1,6 +1,7 @@
 import copy
 from BackEndChess import *
 from ChessBoard import *
+import random
 # Minimax
 
 # Makes dictionary of all moves where each object has its own list of moves.
@@ -14,6 +15,7 @@ def getAllMoves(board, AIcolor):
                 else:
                     board[row][col].getMoves(board)
                     allMoves[board[row][col]] = board[row][col].moves
+    
     return allMoves
 
 def minimaxSearch(board, AIcolor):
@@ -27,11 +29,11 @@ def minimaxSearch(board, AIcolor):
             tempB[objCopy.posRow][objCopy.posCol] = None
             objCopy.posRow = move[0]
             objCopy.posCol = move[1]
+            newT = copy.deepcopy(tempB)
+            if isCheck(newT, "Black"):
+                continue
             # Evaulate would be the neural network evaluation function
-            if AIcolor == "White":
-                score = minPart(tempB, 0, "Black")
-            else:
-                score = minPart(tempB, 0, "White")
+            score = minPart(tempB, 0, "White")
             if score > bestScore:
                 bestMove = [key, move]
                 bestScore = score
@@ -41,9 +43,11 @@ def minimaxSearch(board, AIcolor):
     board[bestMove[1][0]][bestMove[1][1]].posCol = bestMove[1][1]
     return board
 
+def evaluate(board):
+    return random.uniform(0,1)
 
 def minPart(gameBoard, level, color):
-    if level == 2:
+    if level == 1:
         return evaluate(gameBoard)
     bestScore = float("inf")
     newMoves = getAllMoves(gameBoard, color)
@@ -55,17 +59,17 @@ def minPart(gameBoard, level, color):
             tempB[objCopy.posRow][objCopy.posCol] = None
             objCopy.posRow = move[0]
             objCopy.posCol = move[1]
-            if color == "White":
-                score = maxPart(tempB, 0, "Black")
-            else:
-                score = maxPart(tempB, 0, "White")
+            newT = copy.deepcopy(tempB)
+            if isCheck(newT, "White"):
+                continue
+            score = maxPart(tempB, level+1, "Black")
             if score < bestScore:
                 bestMove = move
                 bestScore = score
     return bestScore
 
 def maxPart(gameBoard, level, color):
-    if level == 2:
+    if level == 1:
         return evaluate(gameBoard)
     bestScore = float("-inf")
     newMoves = getAllMoves(gameBoard, color)
@@ -77,10 +81,10 @@ def maxPart(gameBoard, level, color):
             tempB[objCopy.posRow][objCopy.posCol] = None
             objCopy.posRow = move[0]
             objCopy.posCol = move[1]
-            if color == "White":
-                score = minPart(tempB, 0, "Black")
-            else:
-                score = minPart(tempB, 0, "White")
+            newT = copy.deepcopy(tempB)
+            if isCheck(newT, "Black"):
+                continue
+            score = minPart(tempB, level+1, "White")
             if score > bestScore:
                 bestMove = move
                 bestScore = score

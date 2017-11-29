@@ -131,6 +131,7 @@ class Board(object):
                 tempB[rowMove][colMove].posRow = rowMove
                 tempB[rowMove][colMove].posCol = colMove
                 tempB[self.rowClick][self.colClick] = None
+                print(self.turn)
                 if not isCheck(tempB, self.turn):
                     self.makingMoves(rowMove, colMove, player)
         self.clicked = False

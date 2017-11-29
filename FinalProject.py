@@ -10,7 +10,6 @@
 from tkinter import *
 import PIL.Image
 import PIL.ImageTk
-#from PIL import Image, ImageTk
 import ChessBoard as CB
 import BackEndChess as BackEnd
 from Client import *
@@ -100,6 +99,7 @@ def competitiveScreen(canvas, data):
 def multiplayerScreen(canvas, data):
     canvas.create_rectangle(0, 0, data.width, data.height,
                             fill='white', width=0)
+#    data.me.board.drawBoard(canvas)
     data.mainBoard.drawBoard(canvas)
     canvas.create_text(15, 15, 
                        text = "Back",
@@ -131,26 +131,34 @@ def gameMode(event, data):
         if data.x4-data.r <= event.x <= data.x4+data.r:
             if data.y4-data.r <= event.y <= data.y4+data.r:
                 data.mode = "multiplayer"
-                multiplayerInit(data)
+#                multiplayerInit(data)
 
 def moveWithMouse(event, data):
     if data.mainBoard.clicked:
-        data.mainBoard.moveClick(event.x, event.y, data.player)
-        if data.mode == "training":
-            data.player = data.mainBoard.turn
-        elif data.mode == "multiplayer":
+        if data.mode == "multiplayer":
+            data.mainBoard.moveClick(event.x, event.y, data.me.ID)
             sendMessage(data)
-        elif data.mode == "competitive":
-            newBoard = AI.minimaxSearch(data.mainBoard.board, "Black")
-            data.mainBoard.board = newBoard
-            data.mainBoard.turn = "White"
+        else:
+            data.mainBoard.moveClick(event.x, event.y, data.player)
+            if data.mode == "training":
+                data.player = data.mainBoard.turn
+            elif data.mode == "competitive":
+                data.timerFiredCount = 0
     else:
-        data.mainBoard.mouseClick(event.x, event.y, data.player)
+        if data.mode == "multiplayer":
+            print(data.me.ID)
+            data.mainBoard.mouseClick(event.x, event.y, data.me.ID)
+        else:
+            data.mainBoard.mouseClick(event.x, event.y, data.player)
 
 
 ####################################
 # customize these functions
 ####################################
+class Person(object):
+    def __init__(self, board, ID = None):
+        self.board = board
+        self.ID = ID
 
 def init(data):
     data.mode = "beginning"
@@ -166,6 +174,10 @@ def init(data):
     data.mainBoard = CB.Board(data.width, data.height)
     data.mainBoard.makeBoard()
     data.player = "White"
+    data.timerFiredCount = 0
+    data.me = Person(data.mainBoard)
+    data.other = Person(data.mainBoard)
+
     
 
 def initialize(canvas, data):
@@ -194,8 +206,13 @@ def keyPressed(event, data):
     pass
 
 def timerFired(data):
+    data.timerFiredCount += 1
     if data.mode == "multiplayer":
         clientTimerFired(data)
+    elif data.mode == "competitive" and data.mainBoard.turn == "Black" and data.timerFiredCount == 2:
+        newBoard = AI.minimaxSearch(data.mainBoard.board, "Black")
+        data.mainBoard.board = newBoard
+        data.mainBoard.turn = "White"
 
 def redrawAll(canvas, data):
     if data.mode == "beginning":
@@ -245,7 +262,7 @@ def run(width=300, height=300, serverMsg = None, server = None):
     data.serverMsg = serverMsg
     data.width = width
     data.height = height
-    data.timerDelay = 10000 # milliseconds
+    data.timerDelay = 500 # milliseconds
     init(data)
     # create the root and the canvas
     root = Tk()

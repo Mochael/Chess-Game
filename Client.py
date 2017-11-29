@@ -6,7 +6,6 @@
 
 import socket
 import threading
-import ast
 from queue import Queue
 from FinalProject import *
 
@@ -38,12 +37,12 @@ import random
 # customize these functions
 ####################################
 
-def multiplayerInit(data):
-  data.me = ["White", data.mainBoard.board]
-  data.otherStrangers = dict()
+#def multiplayerInit(data):
+#  data.me = ["White", data.mainBoard.board]
+#  data.otherStrangers = dict()
 
 def sendMessage(data):
-  msg = "playerMoved %s \n" % str(data.mainBoard.board)
+  msg = "playerMoved %s \n" %str(data.mainBoard.board)
   if (msg != ""):
     print ("sending: ", msg,)
 # data.server.send(msg.encode())
@@ -66,21 +65,21 @@ def clientTimerFired(data):
       print("MESSAGE", msg)
       try:
         print("received: ", msg, "\n")
-        msg = msg.split()
-        command = msg[0]
+        msgL = msg.split()
+        command = msgL[0]
 
         if (command == "myIDis"):
-          myPID = msg[1]
-          data.me.changePID(myPID)
+          data.me.ID = msgL[1]
+          print(msgL[1])
 
         elif (command == "newPlayer"):
-          newPID = msg[1]
-          data.otherStrangers[newPID] = ["Black", data.mainBoard]
+          data.other.ID = msgL[1]
+          print(msgL[1])
 
         elif (command == "playerMoved"):
-          PID = msg[1]
-          board = ast.literal_eval(msg[2])
-          data.otherStrangers[PID].board = board
+          data.me.board.board = 
+          print("WOOOSNISNCEFE")
+          print(data.me.board.board)
 
       except:
         print("failed")

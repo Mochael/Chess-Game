@@ -42,10 +42,9 @@ import random
 #  data.otherStrangers = dict()
 
 def sendMessage(data):
-  msg = "playerMoved %s \n" %str(data.mainBoard.board)
+  msg = "playerMoved %d %d %d %d %s \n" %(data.origRow, data.origCol, data.newRow, data.newCol, data.mainBoard.turn)
   if (msg != ""):
     print ("sending: ", msg,)
-# data.server.send(msg.encode())
     data.server.send(msg.encode())
 
 '''def multiplayerMouse(event, data):
@@ -77,9 +76,21 @@ def clientTimerFired(data):
           print(msgL[1])
 
         elif (command == "playerMoved"):
-          data.me.board.board = 
-          print("WOOOSNISNCEFE")
-          print(data.me.board.board)
+          oldRow = int(msgL[2])
+          oldCol = int(msgL[3])
+          newRow = int(msgL[4])
+          newCol = int(msgL[5])
+          data.mainBoard.turn = msgL[6]
+          data.mainBoard.board[newRow][newCol] = data.mainBoard.board[oldRow][oldCol]
+          data.mainBoard.board[newRow][newCol].posRow = newRow
+          data.mainBoard.board[newRow][newCol].posCol = newCol
+          data.mainBoard.board[oldRow][oldCol] = None
+
+
+
+#          print(ast.literal_eval(s))
+#          board = ast.literal_eval(s)
+#          data.other.board.board = data.mainBoard
 
       except:
         print("failed")

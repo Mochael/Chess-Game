@@ -136,8 +136,10 @@ def gameMode(event, data):
 def moveWithMouse(event, data):
     if data.mainBoard.clicked:
         if data.mode == "multiplayer":
-            data.mainBoard.moveClick(event.x, event.y, data.me.ID)
-            sendMessage(data)
+            data.mainBoard.moveClick(event.x, event.y, data.me.ID, data)
+            if data.moved:
+                sendMessage(data)
+                data.moved = False
         else:
             data.mainBoard.moveClick(event.x, event.y, data.player)
             if data.mode == "training":
@@ -177,8 +179,11 @@ def init(data):
     data.timerFiredCount = 0
     data.me = Person(data.mainBoard)
     data.other = Person(data.mainBoard)
-
-    
+    data.origRow = None
+    data.origCol = None
+    data.newRow = None
+    data.newCol = None
+    data.moved = False
 
 def initialize(canvas, data):
     canvas.shapes = data.mainBoard.drawings
@@ -199,7 +204,6 @@ def mousePressed(event, data):
     if data.mode != "beginning":
         moveWithMouse(event, data)
     gameMode(event, data)
-
 
 
 def keyPressed(event, data):

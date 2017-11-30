@@ -101,7 +101,7 @@ class Board(object):
                     print(self.board[self.rowClick][self.colClick].moves)
 
 # Run moveClick before mouseClick and only run if self.clicked = True.
-    def moveClick(self, eventX, eventY, player):
+    def moveClick(self, eventX, eventY, player, data):
         rowMove = int((eventY-self.margin)/((self.height-2*self.margin)/8))
         colMove = int((eventX-self.margin)/((self.width-2*self.margin)/8))
         if self.board[rowMove][colMove] == None or self.board[rowMove][colMove].color != player:
@@ -114,7 +114,8 @@ class Board(object):
                     tempB[rowMove][colMove].posCol = colMove
                     tempB[self.rowClick][self.colClick] = None
                     if not isCheck(tempB, self.turn):
-                        self.makingMoves(rowMove, colMove, player, True)
+                        self.makingMoves(rowMove, colMove, player, data, True)
+                        data.moved = True
             elif (player == "Black" and self.okCastleBlack and self.board[0][5] == None and 
             self.rowClick == 0 and self.colClick == 4 and rowMove == 0 and colMove == 6):
                 tempB = copy.deepcopy(self.board)
@@ -124,7 +125,8 @@ class Board(object):
                     tempB[rowMove][colMove].posCol = colMove
                     tempB[self.rowClick][self.colClick] = None
                     if not isCheck(tempB, self.turn):
-                        self.makingMoves(rowMove, colMove, player, True)
+                        self.makingMoves(rowMove, colMove, player, data, True)
+                        data.moved = True
             elif [rowMove, colMove] in self.board[self.rowClick][self.colClick].moves:
                 tempB = copy.deepcopy(self.board)
                 tempB[rowMove][colMove] = tempB[self.rowClick][self.colClick]
@@ -133,12 +135,17 @@ class Board(object):
                 tempB[self.rowClick][self.colClick] = None
                 print(self.turn)
                 if not isCheck(tempB, self.turn):
-                    self.makingMoves(rowMove, colMove, player)
+                    self.makingMoves(rowMove, colMove, player, data)
+                    data.moved = True
         self.clicked = False
         self.rowClick = None
         self.colClick = None
 
-    def makingMoves(self, rowMove, colMove, player, castling = False):
+    def makingMoves(self, rowMove, colMove, player, data, castling = False):
+        data.origRow = self.rowClick
+        data.origCol = self.colClick
+        data.newRow = rowMove
+        data.newCol = colMove
         if player == "White":
             if (self.rowClick == 7 and self.colClick == 7) or (self.rowClick == 7 and self.colClick == 4):
                 self.okCastleWhite = False

@@ -58,6 +58,14 @@ class Net(object):
     def backProp(self, targetVals):
         outputLayer = self.layers[-1]
         self.error = 0.0
+        target = targetVals[0]
+#        for l in range(len(self.layers)-1, 0, -1):
+#            prevErrors = []
+#            for n in range(len(self.layers[l])-1):
+#                print("ELLLLLLL", l)
+#                prevErrors.append(self.layers[l][n].getNeuronError(target, prevErrors))
+#            for i in range(len(self.layers[l])-1):
+#                self.layers[l][i].updateInputWeights(self.layers[l-1])
         for i in range(len(outputLayer)-1):
             delta = (targetVals[i]-outputLayer[i].getOutputVal())
             self.error += delta**2
@@ -86,7 +94,6 @@ class Net(object):
             for n in range(len(self.layers[layerNum])-1):
                 self.layers[layerNum][n].feedForward(prevLayer)
 
-
 ##### Neuron Functions #####
 
 class Neuron(object):
@@ -106,10 +113,21 @@ class Neuron(object):
     def getOutputVal(self):
         return self.outputVal
 
+#    def getNeuronError(self, target, prevErrors):
+#        if self.outputWeights == []:
+#            self.error = target-self.outputVal
+#            print("THIS PART WORKS")
+#        else:
+#            print("OUTPUT WEIGHTS", self.outputWeights)
+#            print("PREVIOUS ERRORS", prevErrors)
+#            self.error = sum([self.outputWeights[weight]*prevErrors[weight] for weight in range(len(self.outputWeights))])
+#        return self.error
+
     def updateInputWeights(self, prevL):
         for i in range(len(prevL)):
             oldDeltaWeight = prevL[i].outputWeights[self.myIndex][1]
             newDeltaWeight = Neuron.eta*prevL[i].getOutputVal()*self.gradient+Neuron.alpha*oldDeltaWeight
+#            newDeltaWeight = Neuron.eta*self.getOutputVal()*(1-self.getOutputVal())*prevL[i].getOutputVal()*self.error
             prevL[i].outputWeights[self.myIndex][1] = newDeltaWeight
             prevL[i].outputWeights[self.myIndex][0] += newDeltaWeight
 
@@ -121,24 +139,26 @@ class Neuron(object):
     
     def calcHiddenGradients(self, nextLayer):
         dow = self.sumDOW(nextLayer)
-        self.gradient = dow*self.transferFunctionDerivative(self.outputVal)
+        self.gradient = dow*self.outputVal
+#        self.gradient = dow*self.transferFunctionDerivative(self.outputVal)
         
     def calcOutputGradients(self, targetVal):
         delta = targetVal-self.outputVal
-        self.gradient = delta*self.transferFunctionDerivative(self.outputVal)
+        self.gradient = delta
+#        self.gradient = delta*self.transferFunctionDerivative(self.outputVal)
 
     @staticmethod
     def transferFunction(x):
         return math.tanh(x)
 
-    @staticmethod
-    def transferFunctionDerivative(x):
-        return 1.0-x*x
+#    @staticmethod
+#    def transferFunctionDerivative(x):
+#        return 1.0-x*x
 
     def feedForward(self, prevLayer):
         sum = 0.0
         for i in range(len(prevLayer)):
-            print("THIS IS WHY I CARE", prevLayer[i].getOutputVal())
+#            print("THIS IS WHY I CARE", prevLayer[i].getOutputVal())
             sum += prevLayer[i].getOutputVal()*prevLayer[i].outputWeights[self.myIndex][0]
         self.outputVal = self.transferFunction(sum)
 

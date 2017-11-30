@@ -52,28 +52,29 @@ print(infile)'''
 
 
 #Read pgn file:
+topology = [64, 44, 18, 1]
 #topology = [64, 58, 1]
-#evalNet = NeuralNet.Net(topology)
-network = Network()
-inputNodes = [InputNode(i) for i in range(3)]
-hiddenNodes = [Node() for i in range(3)]
-outputNode = Node()
+evalNet = NeuralNet.Net(topology)
+#network = Network()
+#inputNodes = [InputNode(i) for i in range(3)]
+#hiddenNodes = [Node() for i in range(3)]
+#outputNode = Node()
 
 # weights are all randomized
-for inputNode in inputNodes:
-    for node in hiddenNodes:
-        Edge(inputNode, node)
+#for inputNode in inputNodes:
+#    for node in hiddenNodes:
+#        Edge(inputNode, node)
 
-for node in hiddenNodes:
-    Edge(node, outputNode)
+#for node in hiddenNodes:
+#    Edge(node, outputNode)
 
-network.outputNode = outputNode
-network.inputNodes.extend(inputNodes)
+#network.outputNode = outputNode
+#network.inputNodes.extend(inputNodes)
 
 
 with open("/Users/michaelkronovet/Desktop/15-112/AdamsOK.pgn") as f:
     count = 0 
-    for i in range(4):
+    for i in range(2):
         game = chess.pgn.read_game(f)
         while not game.is_end():
             count+= 1
@@ -101,9 +102,9 @@ with open("/Users/michaelkronovet/Desktop/15-112/AdamsOK.pgn") as f:
                     inputsL.append(0)
 #            print("Inputs: ", inputsL)
             
-#            evalNet.feedForward(inputsL)
-#            resultVals = evalNet.getResults()
-#            print("Outputs: ", resultVals)
+            evalNet.feedForward(inputsL)
+            resultVals = evalNet.getResults()
+            print("Outputs: ", resultVals)
             
 # Pawn=1,Knight=2,Bishop=3,Rook=4,Queen=5,King=6
             handler = chess.uci.InfoHandler()
@@ -124,13 +125,15 @@ with open("/Users/michaelkronovet/Desktop/15-112/AdamsOK.pgn") as f:
 # makes this 
             if board.turn == True:
                 evaluated *= -1
-            L = [inputsL, evaluated/500]
-            print("TARGET", evaluated/500)
-            network.train(L, maxIterations=1)
+#            L = [inputsL, evaluated/1000]
+            print("TARGET", evaluated)
+            evalNet.backProp([evaluated/1000])
+
+#            network.train(L, maxIterations=1)
 #            print("target value: ", evaluated/3000)
 #            print(evalNet.layers[-1][0].getOutputVal())
     #        print('best move: ', board.san(evaluation[0]))
-#            evalNet.backProp([evaluated/3000])
+
             # Do this for if a move has no value or something. Maybe this error won't come up when checking moves.
             # This value is relative to who is making the move. negative means current player is losing pos means current player is winning.
 #            print("Average error: ", evalNet.getRecentAverageError())

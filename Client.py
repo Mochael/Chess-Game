@@ -9,7 +9,7 @@ import threading
 from queue import Queue
 from FinalProject import *
 
-HOST = "128.237.134.162" # put your IP address here if playing on multiple computers
+HOST = "128.237.201.8" # put your IP address here if playing on multiple computers
 PORT = 50003
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.connect((HOST,PORT))
@@ -41,18 +41,17 @@ import random
 #  data.me = ["White", data.mainBoard.board]
 #  data.otherStrangers = dict()
 
-def sendMessage(data):
+def sendMoveMessage(data):
   msg = "playerMoved %d %d %d %d %s \n" %(data.origRow, data.origCol, data.newRow, data.newCol, data.mainBoard.turn)
   if (msg != ""):
     print ("sending: ", msg,)
     data.server.send(msg.encode())
 
-'''def multiplayerMouse(event, data):
-    moveWithMouse(event, data)
-    msg = "playerMoved %l \n" % data.mainBoard.board
-    if (msg != ""):
-      print ("sending: ", msg,)
-      data.server.send(msg.encode())'''
+def sendCheckMate(data):
+  msg = "checkMate %s \n" %(data.checkMate)
+  if (msg != ""):
+    print ("sending: ", msg,)
+    data.server.send(msg.encode())
 
 def keyPressed(event, data):
     pass
@@ -85,6 +84,9 @@ def clientTimerFired(data):
           data.mainBoard.board[newRow][newCol].posRow = newRow
           data.mainBoard.board[newRow][newCol].posCol = newCol
           data.mainBoard.board[oldRow][oldCol] = None
+
+        elif (command == "checkMate"):
+          data.checkMate = msgL[2]
 
 
 

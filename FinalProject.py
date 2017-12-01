@@ -175,23 +175,26 @@ def gameMode(event, data):
 #                multiplayerInit(data)
 
 def moveWithMouse(event, data):
-    if data.mainBoard.clicked:
-        if data.mode == "multiplayer":
-            data.mainBoard.moveClick(event.x, event.y, data.me.ID, data)
-            if data.moved:
-                sendMessage(data)
-                data.moved = False
+    if data.checkMate == None:
+        if data.mainBoard.clicked:
+            if data.mode == "multiplayer":
+                data.mainBoard.moveClick(event.x, event.y, data.me.ID, data)
+                if data.moved:
+                    sendMoveMessage(data)
+                    if data.checkMate != None:
+                        sendCheckMate(data)
+                    data.moved = False
+            else:
+                data.mainBoard.moveClick(event.x, event.y, data.player, data)
+                if data.mode == "training":
+                    data.player = data.mainBoard.turn
+                elif data.mode == "competitive":
+                    data.timerFiredCount = 0
         else:
-            data.mainBoard.moveClick(event.x, event.y, data.player, data)
-            if data.mode == "training":
-                data.player = data.mainBoard.turn
-            elif data.mode == "competitive":
-                data.timerFiredCount = 0
-    else:
-        if data.mode == "multiplayer":
-            data.mainBoard.mouseClick(event.x, event.y, data.me.ID)
-        else:
-            data.mainBoard.mouseClick(event.x, event.y, data.player)
+            if data.mode == "multiplayer":
+                data.mainBoard.mouseClick(event.x, event.y, data.me.ID)
+            else:
+                data.mainBoard.mouseClick(event.x, event.y, data.player)
 
 
 ####################################
@@ -226,6 +229,7 @@ def init(data):
     data.newCol = None
     data.moved = False
     data.hover = None
+    data.checkMate = None
 
 def initialize(canvas, data):
     canvas.shapes = data.mainBoard.drawings
@@ -252,6 +256,8 @@ def keyPressed(event, data):
     pass
 
 def timerFired(data):
+    if data.mode != "beginning":
+        data.mainBoard.convertPawns()
     data.timerFiredCount += 1
     if data.mode == "multiplayer":
         clientTimerFired(data)
@@ -263,18 +269,30 @@ def timerFired(data):
 def redrawAll(canvas, data):
     if data.mode == "beginning":
         startScreen(canvas, data)
-
     if data.mode == "tutorial":
         tutorialScreen(canvas, data)
-
     if data.mode == "training":
         trainingScreen(canvas, data)
-
     if data.mode == "competitive":
         competitiveScreen(canvas, data)
-
     if data.mode == "multiplayer":
         multiplayerScreen(canvas, data)
+    if data.checkMate == "Black":
+        canvas.create_rectangle(5*data.margin, data.height//2-3*data.margin, 
+        data.width-5*data.margin, data.height//2+3*data.margin,
+        fill = "Grey")
+        canvas.create_text(data.width//2, data.height//2.1, text = "Game Over",
+        fill = "tan", font = "fixedsys 20 bold")
+        canvas.create_text(data.width//2, data.height//1.9, text = "White Wins",
+        fill = "white", font = "fixedsys 20 bold")
+    elif data.checkMate == "White":
+        canvas.create_rectangle(5*data.margin, data.height//2-3*data.margin, 
+        data.width-5*data.margin, data.height//2+3*data.margin,
+        fill = "Grey")
+        canvas.create_text(data.width//2, data.height//2.1, text = "Game Over",
+        fill = "tan", font = "fixedsys 20 bold")
+        canvas.create_text(data.width//2, data.height//1.9, text = "Black Wins",
+        fill = "black", font = "fixedsys 20 bold")
 
 def motion(event, data):
     if data.mode == "beginning":
@@ -342,8 +360,9 @@ def run(width=300, height=300, serverMsg = None, server = None):
                             mousePressedWrapper(event, canvas, data))
     root.bind("<Key>", lambda event:
                             keyPressedWrapper(event, canvas, data))
-    root.bind('<Motion>', lambda event:
-                            motionWrapper(event, canvas, data))
+    if data.mode == "beginning":
+        root.bind('<Motion>', lambda event:
+                                motionWrapper(event, canvas, data))
     timerFiredWrapper(canvas, data)
     # and launch the app
     root.mainloop()  # blocks until window is closed

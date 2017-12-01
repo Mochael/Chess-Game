@@ -185,7 +185,14 @@ class Board(object):
             self.turn = "White"
         newTempB = copy.deepcopy(self.board)
         if isCheck(newTempB, self.turn) and isCheckMate(newTempB, self.turn):
-            print("CHECKMATE")
-#        else:
-#            if isCheckMate(newTempB, self.turn):
-#                print("STALEMATE")
+            data.checkMate = self.turn
+        
+    def convertPawns(self):
+        for row in range(0, 8, 7):
+            for col in range(len(self.board[0])):
+                if row == 0:
+                    if isinstance(self.board[row][col], Pawn) and self.board[row][col].color == "White":
+                        self.board[row][col] = Queen("White", row, col)
+                else:
+                    if isinstance(self.board[row][col], Pawn) and self.board[row][col].color == "Black":
+                        self.board[row][col] = Queen("Black", row, col)

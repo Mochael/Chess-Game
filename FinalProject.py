@@ -52,38 +52,87 @@ def startScreen(canvas, data):
                         font = "fixedsys "+str(int(data.width/30)), fill = "White", 
                         )
 # Modes for player to select.
-    canvas.create_text(data.x1, data.y1,
+    canvas.create_text(data.x1, data.y,
                         text = "tutorial", 
                         font = "fixedsys "+str(int(data.width/44)),
                         fill = "black")
-    canvas.create_text(data.x2, data.y2,
+    canvas.create_text(data.x2, data.y,
                         text = "training", 
                         font = "fixedsys "+str(int(data.width/44)),
                         fill = "black")
-    canvas.create_text(data.x3, data.y3,
+    canvas.create_text(data.x3, data.y,
                         text = "competitive", 
                         font = "fixedsys "+str(int(data.width/44)),
                         fill = "black")
-    canvas.create_text(data.x4, data.y4,
+    canvas.create_text(data.x4, data.y,
                         text = "multiplayer", 
                         font = "fixedsys "+str(int(data.width/44)),
                         fill = "black")
 
 def tutorialScreen(canvas, data):
-    canvas.create_rectangle(0, 0, data.width, data.height,
-                            fill='white', width=0)
+    anImage = PIL.Image.open("/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/coolchesspicture.jpg")
+    anImage = anImage.resize((int(data.width*1.5), int(data.height*1.1)), PIL.Image.ANTIALIAS)
+    aPhoto = PIL.ImageTk.PhotoImage(anImage)
+    aLabel = Label(image=aPhoto)
+    aLabel.image = aPhoto
+    canvas.create_image(data.width/2+data.margin*2, data.height/2,image = aPhoto)
     canvas.create_text(data.width/2, 19, 
                        text = "Tutorial",
                        font = "courier "+str(int(data.width/25))+" underline bold")
     canvas.create_text(45, 15, 
                        text = "Back",
                        font = "courier "+str(int(data.width/25)))
-    canvas.create_text(data.width/2, data.height/2, 
-                       text = "Search the link below to watch the tutorial",
-                       font = "courier "+str(int(data.width/25)))
-    canvas.create_text(data.width/2, data.height*3/4, 
-                       text = "https://www.youtube.com/watch?v=t-uwGvx4V_A",
-                       font = "courier "+str(int(data.width/30)))
+    for col in range(7):
+        if col%2 == 0:
+            canvas.create_rectangle(data.margin+col*int(data.width/7.5), 
+            15*data.margin-10+int(data.height/7),
+            data.margin+(col+1)*int(data.width/7.5), 
+            15*data.margin-10+2*int(data.height/7), 
+            fill = "tan", width = data.height//100)
+        else:
+            canvas.create_rectangle(data.margin+col*int(data.width/7.5), 
+            15*data.margin-10+int(data.height/7),
+            data.margin+(col+1)*int(data.width/7.5), 
+            15*data.margin-10+2*int(data.height/7), 
+            fill = "brown", width = data.height//100)
+        if data.hover != None:
+            canvas.create_rectangle(data.hover[0], data.hover[1], 
+                                    data.hover[2], data.hover[3], fill = "yellow")
+        if data.instructImage != None:
+            instructImage = PIL.Image.open(data.instructImage)
+            instructImage = instructImage.resize((int(data.width/2), int(data.height/8*5)), PIL.Image.ANTIALIAS)
+            instructPhoto = PIL.ImageTk.PhotoImage(instructImage)
+            instructLabel = Label(image=instructPhoto)
+            instructLabel.image = instructPhoto
+            canvas.create_image(data.width/2, data.height/8*3,image = instructPhoto)
+    canvas.create_text(data.x1, data.y,
+                        text = "pawn", 
+                        font = "fixedsys "+str(int(data.width/44)),
+                        fill = "black")
+    canvas.create_text((data.x2+data.x1)/2, data.y,
+                        text = "rook", 
+                        font = "fixedsys "+str(int(data.width/44)),
+                        fill = "black")
+    canvas.create_text(data.x2, data.y,
+                        text = "knight", 
+                        font = "fixedsys "+str(int(data.width/44)),
+                        fill = "black")
+    canvas.create_text((data.x3+data.x2)/2, data.y,
+                        text = "bishop", 
+                        font = "fixedsys "+str(int(data.width/44)),
+                        fill = "black")
+    canvas.create_text(data.x3, data.y,
+                        text = "queen", 
+                        font = "fixedsys "+str(int(data.width/44)),
+                        fill = "black")
+    canvas.create_text((data.x4+data.x3)/2, data.y,
+                        text = "king", 
+                        font = "fixedsys "+str(int(data.width/44)),
+                        fill = "black")
+    canvas.create_text(data.x4, data.y,
+                        text = "castling", 
+                        font = "fixedsys "+str(int(data.width/44)),
+                        fill = "black")
 
 def trainingScreen(canvas, data):
     anImage = PIL.Image.open("/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/coolchesspicture.jpg")
@@ -161,16 +210,16 @@ def gameMode(event, data):
                 init(data)
     else:
         if data.x1-data.r <= event.x <= data.x1+data.r:
-            if data.y1-data.r <= event.y <= data.y1+data.r:
+            if data.y-data.r <= event.y <= data.y+data.r:
                 data.mode = "tutorial"
         if data.x2-data.r <= event.x <= data.x2+data.r:
-            if data.y2-data.r <= event.y <= data.y2+data.r:
+            if data.y-data.r <= event.y <= data.y+data.r:
                 data.mode = "training"
         if data.x3-data.r <= event.x <= data.x3+data.r:
-            if data.y3-data.r <= event.y <= data.y3+data.r:
+            if data.y-data.r <= event.y <= data.y+data.r:
                 data.mode = "competitive"
         if data.x4-data.r <= event.x <= data.x4+data.r:
-            if data.y4-data.r <= event.y <= data.y4+data.r:
+            if data.y-data.r <= event.y <= data.y+data.r:
                 data.mode = "multiplayer"
 #                multiplayerInit(data)
 
@@ -207,14 +256,11 @@ class Person(object):
 
 def init(data):
     data.mode = "beginning"
+    data.y = data.height/4*3.3
     data.x1 = data.width/19*2-6
-    data.y1 = data.height/4*3.3
     data.x2 = data.width/20*7+11
-    data.y2 = data.height/4*3.3
     data.x3 = data.width/20*12.6
-    data.y3 = data.height/4*3.3
     data.x4 = data.width/19*17
-    data.y4 = data.height/4*3.3
     data.r = 50
     data.margin = int(data.width/31)
     data.mainBoard = CB.Board(data.width, data.height)
@@ -230,6 +276,7 @@ def init(data):
     data.moved = False
     data.hover = None
     data.checkMate = None
+    data.instructImage = None
 
 def initialize(canvas, data):
     canvas.shapes = data.mainBoard.drawings
@@ -310,6 +357,38 @@ def motion(event, data):
                 data.hover = [data.margin+6*int(data.width/7.5), 15*data.margin-10+int(data.height/7), data.margin+7*int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
         else:
             data.hover = None
+    elif data.mode == "tutorial":
+        if data.margin <= event.x <= data.margin+int(data.width/7.5):
+            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+                data.hover = [data.margin, 15*data.margin-10+int(data.height/7), data.margin+int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
+                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/PawnInstruct.png"
+        elif data.margin+2*int(data.width/7.5) <= event.x <= data.margin+3*int(data.width/7.5):
+            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+                data.hover = [data.margin+2*int(data.width/7.5), 15*data.margin-10+int(data.height/7), data.margin+3*int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
+                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/HorseInstruct.png"
+        elif data.margin+4*int(data.width/7.5) <= event.x <= data.margin+5*int(data.width/7.5):
+            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+                data.hover = [data.margin+4*int(data.width/7.5), 15*data.margin-10+int(data.height/7), data.margin+5*int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
+                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/QueenInstruct.png"
+        elif data.margin+6*int(data.width/7.5) <= event.x <= data.margin+7*int(data.width/7.5):
+            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+                data.hover = [data.margin+6*int(data.width/7.5), 15*data.margin-10+int(data.height/7), data.margin+7*int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
+                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/CastleInstruct.png"
+        elif data.margin+int(data.width/7.5) <= event.x <= data.margin+2*int(data.width/7.5):
+            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+                data.hover = [data.margin+int(data.width/7.5), 15*data.margin-10+int(data.height/7), data.margin+2*int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
+                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RookInstruct.png"
+        elif data.margin+3*int(data.width/7.5) <= event.x <= data.margin+4*int(data.width/7.5):
+            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+                data.hover = [data.margin+3*int(data.width/7.5), 15*data.margin-10+int(data.height/7), data.margin+4*int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
+                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/BishopInstruct.png"
+        elif data.margin+5*int(data.width/7.5) <= event.x <= data.margin+6*int(data.width/7.5):
+            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+                data.hover = [data.margin+5*int(data.width/7.5), 15*data.margin-10+int(data.height/7), data.margin+6*int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
+                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/KingInstruct.png"
+        else:
+            data.hover = None
+    
 
 ####################################
 # use the run function as-is
@@ -360,7 +439,7 @@ def run(width=300, height=300, serverMsg = None, server = None):
                             mousePressedWrapper(event, canvas, data))
     root.bind("<Key>", lambda event:
                             keyPressedWrapper(event, canvas, data))
-    if data.mode == "beginning":
+    if data.mode == "beginning" or data.mode == "tutorial":
         root.bind('<Motion>', lambda event:
                                 motionWrapper(event, canvas, data))
     timerFiredWrapper(canvas, data)

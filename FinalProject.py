@@ -18,14 +18,15 @@ import threading
 from queue import Queue
 import AISearchAlgs as AI
 import pygame
+import imageio
 
 def startScreen(canvas, data):
-    image = PIL.Image.open("/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/coolchesspicture.jpg")
-    image = image.resize((int(data.width*1.5), int(data.height*1.1)), PIL.Image.ANTIALIAS)
-    photo = PIL.ImageTk.PhotoImage(image)
-    label = Label(image=photo)
-    label.image = photo
-    canvas.create_image(data.width/2+data.margin*2, data.height/2,image = photo)
+    anImage = PIL.Image.open("/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/coolchesspicture.jpg")
+    anImage = anImage.resize((int(data.width*1.5), int(data.height*1.1)), PIL.Image.ANTIALIAS)
+    aPhoto = PIL.ImageTk.PhotoImage(anImage)
+    aLabel = Label(image=aPhoto)
+    aLabel.image = aPhoto
+    canvas.create_image(data.width/2+data.margin*2, data.height/2,image = aPhoto)
     for col in range(7):
         if col%2 == 0:
             canvas.create_rectangle(data.margin+col*int(data.width/7.5), 
@@ -42,8 +43,8 @@ def startScreen(canvas, data):
         if data.hover != None:
             canvas.create_rectangle(data.hover[0], data.hover[1], 
                                     data.hover[2], data.hover[3], fill = "yellow")
-    canvas.create_text(data.width/2, data.height/4,
-                        text = "Welcome to Chess Trainer",
+    canvas.create_text(data.width/2, data.height/5,
+                        text = "Welcome to Intellichess",
                         font = "fixedsys "+str(int(data.width/15))+" bold",
                         fill = "Black")
     canvas.create_text(data.width/2, data.height/2,
@@ -71,7 +72,10 @@ def startScreen(canvas, data):
 def tutorialScreen(canvas, data):
     canvas.create_rectangle(0, 0, data.width, data.height,
                             fill='white', width=0)
-    canvas.create_text(15, 15, 
+    canvas.create_text(data.width/2, 19, 
+                       text = "Tutorial",
+                       font = "courier "+str(int(data.width/25))+" underline bold")
+    canvas.create_text(45, 15, 
                        text = "Back",
                        font = "courier "+str(int(data.width/25)))
     canvas.create_text(data.width/2, data.height/2, 
@@ -80,59 +84,79 @@ def tutorialScreen(canvas, data):
     canvas.create_text(data.width/2, data.height*3/4, 
                        text = "https://www.youtube.com/watch?v=t-uwGvx4V_A",
                        font = "courier "+str(int(data.width/30)))
-    
+
 def trainingScreen(canvas, data):
-    canvas.create_rectangle(0, 0, data.width, data.height,
-                            fill='white', width=0)
+    anImage = PIL.Image.open("/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/coolchesspicture.jpg")
+    anImage = anImage.resize((int(data.width*1.5), int(data.height*1.1)), PIL.Image.ANTIALIAS)
+    aPhoto = PIL.ImageTk.PhotoImage(anImage)
+    aLabel = Label(image=aPhoto)
+    aLabel.image = aPhoto
+    canvas.create_image(data.width/2+data.margin*2, data.height/2,image = aPhoto)
     data.mainBoard.drawBoard(canvas)
-    canvas.create_text(15, 15, 
+    canvas.create_text(data.width/2, 19, 
+                       text = "Training",
+                       font = "courier "+str(int(data.width/25))+" underline bold")
+    canvas.create_text(45, 15, 
                        text = "Back",
                        font = "courier "+str(int(data.width/25)))
     if data.mainBoard.clicked:
-        canvas.create_rectangle(data.mainBoard.margin+data.mainBoard.colClick*data.mainBoard.cellWidth,
-                                data.mainBoard.margin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
-                                data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellWidth,
-                                data.mainBoard.margin+(data.mainBoard.rowClick+1)*data.mainBoard.cellHeight,
+        canvas.create_rectangle(data.mainBoard.horMargin+data.mainBoard.colClick*data.mainBoard.cellWidth,
+                                data.mainBoard.vertMargin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
+                                data.mainBoard.horMargin+(data.mainBoard.colClick+1)*data.mainBoard.cellWidth,
+                                data.mainBoard.vertMargin+(data.mainBoard.rowClick+1)*data.mainBoard.cellHeight,
                                 fill = "yellow")
     initialize(canvas, data)
     drawImages(canvas, data)
 
 def competitiveScreen(canvas, data):
-    canvas.create_rectangle(0, 0, data.width, data.height,
-                            fill='white', width=0)
+    anImage = PIL.Image.open("/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/coolchesspicture.jpg")
+    anImage = anImage.resize((int(data.width*1.5), int(data.height*1.1)), PIL.Image.ANTIALIAS)
+    aPhoto = PIL.ImageTk.PhotoImage(anImage)
+    aLabel = Label(image=aPhoto)
+    aLabel.image = aPhoto
+    canvas.create_image(data.width/2+data.margin*2, data.height/2,image = aPhoto)
     data.mainBoard.drawBoard(canvas)
-    canvas.create_text(15, 15, 
+    canvas.create_text(data.width/2, 19, 
+                       text = "Competitive",
+                       font = "courier "+str(int(data.width/25))+" underline bold")
+    canvas.create_text(45, 15, 
                        text = "Back",
                        font = "courier "+str(int(data.width/25)))
     if data.mainBoard.clicked:
-        canvas.create_rectangle(data.mainBoard.margin+data.mainBoard.colClick*data.mainBoard.cellWidth,
-                                data.mainBoard.margin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
-                                data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellWidth,
-                                data.mainBoard.margin+(data.mainBoard.rowClick+1)*data.mainBoard.cellHeight,
+        canvas.create_rectangle(data.mainBoard.horMargin+data.mainBoard.colClick*data.mainBoard.cellWidth,
+                                data.mainBoard.vertMargin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
+                                data.mainBoard.horMargin+(data.mainBoard.colClick+1)*data.mainBoard.cellWidth,
+                                data.mainBoard.vertMargin+(data.mainBoard.rowClick+1)*data.mainBoard.cellHeight,
                                 fill = "yellow")
     initialize(canvas, data)
     drawImages(canvas, data)
 
 def multiplayerScreen(canvas, data):
-    canvas.create_rectangle(0, 0, data.width, data.height,
-                            fill='white', width=0)
-#    data.me.board.drawBoard(canvas)
+    anImage = PIL.Image.open("/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/coolchesspicture.jpg")
+    anImage = anImage.resize((int(data.width*1.5), int(data.height*1.1)), PIL.Image.ANTIALIAS)
+    aPhoto = PIL.ImageTk.PhotoImage(anImage)
+    aLabel = Label(image=aPhoto)
+    aLabel.image = aPhoto
+    canvas.create_image(data.width/2+data.margin*2, data.height/2,image = aPhoto)
     data.mainBoard.drawBoard(canvas)
-    canvas.create_text(15, 15, 
+    canvas.create_text(data.width/2, 19, 
+                       text = "Multiplayer",
+                       font = "courier "+str(int(data.width/25))+" underline bold")
+    canvas.create_text(45, 15, 
                        text = "Back",
                        font = "courier "+str(int(data.width/25)))
     if data.mainBoard.clicked:
-        canvas.create_rectangle(data.mainBoard.margin+data.mainBoard.colClick*data.mainBoard.cellWidth,
-                                data.mainBoard.margin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
-                                data.mainBoard.margin+(data.mainBoard.colClick+1)*data.mainBoard.cellWidth,
-                                data.mainBoard.margin+(data.mainBoard.rowClick+1)*data.mainBoard.cellHeight,
+        canvas.create_rectangle(data.mainBoard.horMargin+data.mainBoard.colClick*data.mainBoard.cellWidth,
+                                data.mainBoard.vertMargin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
+                                data.mainBoard.horMargin+(data.mainBoard.colClick+1)*data.mainBoard.cellWidth,
+                                data.mainBoard.vertMargin+(data.mainBoard.rowClick+1)*data.mainBoard.cellHeight,
                                 fill = "yellow")
     initialize(canvas, data)
     drawImages(canvas, data)
 
 def gameMode(event, data):
     if data.mode != "beginning":
-        if 0 <= event.x <= 30:
+        if 0 <= event.x <= 85:
             if 0 <= event.y <= 30:
                 init(data)
     else:
@@ -165,7 +189,6 @@ def moveWithMouse(event, data):
                 data.timerFiredCount = 0
     else:
         if data.mode == "multiplayer":
-            print(data.me.ID)
             data.mainBoard.mouseClick(event.x, event.y, data.me.ID)
         else:
             data.mainBoard.mouseClick(event.x, event.y, data.player)
@@ -182,13 +205,13 @@ class Person(object):
 def init(data):
     data.mode = "beginning"
     data.x1 = data.width/19*2-6
-    data.y1 = data.height/4*3.31
+    data.y1 = data.height/4*3.3
     data.x2 = data.width/20*7+11
-    data.y2 = data.height/4*3.31
+    data.y2 = data.height/4*3.3
     data.x3 = data.width/20*12.6
-    data.y3 = data.height/4*3.31
+    data.y3 = data.height/4*3.3
     data.x4 = data.width/19*17
-    data.y4 = data.height/4*3.31
+    data.y4 = data.height/4*3.3
     data.r = 50
     data.margin = int(data.width/31)
     data.mainBoard = CB.Board(data.width, data.height)
@@ -210,13 +233,13 @@ def initialize(canvas, data):
 def drawImages(canvas, data):
     for key in canvas.shapes:
         im = PIL.Image.open(canvas.shapes[key])
-        im = im.resize((data.width//5-3*data.mainBoard.margin, data.height//5-3*data.mainBoard.margin), 
+        im = im.resize((int(data.width/5.8-data.mainBoard.horMargin), int(data.height/5.7-data.mainBoard.vertMargin)), 
                         PIL.Image.ANTIALIAS)
         ph = PIL.ImageTk.PhotoImage(im)
         label = Label(canvas, image=ph)
         label.image=ph  #need to keep the reference of your image to avoid garbage collection
-        canvas.create_image(int(key[1]*data.mainBoard.cellWidth+data.mainBoard.cellWidth*(17/20)), 
-                            int(key[0]*data.mainBoard.cellHeight+data.mainBoard.cellHeight*(17/20)),
+        canvas.create_image(int(key[1]*data.mainBoard.cellWidth+data.mainBoard.cellWidth*(26/20)), 
+                            int(key[0]*data.mainBoard.cellHeight+data.mainBoard.cellHeight*(26/20)),
                             image=ph)
 
 def mousePressed(event, data):
@@ -254,7 +277,6 @@ def redrawAll(canvas, data):
         multiplayerScreen(canvas, data)
 
 def motion(event, data):
-    print(event.x, event.y)
     if data.mode == "beginning":
         if data.margin <= event.x <= data.margin+int(data.width/7.5):
             if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):

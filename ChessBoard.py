@@ -7,9 +7,11 @@ class Board(object):
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.margin = 20
-        self.cellWidth = (self.width-2*self.margin)//8
-        self.cellHeight = (self.height-2*self.margin)//8
+        self.margin = 50
+        self.horMargin = 70
+        self.vertMargin = 55
+        self.cellWidth = (self.width-2*self.horMargin)//8
+        self.cellHeight = (self.height-2*self.vertMargin)//8
         self.board = []
         self.clicked = False
         self.rowClick = None
@@ -24,28 +26,28 @@ class Board(object):
             if row%2 == 0:
                 for col in range(8):
                     if col%2 == 0:
-                        canvas.create_rectangle(self.margin+col*self.cellWidth, self.margin+row*self.cellHeight,
-                        self.margin+(col+1)*self.cellWidth, self.margin+(row+1)*self.cellHeight, fill = "tan",
+                        canvas.create_rectangle(self.horMargin+col*self.cellWidth, self.vertMargin+row*self.cellHeight,
+                        self.horMargin+(col+1)*self.cellWidth, self.vertMargin+(row+1)*self.cellHeight, fill = "tan",
                         width = self.cellHeight//25)
                     else:
-                        canvas.create_rectangle(self.margin+col*self.cellWidth, self.margin+row*self.cellHeight,
-                        self.margin+(col+1)*self.cellWidth, self.margin+(row+1)*self.cellHeight, fill = "brown",
+                        canvas.create_rectangle(self.horMargin+col*self.cellWidth, self.vertMargin+row*self.cellHeight,
+                        self.horMargin+(col+1)*self.cellWidth, self.vertMargin+(row+1)*self.cellHeight, fill = "brown",
                         width = self.cellHeight//25)
             else:
                 for col in range(8):
                     if col%2 == 0:
-                        canvas.create_rectangle(self.margin+col*self.cellWidth, self.margin+row*self.cellHeight,
-                        self.margin+(col+1)*self.cellWidth, self.margin+(row+1)*self.cellHeight, fill = "brown",
+                        canvas.create_rectangle(self.horMargin+col*self.cellWidth, self.vertMargin+row*self.cellHeight,
+                        self.horMargin+(col+1)*self.cellWidth, self.vertMargin+(row+1)*self.cellHeight, fill = "brown",
                         width = self.cellHeight//25)
                     else:
-                        canvas.create_rectangle(self.margin+col*self.cellWidth, self.margin+row*self.cellHeight,
-                        self.margin+(col+1)*self.cellWidth, self.margin+(row+1)*self.cellHeight, fill = "tan",
+                        canvas.create_rectangle(self.horMargin+col*self.cellWidth, self.vertMargin+row*self.cellHeight,
+                        self.horMargin+(col+1)*self.cellWidth, self.vertMargin+(row+1)*self.cellHeight, fill = "tan",
                         width = self.cellHeight//25)
         self.drawPieces()
 
     def drawPieces(self):
         self.drawings = {}
-        self.margin = 20
+        self.margin = 30
         for row in range(len(self.board)):
             for col in range(len(self.board[0])):
                 #xc = self.margin+self.cellWidth*col-self.cellWidth/2
@@ -91,10 +93,10 @@ class Board(object):
 
     def mouseClick(self, eventX, eventY, player):
         if self.turn == player:
-            if (self.margin <= eventX <= self.width-self.margin and 
-            self.margin <= eventY <= self.height-self.margin):
-                self.rowClick = int((eventY-self.margin)/((self.height-2*self.margin)/8))
-                self.colClick = int((eventX-self.margin)/((self.width-2*self.margin)/8))
+            if (self.horMargin <= eventX <= self.width-self.horMargin and 
+            self.vertMargin <= eventY <= self.height-self.vertMargin):
+                self.rowClick = int((eventY-self.vertMargin)/((self.height-2*self.vertMargin)/8))
+                self.colClick = int((eventX-self.horMargin)/((self.width-2*self.horMargin)/8))
                 if self.board[self.rowClick][self.colClick] != None and self.board[self.rowClick][self.colClick].color == player:
                     self.clicked = True
                     self.board[self.rowClick][self.colClick].getMoves(self.board)
@@ -102,8 +104,8 @@ class Board(object):
 
 # Run moveClick before mouseClick and only run if self.clicked = True.
     def moveClick(self, eventX, eventY, player, data):
-        rowMove = int((eventY-self.margin)/((self.height-2*self.margin)/8))
-        colMove = int((eventX-self.margin)/((self.width-2*self.margin)/8))
+        rowMove = int((eventY-self.vertMargin)/((self.height-2*self.vertMargin)/8))
+        colMove = int((eventX-self.horMargin)/((self.width-2*self.horMargin)/8))
         if self.board[rowMove][colMove] == None or self.board[rowMove][colMove].color != player:
             if (player == "White" and self.okCastleWhite and self.board[7][5] == None and 
             self.rowClick == 7 and self.colClick == 4 and rowMove == 7 and colMove == 6):

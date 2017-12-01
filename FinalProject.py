@@ -17,38 +17,55 @@ import socket
 import threading
 from queue import Queue
 import AISearchAlgs as AI
+import pygame
 
 def startScreen(canvas, data):
+    image = PIL.Image.open("/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/coolchesspicture.jpg")
+    image = image.resize((int(data.width*1.5), int(data.height*1.1)), PIL.Image.ANTIALIAS)
+    photo = PIL.ImageTk.PhotoImage(image)
+    label = Label(image=photo)
+    label.image = photo
+    canvas.create_image(data.width/2+data.margin*2, data.height/2,image = photo)
+    for col in range(7):
+        if col%2 == 0:
+            canvas.create_rectangle(data.margin+col*int(data.width/7.5), 
+            15*data.margin-10+int(data.height/7),
+            data.margin+(col+1)*int(data.width/7.5), 
+            15*data.margin-10+2*int(data.height/7), 
+            fill = "tan", width = data.height//100)
+        else:
+            canvas.create_rectangle(data.margin+col*int(data.width/7.5), 
+            15*data.margin-10+int(data.height/7),
+            data.margin+(col+1)*int(data.width/7.5), 
+            15*data.margin-10+2*int(data.height/7), 
+            fill = "brown", width = data.height//100)
+        if data.hover != None:
+            canvas.create_rectangle(data.hover[0], data.hover[1], 
+                                    data.hover[2], data.hover[3], fill = "yellow")
     canvas.create_text(data.width/2, data.height/4,
                         text = "Welcome to Chess Trainer",
-                        font = "courier "+str(int(data.width/25))+" underline")
+                        font = "fixedsys "+str(int(data.width/15))+" bold",
+                        fill = "Black")
     canvas.create_text(data.width/2, data.height/2,
-                        text = "select one of the below options to begin",
-                        font = "courier "+str(int(data.width/30)))
+                        text = "Select One of the Below Options to Begin",
+                        font = "fixedsys "+str(int(data.width/30)), fill = "White", 
+                        )
 # Modes for player to select.
-    canvas.create_rectangle(data.x1-data.r,data.y1-data.r,data.x1+data.r,data.y1+data.r,
-                            fill = "grey")
     canvas.create_text(data.x1, data.y1,
-                        text = "tutorial \n  mode", 
-                        font = "courier "+str(int(data.width/44)),
+                        text = "tutorial", 
+                        font = "fixedsys "+str(int(data.width/44)),
                         fill = "black")
-    canvas.create_rectangle(data.x2-data.r,data.y2-data.r,data.x2+data.r,data.y2+data.r,
-                            fill = "grey")
     canvas.create_text(data.x2, data.y2,
-                        text = "training \n  mode", 
-                        font = "courier "+str(int(data.width/44)),
+                        text = "training", 
+                        font = "fixedsys "+str(int(data.width/44)),
                         fill = "black")
-    canvas.create_rectangle(data.x3-data.r,data.y3-data.r,data.x3+data.r,data.y3+data.r,
-                            fill = "grey")
     canvas.create_text(data.x3, data.y3,
-                        text = "competitive \n    mode", 
-                        font = "courier "+str(int(data.width/44)),
+                        text = "competitive", 
+                        font = "fixedsys "+str(int(data.width/44)),
                         fill = "black")
-    canvas.create_rectangle(data.x4-data.r,data.y4-data.r,data.x4+data.r,data.y4+data.r,
-                            fill = "grey")
     canvas.create_text(data.x4, data.y4,
-                        text = "multiplayer \n   mode", 
-                        font = "courier "+str(int(data.width/44)),
+                        text = "multiplayer", 
+                        font = "fixedsys "+str(int(data.width/44)),
                         fill = "black")
 
 def tutorialScreen(canvas, data):
@@ -141,7 +158,7 @@ def moveWithMouse(event, data):
                 sendMessage(data)
                 data.moved = False
         else:
-            data.mainBoard.moveClick(event.x, event.y, data.player)
+            data.mainBoard.moveClick(event.x, event.y, data.player, data)
             if data.mode == "training":
                 data.player = data.mainBoard.turn
             elif data.mode == "competitive":
@@ -164,15 +181,16 @@ class Person(object):
 
 def init(data):
     data.mode = "beginning"
-    data.x1 = data.width/19*2
-    data.y1 = data.height/4*3
-    data.x2 = data.width/20*7
-    data.y2 = data.height/4*3
-    data.x3 = data.width/20*12
-    data.y3 = data.height/4*3
-    data.x4 = data.width/19*16
-    data.y4 = data.height/4*3
+    data.x1 = data.width/19*2-6
+    data.y1 = data.height/4*3.31
+    data.x2 = data.width/20*7+11
+    data.y2 = data.height/4*3.31
+    data.x3 = data.width/20*12.6
+    data.y3 = data.height/4*3.31
+    data.x4 = data.width/19*17
+    data.y4 = data.height/4*3.31
     data.r = 50
+    data.margin = int(data.width/31)
     data.mainBoard = CB.Board(data.width, data.height)
     data.mainBoard.makeBoard()
     data.player = "White"
@@ -184,6 +202,7 @@ def init(data):
     data.newRow = None
     data.newCol = None
     data.moved = False
+    data.hover = None
 
 def initialize(canvas, data):
     canvas.shapes = data.mainBoard.drawings
@@ -191,13 +210,13 @@ def initialize(canvas, data):
 def drawImages(canvas, data):
     for key in canvas.shapes:
         im = PIL.Image.open(canvas.shapes[key])
-        im = im.resize((data.width//5-2*data.mainBoard.margin, data.height//5-2*data.mainBoard.margin), 
+        im = im.resize((data.width//5-3*data.mainBoard.margin, data.height//5-3*data.mainBoard.margin), 
                         PIL.Image.ANTIALIAS)
         ph = PIL.ImageTk.PhotoImage(im)
         label = Label(canvas, image=ph)
         label.image=ph  #need to keep the reference of your image to avoid garbage collection
-        canvas.create_image(int(key[1]*data.mainBoard.cellWidth+data.mainBoard.cellWidth*(19/20)), 
-                            int(key[0]*data.mainBoard.cellHeight+data.mainBoard.cellHeight*(19/20)),
+        canvas.create_image(int(key[1]*data.mainBoard.cellWidth+data.mainBoard.cellWidth*(17/20)), 
+                            int(key[0]*data.mainBoard.cellHeight+data.mainBoard.cellHeight*(17/20)),
                             image=ph)
 
 def mousePressed(event, data):
@@ -234,6 +253,24 @@ def redrawAll(canvas, data):
     if data.mode == "multiplayer":
         multiplayerScreen(canvas, data)
 
+def motion(event, data):
+    print(event.x, event.y)
+    if data.mode == "beginning":
+        if data.margin <= event.x <= data.margin+int(data.width/7.5):
+            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+                data.hover = [data.margin, 15*data.margin-10+int(data.height/7), data.margin+int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
+        elif data.margin+2*int(data.width/7.5) <= event.x <= data.margin+3*int(data.width/7.5):
+            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+                data.hover = [data.margin+2*int(data.width/7.5), 15*data.margin-10+int(data.height/7), data.margin+3*int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
+        elif data.margin+4*int(data.width/7.5) <= event.x <= data.margin+5*int(data.width/7.5):
+            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+                data.hover = [data.margin+4*int(data.width/7.5), 15*data.margin-10+int(data.height/7), data.margin+5*int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
+        elif data.margin+6*int(data.width/7.5) <= event.x <= data.margin+7*int(data.width/7.5):
+            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+                data.hover = [data.margin+6*int(data.width/7.5), 15*data.margin-10+int(data.height/7), data.margin+7*int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
+        else:
+            data.hover = None
+
 ####################################
 # use the run function as-is
 ####################################
@@ -254,6 +291,10 @@ def run(width=300, height=300, serverMsg = None, server = None):
         keyPressed(event, data)
         redrawAllWrapper(canvas, data)
 
+    def motionWrapper(event, canvas, data):
+        motion(event, data)
+        redrawAllWrapper(canvas, data)
+
     def timerFiredWrapper(canvas, data):
         timerFired(data)
         redrawAllWrapper(canvas, data)
@@ -266,10 +307,11 @@ def run(width=300, height=300, serverMsg = None, server = None):
     data.serverMsg = serverMsg
     data.width = width
     data.height = height
-    data.timerDelay = 500 # milliseconds
+    data.timerDelay = 100 # milliseconds
     init(data)
     # create the root and the canvas
     root = Tk()
+    root.resizable(width=False, height=False)
     canvas = Canvas(root, width=data.width, height=data.height)
     canvas.pack()
     initialize(canvas, data)
@@ -278,6 +320,8 @@ def run(width=300, height=300, serverMsg = None, server = None):
                             mousePressedWrapper(event, canvas, data))
     root.bind("<Key>", lambda event:
                             keyPressedWrapper(event, canvas, data))
+    root.bind('<Motion>', lambda event:
+                            motionWrapper(event, canvas, data))
     timerFiredWrapper(canvas, data)
     # and launch the app
     root.mainloop()  # blocks until window is closed
@@ -285,4 +329,8 @@ def run(width=300, height=300, serverMsg = None, server = None):
 
 serverMsg = Queue(100)
 threading.Thread(target = handleServerMsg, args = (server, serverMsg)).start()
-run(400, 400, serverMsg, server)
+songDir = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MozartPianoConcertoNo4Andante.mp3"
+pygame.mixer.init()
+pygame.mixer.music.load(songDir)
+pygame.mixer.music.play(-1)
+run(850, 650, serverMsg, server)

@@ -2,7 +2,6 @@ import copy
 from BackEndChess import *
 from ChessBoard import *
 import random
-# Minimax
 
 # Makes dictionary of all moves where each object has its own list of moves.
 def getAllMoves(board, AIcolor):
@@ -15,7 +14,6 @@ def getAllMoves(board, AIcolor):
                 else:
                     board[row][col].getMoves(board)
                     allMoves[board[row][col]] = board[row][col].moves
-    
     return allMoves
 
 def minimaxSearch(board, AIcolor):

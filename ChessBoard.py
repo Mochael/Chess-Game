@@ -155,24 +155,10 @@ class Board(object):
             if (self.rowClick == 0 and self.colClick == 7) or (self.rowClick == 0 and self.colClick == 4):
                 self.okCastleBlack = False
         if castling:
-            if player == "White":
-                self.board[7][5] = self.board[7][7]
-                self.board[7][5].posRow = 7
-                self.board[7][5].posCol = 5
-                self.board[7][7] = None
-                self.board[7][6] = self.board[7][4]
-                self.board[7][5].posRow = 7
-                self.board[7][5].posCol = 6
-                self.board[7][4] = None
-            else:
-                self.board[0][5] = self.board[0][7]
-                self.board[0][5].posRow = 0
-                self.board[0][5].posCol = 5
-                self.board[0][7] = None
-                self.board[0][6] = self.board[0][4]
-                self.board[0][5].posRow = 0
-                self.board[0][5].posCol = 6
-                self.board[0][4] = None
+            if colMove == 6:
+                self.amCastlingShort(self, player)
+            elif colMove == 1:
+                self.amCastlingLong(self, player)
         else:
             self.board[rowMove][colMove] = self.board[self.rowClick][self.colClick]
             self.board[rowMove][colMove].posRow = rowMove
@@ -196,3 +182,43 @@ class Board(object):
                 else:
                     if isinstance(self.board[row][col], Pawn) and self.board[row][col].color == "Black":
                         self.board[row][col] = Queen("Black", row, col)
+
+    def amCastlingShort(self, player):
+        if player == "White":
+            self.board[7][5] = self.board[7][7]
+            self.board[7][5].posRow = 7
+            self.board[7][5].posCol = 5
+            self.board[7][7] = None
+            self.board[7][6] = self.board[7][4]
+            self.board[7][6].posRow = 7
+            self.board[7][6].posCol = 6
+            self.board[7][4] = None
+        else:
+            self.board[0][5] = self.board[0][7]
+            self.board[0][5].posRow = 0
+            self.board[0][5].posCol = 5
+            self.board[0][7] = None
+            self.board[0][6] = self.board[0][4]
+            self.board[0][6].posRow = 0
+            self.board[0][6].posCol = 6
+            self.board[0][4] = None
+    
+#    def amCastlingLong(self, player):
+#        if player == "White":
+#            self.board[7][3] = self.board[7][0]
+#            self.board[7][3].posRow = 7
+#            self.board[7][3].posCol = 3
+#            self.board[7][0] = None
+#            self.board[7][2] = self.board[7][4]
+#            self.board[7][2].posRow = 7
+#            self.board[7][2].posCol = 2
+#            self.board[7][4] = None
+#        else:
+#            self.board[0][3] = self.board[0][0]
+#            self.board[0][3].posRow = 0
+#            self.board[0][3].posCol = 3
+#            self.board[0][0] = None
+#            self.board[0][2] = self.board[0][4]
+#            self.board[0][2].posRow = 0
+#            self.board[0][2].posCol = 2
+#            self.board[0][4] = None

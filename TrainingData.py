@@ -34,56 +34,59 @@ import chess.pgn
 import sys
 import string
 import NeuralNet
+import os
 
 
 topology = [64, 44, 18, 1]
 evalNet = NeuralNet.Net(topology)
-
-
-with open("/Users/michaelkronovet/Desktop/15-112/Alburt.pgn") as f:
-    count  = 0
-    for n in range(775):
-        game = chess.pgn.read_game(f)
-        count += 1
-        if count == 2:
-            break
-        while not game.is_end():
+path = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PGNFiles"
+for filename in os.listdir(path):
+    #with open("/Users/michaelkronovet/Desktop/15-112/FinalProject/Alburt.pgn") as f:
+    with open(path+"/"+filename) as f:
+        for n in range(8):
             try:
-                node = game.variations[0]
-                board = game.board()
-                game = node
-                piecePos = board.piece_map()
-                inputsL = []
-                for i in range(64):
-                    if i in piecePos:
-                        if piecePos[i].color == False:
-                            inputsL.append(-1*piecePos[i].piece_type)
+                print("GAMECOUNT", n)
+                game = chess.pgn.read_game(f)
+                while not game.is_end():
+                    node = game.variations[0]
+                    board = game.board()
+                    game = node
+                    piecePos = board.piece_map()
+                    inputsL = []
+                    for i in range(64):
+                        if i in piecePos:
+                            if piecePos[i].color == False:
+                                inputsL.append(-1*piecePos[i].piece_type)
+                            else:
+                                inputsL.append(piecePos[i].piece_type)
                         else:
-                            inputsL.append(piecePos[i].piece_type)
-                    else:
-                        inputsL.append(0)
-                evalNet.feedForward(inputsL)
-                resultVals = evalNet.getResults()
-                handler = chess.uci.InfoHandler()
-                engine = chess.uci.popen_engine('/Users/michaelkronovet/Desktop/15-112/stockfish-8-mac/Mac/stockfish-8-64') #give correct address of your engine here
-                engine.info_handlers.append(handler)
-                engine.position(board)
-                evaltime = 1000
-                evaluation = engine.go(movetime=evaltime)
-                evaluated = handler.info["score"][1].cp
-                if evaluated == None:
-                    continue
-                if board.turn == True:
-                    evaluated *= -1
-                print("OUTPUT", resultVals)
-
-                print("TARGET", evaluated/700)
-                evalNet.backProp(evaluated/700)
-                
-#                print("TARGET", evaluated/1000)
-#                evalNet.backProp(evaluated/1000)
+                            inputsL.append(0)
+                    evalNet.feedForward(inputsL)
+                    resultVals = evalNet.getResults()
+                    handler = chess.uci.InfoHandler()
+                    engine = chess.uci.popen_engine("/Users/michaelkronovet/Desktop/15-112/FinalProject/stockfish-8-mac/Mac/stockfish-8-64") #give correct address of your engine here
+                    engine.info_handlers.append(handler)
+                    engine.position(board)
+                    evaltime = 1000
+                    evaluation = engine.go(movetime=evaltime)
+                    evaluated = handler.info["score"][1].cp
+                    if evaluated == None:
+                        continue
+                    evaluated /= 700
+                    if abs(evaluated) > 1:
+                        if evaluated < 0:
+                            evaluated = -1
+                        else:
+                            evaluated = 1
+                    if board.turn == True:
+                        evaluated *= -1
+                    print("TARGET", evaluated)
+                    print("OUTPUTS", resultVals)
+                    evalNet.backProp(evaluated)
             except:
                 continue
+#                print("TARGET", evaluated/1000)
+#                evalNet.backProp(evaluated/1000)
 
 
 #            network.train(L, maxIterations=1)
@@ -101,15 +104,18 @@ thirdWeights = []
 
 for layer in range(len(topology)-1):
     for neuron in range(len(evalNet.layers[layer])):
-        if layer == 1:
+        if layer == 0:
             firstWeights.append(evalNet.layers[layer][neuron].outputWeights)
-        elif layer == 2:
+        elif layer == 1:
             secondWeights.append(evalNet.layers[layer][neuron].outputWeights)
-        elif layer == 3:
+        elif layer == 2:
             thirdWeights.append(evalNet.layers[layer][neuron].outputWeights)
+
+weightsList = []
+weightsList.append(firstWeights)
+weightsList.append(secondWeights)
+weightsList.append(thirdWeights)
 
 open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsText.txt", "w").close()
 file = open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsText.txt", "w")
-file.write(str(firstWeights))
-file.write(str(secondWeights))
-file.write(str(thirdWeights))
+file.write(str(weightsList))

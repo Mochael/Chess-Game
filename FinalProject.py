@@ -295,7 +295,10 @@ def drawImages(canvas, data):
 
 def mousePressed(event, data):
     if data.mode != "beginning":
-        moveWithMouse(event, data)
+        if data.mode == "tutorial":
+            
+        else:
+            moveWithMouse(event, data)
     gameMode(event, data)
 
 
@@ -361,33 +364,50 @@ def motion(event, data):
         if data.margin <= event.x <= data.margin+int(data.width/7.5):
             if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
                 data.hover = [data.margin, 15*data.margin-10+int(data.height/7), data.margin+int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/PawnInstruct.png"
         elif data.margin+2*int(data.width/7.5) <= event.x <= data.margin+3*int(data.width/7.5):
             if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
                 data.hover = [data.margin+2*int(data.width/7.5), 15*data.margin-10+int(data.height/7), data.margin+3*int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/HorseInstruct.png"
         elif data.margin+4*int(data.width/7.5) <= event.x <= data.margin+5*int(data.width/7.5):
             if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
                 data.hover = [data.margin+4*int(data.width/7.5), 15*data.margin-10+int(data.height/7), data.margin+5*int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/QueenInstruct.png"
         elif data.margin+6*int(data.width/7.5) <= event.x <= data.margin+7*int(data.width/7.5):
             if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
                 data.hover = [data.margin+6*int(data.width/7.5), 15*data.margin-10+int(data.height/7), data.margin+7*int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/CastleInstruct.png"
         elif data.margin+int(data.width/7.5) <= event.x <= data.margin+2*int(data.width/7.5):
             if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
                 data.hover = [data.margin+int(data.width/7.5), 15*data.margin-10+int(data.height/7), data.margin+2*int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RookInstruct.png"
         elif data.margin+3*int(data.width/7.5) <= event.x <= data.margin+4*int(data.width/7.5):
             if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
                 data.hover = [data.margin+3*int(data.width/7.5), 15*data.margin-10+int(data.height/7), data.margin+4*int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/BishopInstruct.png"
         elif data.margin+5*int(data.width/7.5) <= event.x <= data.margin+6*int(data.width/7.5):
             if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
                 data.hover = [data.margin+5*int(data.width/7.5), 15*data.margin-10+int(data.height/7), data.margin+6*int(data.width/7.5), 15*data.margin-10+2*int(data.height/7)]
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/KingInstruct.png"
         else:
             data.hover = None
+
+
+    def tutorialMouse(event, data):
+        if data.margin <= event.x <= data.margin+int(data.width/7.5):
+            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/PawnInstruct.png"
+        elif data.margin+2*int(data.width/7.5) <= event.x <= data.margin+3*int(data.width/7.5):
+            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/HorseInstruct.png"
+        elif data.margin+4*int(data.width/7.5) <= event.x <= data.margin+5*int(data.width/7.5):
+            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/QueenInstruct.png"
+        elif data.margin+6*int(data.width/7.5) <= event.x <= data.margin+7*int(data.width/7.5):
+            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/CastleInstruct.png"
+        elif data.margin+int(data.width/7.5) <= event.x <= data.margin+2*int(data.width/7.5):
+            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RookInstruct.png"
+        elif data.margin+3*int(data.width/7.5) <= event.x <= data.margin+4*int(data.width/7.5):
+            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/BishopInstruct.png"
+        elif data.margin+5*int(data.width/7.5) <= event.x <= data.margin+6*int(data.width/7.5):
+            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/KingInstruct.png"
     
 
 ####################################

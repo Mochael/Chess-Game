@@ -2,6 +2,19 @@ import copy
 from BackEndChess import *
 from ChessBoard import *
 import random
+import NeuralNet
+import ast
+
+with open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsAttempt1.txt", "r") as myfile:
+    weightsF=myfile.read().replace('\n', '')
+
+#weightsL = ast.literal_eval(weightsF)
+
+myNet = NeuralNet.Net([64, 44, 18, 1])
+for layer in range(len(myNet.layers)):
+    for neuron in range(len(myNet.layers[layer])):
+        myNet.layers[layer][neuron]
+        
 
 # Makes dictionary of all moves where each object has its own list of moves.
 def getAllMoves(board, AIcolor):

@@ -94,8 +94,8 @@ class Neuron(object):
 
     @staticmethod
     def transferFunctionDerivative(x):
-        return x
-#        return 1-(math.tanh(x))**2
+#        return x
+        return 1-(math.tanh(x))**2
 
     def feedForward(self, prevLayer):
         sum = 0.0

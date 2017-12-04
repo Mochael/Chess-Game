@@ -10,17 +10,12 @@ def isCheck(board, turn):
             if isinstance(board[row][col], King) and board[row][col].color == turn:
                 kingRow = row
                 kingCol = col
-                print("KINGROW", kingRow, "KINGCOL", kingCol)
                 break
     for row in range(len(board)):
         for col in range(len(board[0])):
             if board[row][col] != None and board[row][col].color != turn:
                     board[row][col].getMoves(board)
                     if [kingRow, kingCol] in board[row][col].moves:
-                        print("NONONONONONO")
-                        print(row,col)
-                        print(board[row][col].moves)
-                        print("CHECKED")
                         return True
     return False
 

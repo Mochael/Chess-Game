@@ -277,8 +277,6 @@ def init(data):
     data.hover = None
     data.checkMate = None
     data.instructImage = None
-    data.prevMove = None
-    data.counter = -1
 
 def initialize(canvas, data):
     canvas.shapes = data.mainBoard.drawings
@@ -317,7 +315,6 @@ def timerFired(data):
         newBoard = AI.minimaxSearch(data.mainBoard.board, "Black", data)
         data.mainBoard.board = newBoard
         data.mainBoard.turn = "White"
-        data.counter += 1
     elif data.mode == "tutorial":
         changeTutorialImage(data)
 

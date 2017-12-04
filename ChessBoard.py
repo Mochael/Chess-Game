@@ -100,7 +100,6 @@ class Board(object):
                 if self.board[self.rowClick][self.colClick] != None and self.board[self.rowClick][self.colClick].color == player:
                     self.clicked = True
                     self.board[self.rowClick][self.colClick].getMoves(self.board)
-                    print(self.board[self.rowClick][self.colClick].moves)
 
 # Run moveClick before mouseClick and only run if self.clicked = True.
     def moveClick(self, eventX, eventY, player, data):
@@ -135,7 +134,6 @@ class Board(object):
                 tempB[rowMove][colMove].posRow = rowMove
                 tempB[rowMove][colMove].posCol = colMove
                 tempB[self.rowClick][self.colClick] = None
-                print(self.turn)
                 if not isCheck(tempB, self.turn):
                     self.makingMoves(rowMove, colMove, player, data)
                     data.moved = True

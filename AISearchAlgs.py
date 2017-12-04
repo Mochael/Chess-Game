@@ -1,3 +1,6 @@
+# This file is where I include the minimax algorithm for my chess AI which calls the neural network.
+
+
 import copy
 from BackEndChess import *
 from ChessBoard import *
@@ -14,15 +17,15 @@ import ast
 #myNet.feedForward([-.1,-.1,-.1,.1,.1,.1,.1,.1, .2,.3,.4,.5,.6,.2,.3,.4, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, .1,.1,.1,.1,.1,.1,.1,.1, .2,.3,.4,.5,.6,.2,.3,.4])
 #print(myNet.getResults())
 
-with open("/Users/michaelkronovet/Desktop/15-112/FinalProject/GoodWeights/GOODWEIGHTS9.txt", "r") as myfile:
+# Converts string of weights to actual list of weights.
+with open("/Users/michaelkronovet/Desktop/15-112/FinalProject/RealWeights/RealWeights9.txt", "r") as myfile:
     weightsF = myfile.read().replace('\n', '')
-
 weightsL = ast.literal_eval(weightsF)
 
 myNet = NeuralNet.Net([64, 44, 18, 1])
-#for layer in range(len(myNet.layers)-1):
-#    for neuron in range(len(myNet.layers[layer])):
-#        myNet.layers[layer][neuron].outputWeights = weightsL[layer][neuron]
+for layer in range(len(myNet.layers)-1):
+    for neuron in range(len(myNet.layers[layer])):
+        myNet.layers[layer][neuron].outputWeights = weightsL[layer][neuron]
 
 def translateBoard(board):
     tBoard = []
@@ -61,6 +64,7 @@ def translateBoard(board):
                         tBoard.append(-.06)
             else:
                 tBoard.append(0.0)
+#    print("INPUTS", tBoard)
     return tBoard
 
 # Makes dictionary of all moves where each object has its own list of moves.
@@ -92,12 +96,17 @@ def minimaxSearch(board, AIcolor, data):
             tBoard = translateBoard(tempB)
             score = minPart(tempB, 0, "White")
             if sum(tBoard) < sum(curBoard):
-                newSum = sum(tBoard)*-1 + sum(curBoard)
-                if abs(score) <= newSum:
-                    score = sum(tBoard)*-1
+                newSum = (sum(tBoard)*-1 + sum(curBoard))*100
+                print("TAKEMOVE", newSum)
+                print("MINISCORE", score)
+                if abs(score) <= abs(newSum):
+#                    score = sum(tBoard)*-1
+                    score = newSum
             if score > bestScore:
                 bestMove = [key, move]
                 bestScore = score
+    print("MINPARTSCORE", minPart(tempB, 0, "White"))  
+    print("SCORE", bestScore)
     return makeMove(bestMove, board)
 
 def makeMove(bestMove, board):
@@ -129,8 +138,7 @@ def minPart(gameBoard, level, color):
             tBoard = translateBoard(tempB)
             newSum = sum(tBoard)
             if newSum > curSum:
-                print("OKEEEEEE")
-                score = newSum*-1+curSum
+                score = (newSum*-1+curSum)*100
             else:
                 score = maxPart(tempB, level+1, "Black")
             newT = copy.deepcopy(tempB)
@@ -144,7 +152,6 @@ def maxPart(gameBoard, level, color):
     if level == 1:
         tBoard = translateBoard(gameBoard)
         myNet.feedForward(tBoard)
-        print("SCORE", myNet.getResults())
         return myNet.getResults()
     bestScore = float("-inf")
     newMoves = getAllMoves(gameBoard, color)

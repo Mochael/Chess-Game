@@ -1,31 +1,10 @@
-# Make a neural network to determine the evaluation function of the game instead of hard coding this information.
-# Attempt genetic algorithm, simulated annealing, and minimax move searching.
-
-# https://arxiv.org/pdf/1509.01549.pdf
-# Train neural network to match an evaluation function's assesment of a board position. Multiply output by 30,000 or something to match stockfish's evaluation score.
-# The first looks at the global state of the game, such as the number and type of pieces on each side, which side is to move, castling rights and so on. 
-# The second looks at piece-centric features such as the location of each piece on each side
-# the final aspect is to map the squares that each piece attacks and defends.
+# This file was used to train the neural network. I am parsing through the PGN file I
+# input and evaluating the given board using my neural network and editing
+# it based off of its deviation from the evaluation the stockfish engine gives it.
+# It then puts the new trained weights from this training session into a text file
+# for me to reference when loading the neural network for the AI.
 
 # Database for chess training data
-# http://ficsgames.org/download.html
-# 
-# For each number, first move is top player, second move is bottom player.
-# If it is a pawn move, there is no P in front. For every other one
-# x denotes piece taking another one.
-# O-O means castling. O-O-O means a the longer castle
-# kNight	N
-# Bishop	B
-# Rook	R
-# Queen	Q
-# King	K
-# Came up with idea by reading about Giraffe chess engine.
-
-# ftp://ftp.cs.kent.ac.uk/pub/djb/pgn-extract/help.html 
-
-# https://chess.stackexchange.com/questions/18182/stockfish-evaluation-of-a-position-from-pgn
-# This explains exactly how to get evaluation values for the given board.
-
 # https://www.pgnmentor.com/files.html
 
 import chess
@@ -38,26 +17,24 @@ import os
 import ast
 
 
+# Neural net topology
 topology = [64, 44, 18, 1]
 
+# Assigns the existing trained weights in the text file to the neural net.
 with open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsText.txt", "r") as myfile:
     weightsF=myfile.read().replace('\n', '')
-
 weightsL = ast.literal_eval(weightsF)
-
 evalNet = NeuralNet.Net(topology)
 for layer in range(len(evalNet.layers)-1):
     for neuron in range(len(evalNet.layers[layer])):
         evalNet.layers[layer][neuron].outputWeights = weightsL[layer][neuron]
 
-#topology = [64, 44, 18, 1]
-#evalNet = NeuralNet.Net(topology)
-path = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PGNFiles/Winawer.pgn"
-#for filename in os.listdir(path):
-    #with open("/Users/michaelkronovet/Desktop/15-112/FinalProject/Alburt.pgn") as f:
-#    with open(path+"/"+filename) as f:
+path = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PGNFiles/McDonnell.pgn"
+
+# Trains neural network.
 with open(path) as f:
-    for n in range(1):
+    count = 0
+    for n in range(100):
         try:
             print("GAMECOUNT", n)
             game = chess.pgn.read_game(f)
@@ -96,26 +73,14 @@ with open(path) as f:
                     evaluated *= -1
                 print("TARGET", evaluated)
                 print("OUTPUTS", resultVals)
-                #evalNet.backProp(evaluated)
+                evalNet.backProp(evaluated)
         except:
             continue
-#                print("TARGET", evaluated/1000)
-#                evalNet.backProp(evaluated/1000)
 
-
-#            network.train(L, maxIterations=1)
-#            print("target value: ", evaluated/3000)
-#            print(evalNet.layers[-1][0].getOutputVal())
-    #        print('best move: ', board.san(evaluation[0]))
-
-            # Do this for if a move has no value or something. Maybe this error won't come up when checking moves.
-            # This value is relative to who is making the move. negative means current player is losing pos means current player is winning.
-#            print("Average error: ", evalNet.getRecentAverageError())
-
-'''firstWeights = []
+# Updates the weights in the text file to reflect this training session.
+firstWeights = []
 secondWeights = []
 thirdWeights = []
-
 for layer in range(len(topology)-1):
     for neuron in range(len(evalNet.layers[layer])):
         if layer == 0:
@@ -124,12 +89,10 @@ for layer in range(len(topology)-1):
             secondWeights.append(evalNet.layers[layer][neuron].outputWeights)
         elif layer == 2:
             thirdWeights.append(evalNet.layers[layer][neuron].outputWeights)
-
 weightsList = []
 weightsList.append(firstWeights)
 weightsList.append(secondWeights)
 weightsList.append(thirdWeights)
-
 open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsText.txt", "w").close()
 file = open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsText.txt", "w")
-file.write(str(weightsList))'''
+file.write(str(weightsList))

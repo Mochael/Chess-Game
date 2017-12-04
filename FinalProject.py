@@ -278,7 +278,7 @@ def init(data):
     data.checkMate = None
     data.instructImage = None
     data.prevMove = None
-    data.counter = 1
+    data.counter = -1
 
 def initialize(canvas, data):
     canvas.shapes = data.mainBoard.drawings

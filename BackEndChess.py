@@ -70,9 +70,14 @@ class Pawn(object):
             else:
                 self.moves = [[self.posRow-1,self.posCol]]
         # Gets rid of moves where other pieces are blocking pawn.
-        for move in self.moves:
-            if board[move[0]][move[1]] != None:
-                self.moves.remove(move)
+        for move in range(len(self.moves)):
+            if move == 0:
+                if board[self.moves[move][0]][self.moves[move][1]] != None:
+                    self.moves = []
+                    break
+            else:
+                if board[self.moves[move][0]][self.moves[move][1]] != None:
+                    self.moves.pop()
         self.findTakeMoves(board)
     
     # Finds possible diagonal moves for taking pieces with a pawn.

@@ -14,7 +14,7 @@
 # It is used as the evaluation function for determining how good a certain chessboard is.
 # Each input neuron indicates a square on the board.
 # White pieces are given positive values while black pieces are given negative values.
-# Each piece is assigned a number (Empty = 0, Pawn = 1, Knight = 2, Bishop = 3, Rook = 4, Queen = 5, King = 6)
+# Each piece is assigned a number (Empty = 0, Pawn = .01, Knight = .02, Bishop = .03, Rook = .04, Queen = .05, King = .06)
 
 import random
 import math
@@ -69,7 +69,7 @@ class Neuron(object):
         self.outputVal = 0
         self.gradient = 0
         for i in range(numOutputs):
-            self.outputWeights.append([random.uniform(0,1),0])
+            self.outputWeights.append([random.uniform(0,.1),0])
 
     def updateInputWeights(self, prevL):
         for i in range(len(prevL)):
@@ -82,15 +82,20 @@ class Neuron(object):
         sum = 0.0
         for i in range(len(nextLayer)-1):
             sum += self.outputWeights[i][0]*nextLayer[i].gradient
-        self.gradient = sum*self.outputVal
-        
+        self.gradient = sum*self.transferFunctionDerivative(self.outputVal)
+
     def calcOutputGradients(self, targetVal):
         delta = targetVal-self.outputVal
-        self.gradient = delta
+        self.gradient = delta*self.transferFunctionDerivative(self.outputVal)
 
     @staticmethod
     def transferFunction(x):
         return math.tanh(x)
+
+    @staticmethod
+    def transferFunctionDerivative(x):
+        return x
+#        return 1-(math.tanh(x))**2
 
     def feedForward(self, prevLayer):
         sum = 0.0

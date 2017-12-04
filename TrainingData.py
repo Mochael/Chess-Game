@@ -57,7 +57,7 @@ path = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PGNFiles/Winawer.pgn"
     #with open("/Users/michaelkronovet/Desktop/15-112/FinalProject/Alburt.pgn") as f:
 #    with open(path+"/"+filename) as f:
 with open(path) as f:
-    for n in range(8):
+    for n in range(1):
         try:
             print("GAMECOUNT", n)
             game = chess.pgn.read_game(f)
@@ -70,11 +70,11 @@ with open(path) as f:
                 for i in range(64):
                     if i in piecePos:
                         if piecePos[i].color == False:
-                            inputsL.append(-1*piecePos[i].piece_type)
+                            inputsL.append(-1*piecePos[i].piece_type/100)
                         else:
-                            inputsL.append(piecePos[i].piece_type)
+                            inputsL.append(piecePos[i].piece_type/100)
                     else:
-                        inputsL.append(0)
+                        inputsL.append(0.0)
                 evalNet.feedForward(inputsL)
                 resultVals = evalNet.getResults()
                 handler = chess.uci.InfoHandler()
@@ -96,7 +96,7 @@ with open(path) as f:
                     evaluated *= -1
                 print("TARGET", evaluated)
                 print("OUTPUTS", resultVals)
-                evalNet.backProp(evaluated)
+                #evalNet.backProp(evaluated)
         except:
             continue
 #                print("TARGET", evaluated/1000)
@@ -112,7 +112,7 @@ with open(path) as f:
             # This value is relative to who is making the move. negative means current player is losing pos means current player is winning.
 #            print("Average error: ", evalNet.getRecentAverageError())
 
-firstWeights = []
+'''firstWeights = []
 secondWeights = []
 thirdWeights = []
 
@@ -132,4 +132,4 @@ weightsList.append(thirdWeights)
 
 open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsText.txt", "w").close()
 file = open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsText.txt", "w")
-file.write(str(weightsList))
+file.write(str(weightsList))'''

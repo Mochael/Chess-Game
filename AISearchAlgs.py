@@ -62,18 +62,18 @@ def getAllMoves(board, AIcolor):
     for row in range(len(board)):
         for col in range(len(board[0])):
             if board[row][col] != None and board[row][col].color == AIcolor:
-                if board[row][col] in allMoves:
-                    allMoves[board[row][col]].extend(board[row][col].moves)
-                else:
-                    board[row][col].getMoves(board)
-                    allMoves[board[row][col]] = board[row][col].moves
+                board[row][col].getMoves(board)
+                allMoves[board[row][col]] = board[row][col].moves
     return allMoves
 
-def minimaxSearch(board, AIcolor):
+def minimaxSearch(board, AIcolor, data):
     allMoves = getAllMoves(board, AIcolor)
     bestScore = float("-inf")
+    curBoard = translateBoard(board)
     for key in allMoves:
         for move in allMoves[key]:
+            if data.prevMove == [key, move]:
+                continue
             objCopy = copy.deepcopy(key)
             tempB = copy.deepcopy(board)
             tempB[move[0]][move[1]] = objCopy
@@ -84,10 +84,26 @@ def minimaxSearch(board, AIcolor):
             if isCheck(newT, "Black"):
                 continue
             # Evaulate would be the neural network evaluation function
-            score = minPart(tempB, 0, "White")
+            tBoard = translateBoard(tempB)
+            if sum(tBoard) < sum(curBoard):
+                if data.counter%3 == 0:
+                    data.prevMove = [key, move]
+                if isinstance(minPart(tempB, 0, "White"), list):
+                    continue
+                else:
+                    score = sum(tBoard)*-1
+            else:
+                score = minPart(tempB, 0, "White")
+                if isinstance(score, list):
+                    continue
             if score > bestScore:
                 bestMove = [key, move]
                 bestScore = score
+    if data.counter%3 == 0:
+        data.prevMove = bestMove
+    return makeMove(bestMove, board)
+
+def makeMove(bestMove, board):
     board[bestMove[1][0]][bestMove[1][1]] = bestMove[0]
     board[bestMove[0].posRow][bestMove[0].posCol] = None
     board[bestMove[1][0]][bestMove[1][1]].posRow = bestMove[1][0]
@@ -100,9 +116,11 @@ def evaluate(board):
 def minPart(gameBoard, level, color):
     if level == 1:
         tBoard = translateBoard(gameBoard)
-        return myNet.feedForward(tBoard)
+        myNet.feedForward(tBoard)
+        return myNet.getResults()
     bestScore = float("inf")
     newMoves = getAllMoves(gameBoard, color)
+    curSum = sum(translateBoard(gameBoard))
     for key in newMoves:
         for move in newMoves[key]:
             objCopy = copy.deepcopy(key)
@@ -111,11 +129,17 @@ def minPart(gameBoard, level, color):
             tempB[objCopy.posRow][objCopy.posCol] = None
             objCopy.posRow = move[0]
             objCopy.posCol = move[1]
+            tBoard = translateBoard(tempB)
+            newSum = sum(tBoard)
+            if newSum > curSum+1:
+                return [newSum]
             newT = copy.deepcopy(tempB)
             if isCheck(newT, "White"):
                 continue
             score = maxPart(tempB, level+1, "Black")
             if score < bestScore:
+                if newSum > curSum:
+                    continue
                 bestMove = move
                 bestScore = score
     return bestScore
@@ -123,7 +147,8 @@ def minPart(gameBoard, level, color):
 def maxPart(gameBoard, level, color):
     if level == 1:
         tBoard = translateBoard(gameBoard)
-        return myNet.feedForward(tBoard)
+        myNet.feedForward(tBoard)
+        return myNet.getResults()
     bestScore = float("-inf")
     newMoves = getAllMoves(gameBoard, color)
     for key in newMoves:

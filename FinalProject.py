@@ -277,6 +277,8 @@ def init(data):
     data.hover = None
     data.checkMate = None
     data.instructImage = None
+    data.prevMove = None
+    data.counter = 1
 
 def initialize(canvas, data):
     canvas.shapes = data.mainBoard.drawings
@@ -296,7 +298,7 @@ def drawImages(canvas, data):
 def mousePressed(event, data):
     if data.mode != "beginning":
         if data.mode == "tutorial":
-            
+            tutorialMouse(event, data)
         else:
             moveWithMouse(event, data)
     gameMode(event, data)
@@ -312,9 +314,10 @@ def timerFired(data):
     if data.mode == "multiplayer":
         clientTimerFired(data)
     elif data.mode == "competitive" and data.mainBoard.turn == "Black" and data.timerFiredCount == 2:
-        newBoard = AI.minimaxSearch(data.mainBoard.board, "Black")
+        newBoard = AI.minimaxSearch(data.mainBoard.board, "Black", data)
         data.mainBoard.board = newBoard
         data.mainBoard.turn = "White"
+        data.counter += 1
     elif data.mode == "tutorial":
         changeTutorialImage(data)
 
@@ -387,69 +390,68 @@ def motion(event, data):
         else:
             data.hover = None
 
-
-    def tutorialMouse(event, data):
-        if data.margin <= event.x <= data.margin+int(data.width/7.5):
-            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MovePawn.png"
-        elif data.margin+2*int(data.width/7.5) <= event.x <= data.margin+3*int(data.width/7.5):
-            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKnight.png"
-        elif data.margin+4*int(data.width/7.5) <= event.x <= data.margin+5*int(data.width/7.5):
-            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegQueen.png"
-        elif data.margin+6*int(data.width/7.5) <= event.x <= data.margin+7*int(data.width/7.5):
-            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegCastle.png"
-        elif data.margin+int(data.width/7.5) <= event.x <= data.margin+2*int(data.width/7.5):
-            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegRook.png"
-        elif data.margin+3*int(data.width/7.5) <= event.x <= data.margin+4*int(data.width/7.5):
-            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegBishop.png"
-        elif data.margin+5*int(data.width/7.5) <= event.x <= data.margin+6*int(data.width/7.5):
-            if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKing.png"
+def tutorialMouse(event, data):
+    if data.margin <= event.x <= data.margin+int(data.width/7.5):
+        if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MovePawn.png"
+    elif data.margin+2*int(data.width/7.5) <= event.x <= data.margin+3*int(data.width/7.5):
+        if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKnight.png"
+    elif data.margin+4*int(data.width/7.5) <= event.x <= data.margin+5*int(data.width/7.5):
+        if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegQueen.png"
+    elif data.margin+6*int(data.width/7.5) <= event.x <= data.margin+7*int(data.width/7.5):
+        if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegCastle.png"
+    elif data.margin+int(data.width/7.5) <= event.x <= data.margin+2*int(data.width/7.5):
+        if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegRook.png"
+    elif data.margin+3*int(data.width/7.5) <= event.x <= data.margin+4*int(data.width/7.5):
+        if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegBishop.png"
+    elif data.margin+5*int(data.width/7.5) <= event.x <= data.margin+6*int(data.width/7.5):
+        if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKing.png"
     
-    def changeTutorialImage(data):
-        if data.timerFiredCount%7 == 0:
-            # Pawn Images
-            if data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MovePawn.png":
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegPawn.png"
-            elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegPawn.png":
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/TakePawn.png"
-            elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/TakePawn.png":
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MovePawn.png"
-            # Rook Images
-            elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegRook.png":
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveRook.png"
-            elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveRook.png":
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegRook.png"
-            # Knight Images
-            elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKnight.png":
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveKnight.png"
-            elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveKnight.png":
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKnight.png"
-            # Bishop Images
-            elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegBishop.png":
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveBishop.png"
-            elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveBishop.png":
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegBishop.png"
-            # Queen Images
-            elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegQueen.png":
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveQueen.png"
-            elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveQueen.png":
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegQueen.png"
-            # King Images
-            elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKing.png":
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveKing.png"
-            elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveKing.png":
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKing.png"
-            # Castling Images
-            elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegCastle.png":
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveCastle.png"
-            elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveCastle.png":
-                data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegCastle.png"
+def changeTutorialImage(data):
+    if data.timerFiredCount%7 == 0:
+        # Pawn Images
+        if data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MovePawn.png":
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegPawn.png"
+        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegPawn.png":
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/TakePawn.png"
+        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/TakePawn.png":
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MovePawn.png"
+        # Rook Images
+        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegRook.png":
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveRook.png"
+        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveRook.png":
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegRook.png"
+        # Knight Images
+        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKnight.png":
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveKnight.png"
+        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveKnight.png":
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKnight.png"
+        # Bishop Images
+        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegBishop.png":
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveBishop.png"
+        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveBishop.png":
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegBishop.png"
+        # Queen Images
+        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegQueen.png":
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveQueen.png"
+        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveQueen.png":
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegQueen.png"
+        # King Images
+        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKing.png":
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveKing.png"
+        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveKing.png":
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKing.png"
+        # Castling Images
+        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegCastle.png":
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveCastle.png"
+        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveCastle.png":
+            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegCastle.png"
 
 
 ####################################

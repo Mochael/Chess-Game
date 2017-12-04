@@ -1,12 +1,7 @@
-# Tutorial mode: animations for user to learn how chess works and what the pieces do (maybe make a youtube video explaining rules).
+# This file is the main file for the project which handles the majority of the front end UI as well as
+# tells the game when to run all of the different functions that are spread out across the different
+# project files.
 
-# Training mode: user plays against AI that tells user why it is making those moves. Maybe in this mode the chess AI can give you a visual display of the succession of moves it plans to make and show you how the paths of the moves change as you make your own moves.
-
-# Competitive mode: user plays AI from different difficulties
-
-# Multiplayer: user can play against different players online
-
-# Difference in AI difficulties could be how far the AI can see into the future with its move predictions.
 from tkinter import *
 import PIL.Image
 import PIL.ImageTk
@@ -20,6 +15,7 @@ import AISearchAlgs as AI
 import pygame
 import imageio
 
+# Makes the initial start screen.
 def startScreen(canvas, data):
     anImage = PIL.Image.open("/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/coolchesspicture.jpg")
     anImage = anImage.resize((int(data.width*1.5), int(data.height*1.1)), PIL.Image.ANTIALIAS)
@@ -51,7 +47,7 @@ def startScreen(canvas, data):
                         text = "Select One of the Below Options to Begin",
                         font = "fixedsys "+str(int(data.width/30)), fill = "White", 
                         )
-# Modes for player to select.
+    # Modes for player to select
     canvas.create_text(data.x1, data.y,
                         text = "tutorial", 
                         font = "fixedsys "+str(int(data.width/44)),
@@ -69,6 +65,7 @@ def startScreen(canvas, data):
                         font = "fixedsys "+str(int(data.width/44)),
                         fill = "black")
 
+# Makes and updates drawings of tutorial screen when player has made some selection.
 def tutorialScreen(canvas, data):
     anImage = PIL.Image.open("/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/coolchesspicture.jpg")
     anImage = anImage.resize((int(data.width*1.5), int(data.height*1.1)), PIL.Image.ANTIALIAS)
@@ -134,6 +131,7 @@ def tutorialScreen(canvas, data):
                         font = "fixedsys "+str(int(data.width/44)),
                         fill = "black")
 
+# Makes and updates drawings of single player game board when player makes a move.
 def trainingScreen(canvas, data):
     anImage = PIL.Image.open("/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/coolchesspicture.jpg")
     anImage = anImage.resize((int(data.width*1.5), int(data.height*1.1)), PIL.Image.ANTIALIAS)
@@ -157,6 +155,7 @@ def trainingScreen(canvas, data):
     initialize(canvas, data)
     drawImages(canvas, data)
 
+# Makes and updates drawings of game board when player or AI makes a move.
 def competitiveScreen(canvas, data):
     anImage = PIL.Image.open("/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/coolchesspicture.jpg")
     anImage = anImage.resize((int(data.width*1.5), int(data.height*1.1)), PIL.Image.ANTIALIAS)
@@ -180,6 +179,7 @@ def competitiveScreen(canvas, data):
     initialize(canvas, data)
     drawImages(canvas, data)
 
+# Makes and updates drawings of the game board when either player makes a move.
 def multiplayerScreen(canvas, data):
     anImage = PIL.Image.open("/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/coolchesspicture.jpg")
     anImage = anImage.resize((int(data.width*1.5), int(data.height*1.1)), PIL.Image.ANTIALIAS)
@@ -203,6 +203,8 @@ def multiplayerScreen(canvas, data):
     initialize(canvas, data)
     drawImages(canvas, data)
 
+# Switches game mode if player selects an option on the start screen. If player clicks back then it takes them
+# back to the home screen.
 def gameMode(event, data):
     if data.mode != "beginning":
         if 0 <= event.x <= 85:
@@ -221,8 +223,9 @@ def gameMode(event, data):
         if data.x4-data.r <= event.x <= data.x4+data.r:
             if data.y-data.r <= event.y <= data.y+data.r:
                 data.mode = "multiplayer"
-#                multiplayerInit(data)
 
+# If the player is on some current game board this calls the moveClick and mouseClick functions
+# to indicate that a player has either selected a piece or made a move. 
 def moveWithMouse(event, data):
     if data.checkMate == None:
         if data.mainBoard.clicked:
@@ -246,9 +249,7 @@ def moveWithMouse(event, data):
                 data.mainBoard.mouseClick(event.x, event.y, data.player)
 
 
-####################################
-# customize these functions
-####################################
+# This is used to create a new person when another player is initiated in multiplayer mode.
 class Person(object):
     def __init__(self, board, ID = None):
         self.board = board
@@ -278,9 +279,11 @@ def init(data):
     data.checkMate = None
     data.instructImage = None
 
+# Sets the canvas to store the current pieces on the board.
 def initialize(canvas, data):
     canvas.shapes = data.mainBoard.drawings
 
+# Draws the pieces to the current board.
 def drawImages(canvas, data):
     for key in canvas.shapes:
         im = PIL.Image.open(canvas.shapes[key])
@@ -288,11 +291,12 @@ def drawImages(canvas, data):
                         PIL.Image.ANTIALIAS)
         ph = PIL.ImageTk.PhotoImage(im)
         label = Label(canvas, image=ph)
-        label.image=ph  #need to keep the reference of your image to avoid garbage collection
+        label.image=ph
         canvas.create_image(int(key[1]*data.mainBoard.cellWidth+data.mainBoard.cellWidth*(26/20)), 
                             int(key[0]*data.mainBoard.cellHeight+data.mainBoard.cellHeight*(26/20)),
                             image=ph)
 
+# Determines for mouse functions which state player is in.
 def mousePressed(event, data):
     if data.mode != "beginning":
         if data.mode == "tutorial":
@@ -305,6 +309,7 @@ def mousePressed(event, data):
 def keyPressed(event, data):
     pass
 
+# Used to tell AI when to move and update start/tutorial screens when they are clicked.
 def timerFired(data):
     data.timerFiredCount += 1
     if data.mode != "beginning":
@@ -318,6 +323,7 @@ def timerFired(data):
     elif data.mode == "tutorial":
         changeTutorialImage(data)
 
+# Draws whichever screen player is in.
 def redrawAll(canvas, data):
     if data.mode == "beginning":
         startScreen(canvas, data)
@@ -346,6 +352,7 @@ def redrawAll(canvas, data):
         canvas.create_text(data.width//2, data.height//1.9, text = "Black Wins",
         fill = "black", font = "fixedsys 20 bold")
 
+# Tells the game which box should be highlighted when in start/tutorial mode.
 def motion(event, data):
     if data.mode == "beginning":
         if data.margin <= event.x <= data.margin+int(data.width/7.5):
@@ -387,6 +394,7 @@ def motion(event, data):
         else:
             data.hover = None
 
+# Indicates which tutorial image to show based on which option is clicked.
 def tutorialMouse(event, data):
     if data.margin <= event.x <= data.margin+int(data.width/7.5):
         if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
@@ -410,6 +418,7 @@ def tutorialMouse(event, data):
         if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
             data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKing.png"
     
+# Changes the tutorial image after a certain period of time for tutorial move animation.
 def changeTutorialImage(data):
     if data.timerFiredCount%7 == 0:
         # Pawn Images
@@ -451,9 +460,8 @@ def changeTutorialImage(data):
             data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegCastle.png"
 
 
-####################################
-# use the run function as-is
-####################################
+
+# Citation: 15-112 animation framework.
 
 def run(width=300, height=300, serverMsg = None, server = None):
     def redrawAllWrapper(canvas, data):

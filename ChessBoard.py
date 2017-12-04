@@ -1,3 +1,7 @@
+# This file handles user interaction with the chess board during gameplay. The chess board is created
+# in this file and the characteristics of the chessboard are edited here based off of the user's or AI's
+# input.
+
 from tkinter import *
 from BackEndChess import *
 import copy
@@ -21,6 +25,7 @@ class Board(object):
         self.okCastleWhite = True
         self.okCastleBlack = True
 
+# Draws the background chessboard and calls drawPieces.
     def drawBoard(self, canvas):
         for row in range(8):
             if row%2 == 0:
@@ -45,18 +50,16 @@ class Board(object):
                         width = self.cellHeight//25)
         self.drawPieces()
 
+# Loops through the spaces on the board and if there is a piece draws the corresponding image in that place.
     def drawPieces(self):
         self.drawings = {}
         self.margin = 30
         for row in range(len(self.board)):
             for col in range(len(self.board[0])):
-                #xc = self.margin+self.cellWidth*col-self.cellWidth/2
-                #yc = self.margin+self.cellHeight*row-self.cellHeight/2
                 if self.board[row][col] != None:
                     self.drawings[(row,col)] = self.board[row][col].image
-                    #photo = ImageTk.PhotoImage(Image.open(self.board[row][col].image))
-                    #canvas.create_image(xc, yc, image = photo)
 
+# This initializes the starting chess board where the pieces are in the correct places.
     def makeBoard(self):
         self.board = []
         for row in range(8):
@@ -91,6 +94,7 @@ class Board(object):
             elif l == 4:
                 self.board[7][l] = King("White", 7, l)
 
+# This identifies if a player has clicked on one of their pieces before they start making a move.
     def mouseClick(self, eventX, eventY, player):
         if self.turn == player:
             if (self.horMargin <= eventX <= self.width-self.horMargin and 
@@ -101,7 +105,8 @@ class Board(object):
                     self.clicked = True
                     self.board[self.rowClick][self.colClick].getMoves(self.board)
 
-# Run moveClick before mouseClick and only run if self.clicked = True.
+# If a player has already clicked on one of their pieces, this functions determines if the move is legal
+# and then calls the makeMove function if it is.
     def moveClick(self, eventX, eventY, player, data):
         rowMove = int((eventY-self.vertMargin)/((self.height-2*self.vertMargin)/8))
         colMove = int((eventX-self.horMargin)/((self.width-2*self.horMargin)/8))
@@ -141,6 +146,7 @@ class Board(object):
         self.rowClick = None
         self.colClick = None
 
+# Handles making moves for the board when they are declared legal.
     def makingMoves(self, rowMove, colMove, player, data, castling = False):
         data.origRow = self.rowClick
         data.origCol = self.colClick
@@ -168,6 +174,8 @@ class Board(object):
         if isCheck(newTempB, self.turn) and isCheckMate(newTempB, self.turn):
             data.checkMate = self.turn
         
+    # This checks if there are pawns that have made it to the opposite side of the board. 
+    # If a pawn has made it all the way, then it is converted to a queen.
     def convertPawns(self):
         for row in range(0, 8, 7):
             for col in range(len(self.board[0])):
@@ -178,6 +186,7 @@ class Board(object):
                     if isinstance(self.board[row][col], Pawn) and self.board[row][col].color == "Black":
                         self.board[row][col] = Queen("Black", row, col)
 
+    # This function castles if the player chooses to legally castle.
     def amCastling(self, player):
         if player == "White":
             self.board[7][5] = self.board[7][7]

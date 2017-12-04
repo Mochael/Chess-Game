@@ -1,15 +1,13 @@
-#############################
-# Sockets Client Demo
-# by Rohan Varma
-# adapted by Kyle Chin
-#############################
+# Sets up clients for multiplayer and establishes what messages can be sent.
+# Citation: 15-112 sockets server framework by Rohan Varma and Kyle Chin
+# Adapted by be to work with chess.
 
 import socket
 import threading
 from queue import Queue
 from FinalProject import *
 
-HOST = "128.237.218.212" # put your IP address here if playing on multiple computers
+HOST = "128.237.143.216" # put your IP address here if playing on multiple computers
 PORT = 50003
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.connect((HOST,PORT))
@@ -28,25 +26,19 @@ def handleServerMsg(server, serverMsg):
       serverMsg.put(readyMsg)
       command = msg.split("\n")
 
-# events-example0.py from 15-112 website
-# Barebones timer, mouse, and keyboard events
-
 from tkinter import *
 import random
-####################################
-# customize these functions
-####################################
 
-#def multiplayerInit(data):
-#  data.me = ["White", data.mainBoard.board]
-#  data.otherStrangers = dict()
-
+# If the other player made a move, a message is sent that 
+# includes the move the other player made and whose turn it is.
 def sendMoveMessage(data):
   msg = "playerMoved %d %d %d %d %s \n" %(data.origRow, data.origCol, data.newRow, data.newCol, data.mainBoard.turn)
   if (msg != ""):
     print ("sending: ", msg,)
     data.server.send(msg.encode())
 
+# If there is a checkmate based off opponents move, the player is
+# sent a message of who lost.
 def sendCheckMate(data):
   msg = "checkMate %s \n" %(data.checkMate)
   if (msg != ""):
@@ -57,7 +49,6 @@ def keyPressed(event, data):
     pass
 
 def clientTimerFired(data):
-    # timerFired receives instructions and executes them
     while (data.serverMsg.qsize() > 0):
       msg = data.serverMsg.get(False)
       print("MESSAGE", msg)
@@ -87,12 +78,6 @@ def clientTimerFired(data):
 
         elif (command == "checkMate"):
           data.checkMate = msgL[2]
-
-
-
-#          print(ast.literal_eval(s))
-#          board = ast.literal_eval(s)
-#          data.other.board.board = data.mainBoard
 
       except:
         print("failed")

@@ -1,14 +1,11 @@
-#############################
-# Sockets Server Demo
-# by Rohan Varma
-# adapted by Kyle Chin
-#############################
+# Sets up sockets server for multiplayer.
+# Citation: 15-112 sockets server framework by Rohan Varma and Kyle Chin
 
 import socket
 import threading
 from queue import Queue
 
-HOST = "128.237.218.212" # put your IP address here if playing on multiple computers
+HOST = "128.237.143.216" # put your IP address here if playing on multiple computers
 PORT = 50003
 BACKLOG = 2
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
@@ -55,11 +52,11 @@ playerNum = 0
 serverChannel = Queue(100)
 threading.Thread(target = serverThread, args = (clientele, serverChannel)).start()
 
+# Each possible player
 names = ["White", "Black"]
 
 while True:
   client, address = server.accept()
-  # myID is the key to the client in the clientele dictionary
   myID = names[playerNum]
   print(myID, playerNum)
   for cID in clientele:

@@ -1,7 +1,8 @@
+# This file specifies what the traits are for each chess piece object.
+# It also explains when there is a check/checkmate on the board.
+
 from PIL import Image, ImageTk
 import copy
-# photo = ImageTk.PhotoImage(Image.open("someFile.jpg"))
-# Do canvas.create_image(xcenter, ycenter, image = photo)
 
 # Identifies if a player is in check.
 def isCheck(board, turn):
@@ -19,7 +20,7 @@ def isCheck(board, turn):
                         return True
     return False
 
-# Run this function for both stalemate and checkmate. However, only run for checkmate if player is first in check.
+# Run this function if the player is in check to see if it is a checkmate.
 def isCheckMate(board, turn):
     for row in range(len(board)):
         for col in range(len(board[0])):
@@ -34,7 +35,7 @@ def isCheckMate(board, turn):
                     if not isCheck(tempB, turn):
                         return False
     return True
-   
+
 class Pawn(object):
     def __init__(self, color, posRow, posCol):
         self.color = color
@@ -50,6 +51,7 @@ class Pawn(object):
     def __repr__(self):
         return self.color+" Pawn"
 
+    # Finds possible pawn moves.
     def getMoves(self, board):
         self.moves = []
         # Black pieces start at the top of the board.
@@ -97,7 +99,6 @@ class Pawn(object):
             and self.color != board[self.takeMoves[i][0]][self.takeMoves[i][1]].color):
                 self.moves.append(self.takeMoves[i])
 
-
 class Rook(object):
     def __init__(self, color, posRow, posCol):
         self.color = color
@@ -112,7 +113,7 @@ class Rook(object):
     def __repr__(self):
         return self.color+" Rook"
 
-    # Finds all legal moves.
+    # Finds possible Rook moves.
     def getMoves(self, board):
         self.moves = []
         for i in range(self.posRow-1, -1, -1):
@@ -155,7 +156,7 @@ class Knight(object):
     def __repr__(self):
         return self.color+" Knight"
 
-    # Finds all moves.
+    # Finds possible Knight moves.
     def getMoves(self, board, counter = 0):
         self.moves = []
         for move in [[-1,-2],[-1,2],[-2,-1],[-2,1],[1,-2],[1,2],[2,-1],[2,1]]:
@@ -181,6 +182,7 @@ class Bishop(object):
     def __repr__(self):
         return self.color+" Bishop"
     
+    # Finds Possible diagonal moves.
     def getMoves(self, board):
         self.moves = []
         adder = 0
@@ -235,6 +237,7 @@ class Queen(object):
     def __repr__(self):
         return self.color+" Queen"
 
+    # Finds possible rook-like straight moves.
     def getStraightMoves(self, board):
         for i in range(self.posRow-1, -1, -1):
             if board[i][self.posCol] != None:
@@ -261,6 +264,7 @@ class Queen(object):
                 break
             self.moves.append([self.posRow,m])
 
+    # Finds possible bishop-like diagonal moves.
     def getDiagonalMoves(self, board):
         adder = 0
         # Going diagonally down and to the right.
@@ -318,6 +322,7 @@ class King(object):
     def __repr__(self):
         return self.color+" King"
 
+    # Finds possible king moves.
     def getMoves(self, board):
         self.moves = []
         for i in range(-1, 2):

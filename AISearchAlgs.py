@@ -1,4 +1,5 @@
-# This file is where I include the minimax algorithm for my chess AI which calls the neural network.
+# This file is where I include the minimax algorithm for my chess AI which 
+# calls the neural network when it needs to evaluate a chess board.
 
 
 import copy
@@ -8,25 +9,18 @@ import random
 import NeuralNet
 import ast
 
-#myNet.feedForward([.01,.01,.01,.01,.01,.01,.01,.01, .02,.03,.04,.05,.06,.02,.03,.04, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, .01,.01,.01,.01,.01,.01,.01,.01, .02,.03,.04,.05,.06,.02,.03,.04])
-#print(myNet.getResults())
-#myNet.feedForward([-.01,-.01,-.01,.01,.01,.01,.01,.01, .02,.03,.04,.05,.06,.02,.03,.04, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, .01,.01,.01,.01,.01,.01,.01,.01, .02,.03,.04,.05,.06,.02,.03,.04])
-#print(myNet.getResults())
-#myNet.feedForward([.1,.1,.1,.1,.1,.1,.1,.1, .2,.3,.4,.5,.6,.2,.3,.4, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, .1,.1,.1,.1,.1,.1,.1,.1, .2,.3,.4,.5,.6,.2,.3,.4])
-#print(myNet.getResults())
-#myNet.feedForward([-.1,-.1,-.1,.1,.1,.1,.1,.1, .2,.3,.4,.5,.6,.2,.3,.4, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, .1,.1,.1,.1,.1,.1,.1,.1, .2,.3,.4,.5,.6,.2,.3,.4])
-#print(myNet.getResults())
-
 # Converts string of weights to actual list of weights.
 with open("/Users/michaelkronovet/Desktop/15-112/FinalProject/RealWeights/RealWeights9.txt", "r") as myfile:
     weightsF = myfile.read().replace('\n', '')
 weightsL = ast.literal_eval(weightsF)
 
+# Sets neural network weights to the weights stored in the text file.
 myNet = NeuralNet.Net([64, 44, 18, 1])
 for layer in range(len(myNet.layers)-1):
     for neuron in range(len(myNet.layers[layer])):
         myNet.layers[layer][neuron].outputWeights = weightsL[layer][neuron]
 
+# Translates the chess board that is in the game to a form which is readable by the neural network.
 def translateBoard(board):
     tBoard = []
     for row in range(7, -1, -1):
@@ -64,10 +58,9 @@ def translateBoard(board):
                         tBoard.append(-.06)
             else:
                 tBoard.append(0.0)
-#    print("INPUTS", tBoard)
     return tBoard
 
-# Makes dictionary of all moves where each object has its own list of moves.
+# Makes dictionary of all moves where each piece object has its own list of moves.
 def getAllMoves(board, AIcolor):
     allMoves = dict()
     for row in range(len(board)):
@@ -77,6 +70,7 @@ def getAllMoves(board, AIcolor):
                 allMoves[board[row][col]] = board[row][col].moves
     return allMoves
 
+# This is the minimax search algorithm.
 def minimaxSearch(board, AIcolor, data):
     allMoves = getAllMoves(board, AIcolor)
     bestScore = float("-inf")
@@ -92,7 +86,6 @@ def minimaxSearch(board, AIcolor, data):
             newT = copy.deepcopy(tempB)
             if isCheck(newT, "Black"):
                 continue
-            # Evaulate would be the neural network evaluation function
             tBoard = translateBoard(tempB)
             score = minPart(tempB, 0, "White")
             if sum(tBoard) < sum(curBoard):
@@ -105,10 +98,9 @@ def minimaxSearch(board, AIcolor, data):
             if score > bestScore:
                 bestMove = [key, move]
                 bestScore = score
-    print("MINPARTSCORE", minPart(tempB, 0, "White"))  
-    print("SCORE", bestScore)
     return makeMove(bestMove, board)
 
+# Given a move and a board, this function makes the move.
 def makeMove(bestMove, board):
     board[bestMove[1][0]][bestMove[1][1]] = bestMove[0]
     board[bestMove[0].posRow][bestMove[0].posCol] = None
@@ -116,9 +108,7 @@ def makeMove(bestMove, board):
     board[bestMove[1][0]][bestMove[1][1]].posCol = bestMove[1][1]
     return board
 
-def evaluate(board):
-    return random.uniform(0,1)
-
+# Used to find which move is the best for the human player in response to the AI's move.
 def minPart(gameBoard, level, color):
     if level == 1:
         tBoard = translateBoard(gameBoard)
@@ -148,6 +138,9 @@ def minPart(gameBoard, level, color):
                 bestScore = score
     return bestScore
 
+# Used to find what the best response is for the AI after the human player has made his/her move.
+# Currently just returns an evaluatation of the board using the neural network because going through
+# an additional layer would take too much time.
 def maxPart(gameBoard, level, color):
     if level == 1:
         tBoard = translateBoard(gameBoard)

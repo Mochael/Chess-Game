@@ -91,7 +91,6 @@ def minimaxSearch(board, AIcolor, data):
             if sum(tBoard) < sum(curBoard):
                 newSum = (sum(tBoard)*-1 + sum(curBoard))*100
                 if abs(score) <= abs(newSum):
-#                    score = sum(tBoard)*-1
                     score = newSum
             if score > bestScore:
                 bestMove = [key, move]

@@ -90,8 +90,6 @@ def minimaxSearch(board, AIcolor, data):
             score = minPart(tempB, 0, "White")
             if sum(tBoard) < sum(curBoard):
                 newSum = (sum(tBoard)*-1 + sum(curBoard))*100
-                print("TAKEMOVE", newSum)
-                print("MINISCORE", score)
                 if abs(score) <= abs(newSum):
 #                    score = sum(tBoard)*-1
                     score = newSum

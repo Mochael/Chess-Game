@@ -5,16 +5,56 @@ import random
 import NeuralNet
 import ast
 
-with open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsAttempt1.txt", "r") as myfile:
-    weightsF=myfile.read().replace('\n', '')
+with open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsText.txt", "r") as myfile:
+    weightsF = myfile.read().replace('\n', '')
 
-#weightsL = ast.literal_eval(weightsF)
+weightsL = ast.literal_eval(weightsF)
+print(weightsL)
 
 myNet = NeuralNet.Net([64, 44, 18, 1])
-for layer in range(len(myNet.layers)):
+for layer in range(len(myNet.layers)-1):
     for neuron in range(len(myNet.layers[layer])):
-        myNet.layers[layer][neuron]
+        myNet.layers[layer][neuron].outputWeights = weightsL[layer][neuron]
         
+
+def translateBoard(board):
+    tBoard = []
+    for row in range(7, -1, -1):
+        for col in range(8):
+            if board[row][col] != None:
+                if isinstance(board[row][col], Pawn):
+                    if board[row][col].color == "White":
+                        tBoard.append(1)
+                    else:
+                        tBoard.append(-1)
+                elif isinstance(board[row][col], Knight):
+                    if board[row][col].color == "White":
+                        tBoard.append(2)
+                    else:
+                        tBoard.append(-2)
+                if isinstance(board[row][col], Bishop):
+                    if board[row][col].color == "White":
+                        tBoard.append(3)
+                    else:
+                        tBoard.append(-3)
+                if isinstance(board[row][col], Rook):
+                    if board[row][col].color == "White":
+                        tBoard.append(4)
+                    else:
+                        tBoard.append(-4)
+                if isinstance(board[row][col], Queen):
+                    if board[row][col].color == "White":
+                        tBoard.append(5)
+                    else:
+                        tBoard.append(-5)
+                if isinstance(board[row][col], King):
+                    if board[row][col].color == "White":
+                        tBoard.append(6)
+                    else:
+                        tBoard.append(-6)
+            else:
+                tBoard.append(0)
+    return tBoard
 
 # Makes dictionary of all moves where each object has its own list of moves.
 def getAllMoves(board, AIcolor):
@@ -59,7 +99,8 @@ def evaluate(board):
 
 def minPart(gameBoard, level, color):
     if level == 1:
-        return evaluate(gameBoard)
+        tBoard = translateBoard(gameBoard)
+        return myNet.feedForward(tBoard)
     bestScore = float("inf")
     newMoves = getAllMoves(gameBoard, color)
     for key in newMoves:
@@ -81,7 +122,8 @@ def minPart(gameBoard, level, color):
 
 def maxPart(gameBoard, level, color):
     if level == 1:
-        return evaluate(gameBoard)
+        tBoard = translateBoard(gameBoard)
+        return myNet.feedForward(tBoard)
     bestScore = float("-inf")
     newMoves = getAllMoves(gameBoard, color)
     for key in newMoves:

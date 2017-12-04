@@ -35,56 +35,70 @@ import sys
 import string
 import NeuralNet
 import os
+import ast
 
 
 topology = [64, 44, 18, 1]
+
+with open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsText.txt", "r") as myfile:
+    weightsF=myfile.read().replace('\n', '')
+
+weightsL = ast.literal_eval(weightsF)
+
 evalNet = NeuralNet.Net(topology)
-path = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PGNFiles"
-for filename in os.listdir(path):
+for layer in range(len(evalNet.layers)-1):
+    for neuron in range(len(evalNet.layers[layer])):
+        evalNet.layers[layer][neuron].outputWeights = weightsL[layer][neuron]
+
+#topology = [64, 44, 18, 1]
+#evalNet = NeuralNet.Net(topology)
+path = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PGNFiles/Winawer.pgn"
+#for filename in os.listdir(path):
     #with open("/Users/michaelkronovet/Desktop/15-112/FinalProject/Alburt.pgn") as f:
-    with open(path+"/"+filename) as f:
-        for n in range(8):
-            try:
-                print("GAMECOUNT", n)
-                game = chess.pgn.read_game(f)
-                while not game.is_end():
-                    node = game.variations[0]
-                    board = game.board()
-                    game = node
-                    piecePos = board.piece_map()
-                    inputsL = []
-                    for i in range(64):
-                        if i in piecePos:
-                            if piecePos[i].color == False:
-                                inputsL.append(-1*piecePos[i].piece_type)
-                            else:
-                                inputsL.append(piecePos[i].piece_type)
+#    with open(path+"/"+filename) as f:
+with open(path) as f:
+    for n in range(8):
+        try:
+            print("GAMECOUNT", n)
+            game = chess.pgn.read_game(f)
+            while not game.is_end():
+                node = game.variations[0]
+                board = game.board()
+                game = node
+                piecePos = board.piece_map()
+                inputsL = []
+                for i in range(64):
+                    if i in piecePos:
+                        if piecePos[i].color == False:
+                            inputsL.append(-1*piecePos[i].piece_type)
                         else:
-                            inputsL.append(0)
-                    evalNet.feedForward(inputsL)
-                    resultVals = evalNet.getResults()
-                    handler = chess.uci.InfoHandler()
-                    engine = chess.uci.popen_engine("/Users/michaelkronovet/Desktop/15-112/FinalProject/stockfish-8-mac/Mac/stockfish-8-64") #give correct address of your engine here
-                    engine.info_handlers.append(handler)
-                    engine.position(board)
-                    evaltime = 1000
-                    evaluation = engine.go(movetime=evaltime)
-                    evaluated = handler.info["score"][1].cp
-                    if evaluated == None:
-                        continue
-                    evaluated /= 700
-                    if abs(evaluated) > 1:
-                        if evaluated < 0:
-                            evaluated = -1
-                        else:
-                            evaluated = 1
-                    if board.turn == True:
-                        evaluated *= -1
-                    print("TARGET", evaluated)
-                    print("OUTPUTS", resultVals)
-                    evalNet.backProp(evaluated)
-            except:
-                continue
+                            inputsL.append(piecePos[i].piece_type)
+                    else:
+                        inputsL.append(0)
+                evalNet.feedForward(inputsL)
+                resultVals = evalNet.getResults()
+                handler = chess.uci.InfoHandler()
+                engine = chess.uci.popen_engine("/Users/michaelkronovet/Desktop/15-112/FinalProject/stockfish-8-mac/Mac/stockfish-8-64") #give correct address of your engine here
+                engine.info_handlers.append(handler)
+                engine.position(board)
+                evaltime = 1000
+                evaluation = engine.go(movetime=evaltime)
+                evaluated = handler.info["score"][1].cp
+                if evaluated == None:
+                    continue
+                evaluated /= 700
+                if abs(evaluated) > 1:
+                    if evaluated < 0:
+                        evaluated = -1
+                    else:
+                        evaluated = 1
+                if board.turn == True:
+                    evaluated *= -1
+                print("TARGET", evaluated)
+                print("OUTPUTS", resultVals)
+                evalNet.backProp(evaluated)
+        except:
+            continue
 #                print("TARGET", evaluated/1000)
 #                evalNet.backProp(evaluated/1000)
 

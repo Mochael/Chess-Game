@@ -64,6 +64,9 @@ def startScreen(canvas, data):
                         text = "multiplayer", 
                         font = "fixedsys "+str(int(data.width/44)),
                         fill = "black")
+    canvas.create_text((data.x2+data.x1)/2.6, data.margin, 
+                       text = "Toggle Music: "+data.music,
+                       font = "courier "+str(int(data.width/30)))
 
 # Makes and updates drawings of tutorial screen when player has made some selection.
 def tutorialScreen(canvas, data):
@@ -211,6 +214,16 @@ def gameMode(event, data):
             if 0 <= event.y <= 30:
                 init(data)
     else:
+        if 0 <= event.x <= 280:
+            if 0 <= event.y <= 40:
+                if data.music == "On":
+                    data.music = "Off"
+                    pygame.mixer.music.pause()
+                else:
+                    data.music = "On"
+                    pygame.mixer.init()
+                    pygame.mixer.music.load(songDir)
+                    pygame.mixer.music.play(-1)
         if data.x1-data.r <= event.x <= data.x1+data.r:
             if data.y-data.r <= event.y <= data.y+data.r:
                 data.mode = "tutorial"
@@ -278,6 +291,8 @@ def init(data):
     data.hover = None
     data.checkMate = None
     data.instructImage = None
+    data.music = "On"
+
 
 # Sets the canvas to store the current pieces on the board.
 def initialize(canvas, data):
@@ -354,6 +369,7 @@ def redrawAll(canvas, data):
 
 # Tells the game which box should be highlighted when in start/tutorial mode.
 def motion(event, data):
+    print(event.x, event.y)
     if data.mode == "beginning":
         if data.margin <= event.x <= data.margin+int(data.width/7.5):
             if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):

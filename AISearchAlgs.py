@@ -75,6 +75,9 @@ def minimaxSearch(board, AIcolor, data):
     allMoves = getAllMoves(board, AIcolor)
     bestScore = float("-inf")
     curBoard = translateBoard(board)
+    tempB = copy.deepcopy(board)
+    if isCheckMate(tempB, AIcolor):
+        return tempB
     for key in allMoves:
         for move in allMoves[key]:
             objCopy = copy.deepcopy(key)

@@ -113,38 +113,29 @@ class Board(object):
         if self.board[rowMove][colMove] == None or self.board[rowMove][colMove].color != player:
             if (player == "White" and self.okCastleWhite and self.board[7][5] == None and 
             self.rowClick == 7 and self.colClick == 4 and rowMove == 7 and colMove == 6):
-                tempB = copy.deepcopy(self.board)
-                if not isCheck(tempB, self.turn):
-                    tempB[rowMove][colMove] = tempB[self.rowClick][self.colClick]
-                    tempB[rowMove][colMove].posRow = rowMove
-                    tempB[rowMove][colMove].posCol = colMove
-                    tempB[self.rowClick][self.colClick] = None
-                    if not isCheck(tempB, self.turn):
-                        self.makingMoves(rowMove, colMove, player, data, True)
-                        data.moved = True
+                self.tempTest(rowMove, colMove, player, data, True)
             elif (player == "Black" and self.okCastleBlack and self.board[0][5] == None and 
             self.rowClick == 0 and self.colClick == 4 and rowMove == 0 and colMove == 6):
-                tempB = copy.deepcopy(self.board)
-                if not isCheck(tempB, self.turn):
-                    tempB[rowMove][colMove] = tempB[self.rowClick][self.colClick]
-                    tempB[rowMove][colMove].posRow = rowMove
-                    tempB[rowMove][colMove].posCol = colMove
-                    tempB[self.rowClick][self.colClick] = None
-                    if not isCheck(tempB, self.turn):
-                        self.makingMoves(rowMove, colMove, player, data, True)
-                        data.moved = True
+                self.tempTest(rowMove, colMove, player, data, True)
             elif [rowMove, colMove] in self.board[self.rowClick][self.colClick].moves:
-                tempB = copy.deepcopy(self.board)
-                tempB[rowMove][colMove] = tempB[self.rowClick][self.colClick]
-                tempB[rowMove][colMove].posRow = rowMove
-                tempB[rowMove][colMove].posCol = colMove
-                tempB[self.rowClick][self.colClick] = None
-                if not isCheck(tempB, self.turn):
-                    self.makingMoves(rowMove, colMove, player, data)
-                    data.moved = True
+                self.tempTest(rowMove, colMove, player, data, False)
         self.clicked = False
         self.rowClick = None
         self.colClick = None
+
+# Makes a temporary board that the function can test to see if it is check or not.
+    def tempTest(self, rowMove, colMove, player, data, castle):
+        tempB = copy.deepcopy(self.board)
+        if castle:
+            if isCheck(tempB, self.turn):
+                return None
+        tempB[rowMove][colMove] = tempB[self.rowClick][self.colClick]
+        tempB[rowMove][colMove].posRow = rowMove
+        tempB[rowMove][colMove].posCol = colMove
+        tempB[self.rowClick][self.colClick] = None
+        if not isCheck(tempB, self.turn):
+            self.makingMoves(rowMove, colMove, player, data, castle)
+            data.moved = True
 
 # Handles making moves for the board when they are declared legal.
     def makingMoves(self, rowMove, colMove, player, data, castling = False):

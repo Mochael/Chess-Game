@@ -4,19 +4,23 @@
 from PIL import Image, ImageTk
 import copy
 
+# Finds the players king on the board.
+def findKing(board, turn):
+        for row in range(len(board)):
+            for col in range(len(board[0])):
+                if isinstance(board[row][col], King) and board[row][col].color == turn:
+                    kingRow = row
+                    kingCol = col
+                    return [kingRow, kingCol]
+
 # Identifies if a player is in check.
 def isCheck(board, turn):
-    for row in range(len(board)):
-        for col in range(len(board[0])):
-            if isinstance(board[row][col], King) and board[row][col].color == turn:
-                kingRow = row
-                kingCol = col
-                break
+    kingPlace = findKing(board, turn)
     for row in range(len(board)):
         for col in range(len(board[0])):
             if board[row][col] != None and board[row][col].color != turn:
                     board[row][col].getMoves(board)
-                    if [kingRow, kingCol] in board[row][col].moves:
+                    if [kingPlace[0], kingPlace[1]] in board[row][col].moves:
                         return True
     return False
 

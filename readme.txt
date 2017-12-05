@@ -4,13 +4,13 @@ I made a chess game from scratch that has the rules of regular chess. It prevent
 The four game modes:
 
 1. Tutorial Mode:
-	- Players can click on each piece/move at the bottom and it will show 	  animation of how the piece moves after a few seconds
+	- Players can click on each piece/move at the bottom and it will show animation of how the piece moves after a few seconds
 2. Training Mode:
-	- A single player can play against themselves to practice making 	  certain moves. Regular chess rules apply.
+	- A single player can play against themselves to practice making certain moves. Regular chess rules apply.
 3. Competitive Mode:
-	- This is where the project gets juicy. In this mode players can play 	  against an AI. In order to teach through possible moves, the AI 	  uses the minimax algorithm to go through all possible moves and 	  then each of the human player’s moves that branch off after the 	  first node of moves. At each move if it identifies a move move for 	  itself where the opposing player can only make a really bad move, 	  then the AI automatically makes that move. Otherwise, the AI uses a 	  neural network I made (without any machine learning libraries) to 	  evaluate how good a certain move is when sifting through the 		  possible moves. The move that results in the worst possible moves 	  for the human player is chosen and the move is made.
+	- This is where the project gets juicy. In this mode players can play against an AI. In order to teach through possible moves, the AI 	  uses the minimax algorithm to go through all possible moves and then each of the human player’s moves that branch off after the first node of moves. At each move if it identifies a move move for itself where the opposing player can only make a really bad move, then the AI automatically makes that move. Otherwise, the AI uses a neural network I made (without any machine learning libraries) to evaluate how good a certain move is when sifting through the possible moves. The move that results in the worst possible moves for the human player is chosen and the move is made.
 4. Multiplayer Mode:
-	- I used sockets to allow players to play each other from different 	  computers in this mode.
+	- I used sockets to allow players to play each other from different computers in this mode.
 
 More Detail about AI:
 
@@ -30,4 +30,5 @@ How to Run:
 4. You should now be able to play the single player modes.
 5. If you want to play multiplayer, you need to run Client.py in a different terminal window. 
 6. If running on a different computer you need to download the source code and follow steps 1-2 as well as input the host server IP into your HOST variable in Client.py.
-7. I recommend playing multiplayer on different computers since I chose to make it so users could not adjust the screen size.
+7. I recommend playing multiplayer on different computers since users are not allowed to adjust the screen size.
+8. If you exit a multiplayer game and want to start another, you must restart the server and clients because the server only allows a history of two clients.

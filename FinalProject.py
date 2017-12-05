@@ -150,17 +150,7 @@ def trainingScreen(canvas, data):
     canvas.create_text(data.width/2, data.height*.03, 
                        text = "Training",
                        font = "courier "+str(int(data.width/25))+" underline bold")
-    canvas.create_text(data.width*.053, data.height*.0273, 
-                       text = "Back",
-                       font = "courier "+str(int(data.width/26)))
-    if data.mainBoard.clicked:
-        canvas.create_rectangle(data.mainBoard.horMargin+data.mainBoard.colClick*data.mainBoard.cellWidth,
-                                data.mainBoard.vertMargin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
-                                data.mainBoard.horMargin+(data.mainBoard.colClick+1)*data.mainBoard.cellWidth,
-                                data.mainBoard.vertMargin+(data.mainBoard.rowClick+1)*data.mainBoard.cellHeight,
-                                fill = "yellow")
-    initialize(canvas, data)
-    drawImages(canvas, data)
+    sameBoards(canvas, data)
 
 # Makes and updates drawings of game board when player or AI makes a move.
 def competitiveScreen(canvas, data):
@@ -174,17 +164,9 @@ def competitiveScreen(canvas, data):
     canvas.create_text(data.width/2, data.height*.03, 
                        text = "Competitive",
                        font = "courier "+str(int(data.width/25))+" underline bold")
-    canvas.create_text(data.width*.053, data.height*.0273, 
-                       text = "Back",
-                       font = "courier "+str(int(data.width/26)))
-    if data.mainBoard.clicked:
-        canvas.create_rectangle(data.mainBoard.horMargin+data.mainBoard.colClick*data.mainBoard.cellWidth,
-                                data.mainBoard.vertMargin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
-                                data.mainBoard.horMargin+(data.mainBoard.colClick+1)*data.mainBoard.cellWidth,
-                                data.mainBoard.vertMargin+(data.mainBoard.rowClick+1)*data.mainBoard.cellHeight,
-                                fill = "yellow")
-    initialize(canvas, data)
-    drawImages(canvas, data)
+    canvas.create_text(data.width/20*18, data.height/25, text = "You are "+data.player,
+                       font = "courier "+str(int(data.width/40)), fill = data.player)
+    sameBoards(canvas, data)
 
 # Makes and updates drawings of the game board when either player makes a move.
 def multiplayerScreen(canvas, data):
@@ -198,9 +180,21 @@ def multiplayerScreen(canvas, data):
     canvas.create_text(data.width/2, data.height*.03, 
                        text = "Multiplayer",
                        font = "courier "+str(int(data.width/25))+" underline bold")
+    canvas.create_text(data.width/20*18, data.height/25, text = "You are "+data.me.ID,
+                       font = "courier "+str(int(data.width/40)), fill = data.me.ID)
+    sameBoards(canvas, data)
+
+# This function is called to draw moves and board screen for the three playing modes.
+def sameBoards(canvas, data):
     canvas.create_text(data.width*.053, data.height*.0273, 
                        text = "Back",
                        font = "courier "+str(int(data.width/26)))
+    if data.mainBoard.kingCheck != None:
+        canvas.create_rectangle(data.mainBoard.horMargin+data.mainBoard.kingCheck[1]*data.mainBoard.cellWidth,
+                                data.mainBoard.vertMargin+data.mainBoard.kingCheck[0]*data.mainBoard.cellHeight,
+                                data.mainBoard.horMargin+(data.mainBoard.kingCheck[1]+1)*data.mainBoard.cellWidth,
+                                data.mainBoard.vertMargin+(data.mainBoard.kingCheck[0]+1)*data.mainBoard.cellHeight,
+                                fill = "red2")
     if data.mainBoard.clicked:
         canvas.create_rectangle(data.mainBoard.horMargin+data.mainBoard.colClick*data.mainBoard.cellWidth,
                                 data.mainBoard.vertMargin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
@@ -209,6 +203,17 @@ def multiplayerScreen(canvas, data):
                                 fill = "yellow")
     initialize(canvas, data)
     drawImages(canvas, data)
+    canvas.create_rectangle(data.width/2-3*data.r, data.height/20*18.4,
+                            data.width/2+3*data.r, data.height/20*19.8,
+                            fill = "grey")
+    if data.mainBoard.turn == "White":
+        canvas.create_text(data.width/2, data.height/20*19.08, 
+                        text = "White's turn",
+                        font = "courier "+str(int(data.width/25)), fill = "White")
+    else:
+        canvas.create_text(data.width/2, data.height/20*19.08, 
+                        text = "Black's turn",
+                        font = "courier "+str(int(data.width/25)), fill = "Black")
 
 # Switches game mode if player selects an option on the start screen. If player clicks back then it takes them
 # back to the home screen.

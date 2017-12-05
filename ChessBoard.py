@@ -24,6 +24,7 @@ class Board(object):
         self.turn = "White"
         self.okCastleWhite = True
         self.okCastleBlack = True
+        self.kingCheck = None
 
 # Draws the background chessboard and calls drawPieces.
     def drawBoard(self, canvas):
@@ -128,14 +129,18 @@ class Board(object):
         tempB = copy.deepcopy(self.board)
         if castle:
             if isCheck(tempB, self.turn):
+                self.kingCheck = self.findKing(self.board, self.turn)
                 return None
         tempB[rowMove][colMove] = tempB[self.rowClick][self.colClick]
         tempB[rowMove][colMove].posRow = rowMove
         tempB[rowMove][colMove].posCol = colMove
         tempB[self.rowClick][self.colClick] = None
         if not isCheck(tempB, self.turn):
+            self.kingCheck = None
             self.makingMoves(rowMove, colMove, player, data, castle)
             data.moved = True
+        else:
+            self.kingCheck = findKing(self.board, self.turn)
 
 # Handles making moves for the board when they are declared legal.
     def makingMoves(self, rowMove, colMove, player, data, castling = False):

@@ -2,6 +2,10 @@
 # tells the game when to run all of the different functions that are spread out across the different
 # project files.
 
+# Citation: Chess piece images from https://commons.wikimedia.org/wiki/Category:PNG_chess_pieces/Standard_transparent
+# Citation: Tutorial images from https://chess24.com
+
+
 from tkinter import *
 import PIL.Image
 import PIL.ImageTk

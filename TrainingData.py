@@ -21,7 +21,7 @@ import ast
 topology = [64, 44, 18, 1]
 
 # Assigns the existing trained weights in the text file to the neural net.
-with open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsText.txt", "r") as myfile:
+with open("./TrainedWeightsText.txt", "r") as myfile:
     weightsF=myfile.read().replace('\n', '')
 weightsL = ast.literal_eval(weightsF)
 evalNet = NeuralNet.Net(topology)
@@ -29,7 +29,7 @@ for layer in range(len(evalNet.layers)-1):
     for neuron in range(len(evalNet.layers[layer])):
         evalNet.layers[layer][neuron].outputWeights = weightsL[layer][neuron]
 
-path = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PGNFiles/McDonnell.pgn"
+path = "./PGNFiles/McDonnell.pgn"
 
 # Trains neural network.
 with open(path) as f:
@@ -55,7 +55,7 @@ with open(path) as f:
                 evalNet.feedForward(inputsL)
                 resultVals = evalNet.getResults()
                 handler = chess.uci.InfoHandler()
-                engine = chess.uci.popen_engine("/Users/michaelkronovet/Desktop/15-112/FinalProject/stockfish-8-mac/Mac/stockfish-8-64") #give correct address of your engine here
+                engine = chess.uci.popen_engine("./stockfish-8-mac/Mac/stockfish-8-64") #give correct address of your engine here
                 engine.info_handlers.append(handler)
                 engine.position(board)
                 evaltime = 1000
@@ -93,6 +93,6 @@ weightsList = []
 weightsList.append(firstWeights)
 weightsList.append(secondWeights)
 weightsList.append(thirdWeights)
-open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsText.txt", "w").close()
-file = open("/Users/michaelkronovet/Desktop/15-112/FinalProject/TrainedWeightsText.txt", "w")
+open("./TrainedWeightsText.txt", "w").close()
+file = open("./TrainedWeightsText.txt", "w")
 file.write(str(weightsList))

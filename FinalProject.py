@@ -17,7 +17,7 @@ import imageio
 
 # Makes the initial start screen.
 def startScreen(canvas, data):
-    anImage = PIL.Image.open("/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/coolchesspicture.jpg")
+    anImage = PIL.Image.open("./PieceImages/coolchesspicture.jpg")
     anImage = anImage.resize((int(data.width*1.5), int(data.height*1.1)), PIL.Image.ANTIALIAS)
     aPhoto = PIL.ImageTk.PhotoImage(anImage)
     aLabel = Label(image=aPhoto)
@@ -67,7 +67,7 @@ def startScreen(canvas, data):
 
 # Makes and updates drawings of tutorial screen when player has made some selection.
 def tutorialScreen(canvas, data):
-    anImage = PIL.Image.open("/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/coolchesspicture.jpg")
+    anImage = PIL.Image.open("./PieceImages/coolchesspicture.jpg")
     anImage = anImage.resize((int(data.width*1.5), int(data.height*1.1)), PIL.Image.ANTIALIAS)
     aPhoto = PIL.ImageTk.PhotoImage(anImage)
     aLabel = Label(image=aPhoto)
@@ -133,7 +133,7 @@ def tutorialScreen(canvas, data):
 
 # Makes and updates drawings of single player game board when player makes a move.
 def trainingScreen(canvas, data):
-    anImage = PIL.Image.open("/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/coolchesspicture.jpg")
+    anImage = PIL.Image.open("./PieceImages/coolchesspicture.jpg")
     anImage = anImage.resize((int(data.width*1.5), int(data.height*1.1)), PIL.Image.ANTIALIAS)
     aPhoto = PIL.ImageTk.PhotoImage(anImage)
     aLabel = Label(image=aPhoto)
@@ -157,7 +157,7 @@ def trainingScreen(canvas, data):
 
 # Makes and updates drawings of game board when player or AI makes a move.
 def competitiveScreen(canvas, data):
-    anImage = PIL.Image.open("/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/coolchesspicture.jpg")
+    anImage = PIL.Image.open("./PieceImages/coolchesspicture.jpg")
     anImage = anImage.resize((int(data.width*1.5), int(data.height*1.1)), PIL.Image.ANTIALIAS)
     aPhoto = PIL.ImageTk.PhotoImage(anImage)
     aLabel = Label(image=aPhoto)
@@ -181,7 +181,7 @@ def competitiveScreen(canvas, data):
 
 # Makes and updates drawings of the game board when either player makes a move.
 def multiplayerScreen(canvas, data):
-    anImage = PIL.Image.open("/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/coolchesspicture.jpg")
+    anImage = PIL.Image.open("./PieceImages/coolchesspicture.jpg")
     anImage = anImage.resize((int(data.width*1.5), int(data.height*1.1)), PIL.Image.ANTIALIAS)
     aPhoto = PIL.ImageTk.PhotoImage(anImage)
     aLabel = Label(image=aPhoto)
@@ -398,66 +398,66 @@ def motion(event, data):
 def tutorialMouse(event, data):
     if data.margin <= event.x <= data.margin+int(data.width/7.5):
         if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MovePawn.png"
+            data.instructImage = "./MoveImages/MovePawn.png"
     elif data.margin+2*int(data.width/7.5) <= event.x <= data.margin+3*int(data.width/7.5):
         if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKnight.png"
+            data.instructImage = "./MoveImages/RegKnight.png"
     elif data.margin+4*int(data.width/7.5) <= event.x <= data.margin+5*int(data.width/7.5):
         if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegQueen.png"
+            data.instructImage = "./MoveImages/RegQueen.png"
     elif data.margin+6*int(data.width/7.5) <= event.x <= data.margin+7*int(data.width/7.5):
         if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegCastle.png"
+            data.instructImage = "./MoveImages/RegCastle.png"
     elif data.margin+int(data.width/7.5) <= event.x <= data.margin+2*int(data.width/7.5):
         if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegRook.png"
+            data.instructImage = "./MoveImages/RegRook.png"
     elif data.margin+3*int(data.width/7.5) <= event.x <= data.margin+4*int(data.width/7.5):
         if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegBishop.png"
+            data.instructImage = "./MoveImages/RegBishop.png"
     elif data.margin+5*int(data.width/7.5) <= event.x <= data.margin+6*int(data.width/7.5):
         if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKing.png"
+            data.instructImage = "./MoveImages/RegKing.png"
     
 # Changes the tutorial image after a certain period of time for tutorial move animation.
 def changeTutorialImage(data):
     if data.timerFiredCount%7 == 0:
         # Pawn Images
-        if data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MovePawn.png":
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegPawn.png"
-        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegPawn.png":
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/TakePawn.png"
-        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/TakePawn.png":
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MovePawn.png"
+        if data.instructImage == "./MoveImages/MovePawn.png":
+            data.instructImage = "./MoveImages/RegPawn.png"
+        elif data.instructImage == "./MoveImages/RegPawn.png":
+            data.instructImage = "./MoveImages/TakePawn.png"
+        elif data.instructImage == "./MoveImages/TakePawn.png":
+            data.instructImage = "./MoveImages/MovePawn.png"
         # Rook Images
-        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegRook.png":
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveRook.png"
-        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveRook.png":
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegRook.png"
+        elif data.instructImage == "./MoveImages/RegRook.png":
+            data.instructImage = "./MoveImages/MoveRook.png"
+        elif data.instructImage == "./MoveImages/MoveRook.png":
+            data.instructImage = "./MoveImages/RegRook.png"
         # Knight Images
-        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKnight.png":
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveKnight.png"
-        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveKnight.png":
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKnight.png"
+        elif data.instructImage == "./MoveImages/RegKnight.png":
+            data.instructImage = "./MoveImages/MoveKnight.png"
+        elif data.instructImage == "./MoveImages/MoveKnight.png":
+            data.instructImage = "./MoveImages/RegKnight.png"
         # Bishop Images
-        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegBishop.png":
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveBishop.png"
-        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveBishop.png":
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegBishop.png"
+        elif data.instructImage == "./MoveImages/RegBishop.png":
+            data.instructImage = "./MoveImages/MoveBishop.png"
+        elif data.instructImage == "./MoveImages/MoveBishop.png":
+            data.instructImage = "./MoveImages/RegBishop.png"
         # Queen Images
-        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegQueen.png":
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveQueen.png"
-        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveQueen.png":
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegQueen.png"
+        elif data.instructImage == "./MoveImages/RegQueen.png":
+            data.instructImage = "./MoveImages/MoveQueen.png"
+        elif data.instructImage == "./MoveImages/MoveQueen.png":
+            data.instructImage = "./MoveImages/RegQueen.png"
         # King Images
-        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKing.png":
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveKing.png"
-        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveKing.png":
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegKing.png"
+        elif data.instructImage == "./MoveImages/RegKing.png":
+            data.instructImage = "./MoveImages/MoveKing.png"
+        elif data.instructImage == "./MoveImages/MoveKing.png":
+            data.instructImage = "./MoveImages/RegKing.png"
         # Castling Images
-        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegCastle.png":
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveCastle.png"
-        elif data.instructImage == "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/MoveCastle.png":
-            data.instructImage = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MoveImages/RegCastle.png"
+        elif data.instructImage == "./MoveImages/RegCastle.png":
+            data.instructImage = "./MoveImages/MoveCastle.png"
+        elif data.instructImage == "./MoveImages/MoveCastle.png":
+            data.instructImage = "./MoveImages/RegCastle.png"
 
 
 
@@ -518,7 +518,7 @@ def run(width=300, height=300, serverMsg = None, server = None):
 
 serverMsg = Queue(100)
 threading.Thread(target = handleServerMsg, args = (server, serverMsg)).start()
-songDir = "/Users/michaelkronovet/Desktop/15-112/FinalProject/MozartPianoConcertoNo4Andante.mp3"
+songDir = "./MozartPianoConcertoNo4Andante.mp3"
 pygame.mixer.init()
 pygame.mixer.music.load(songDir)
 pygame.mixer.music.play(-1)

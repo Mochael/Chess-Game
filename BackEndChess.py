@@ -42,9 +42,9 @@ class Pawn(object):
         self.posRow = posRow
         self.posCol = posCol
         if self.color == "Black":
-            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/BlackPawn.png"
+            self.image = "./PieceImages/BlackPawn.png"
         else:
-            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/WhitePawn.png"
+            self.image = "./PieceImages/WhitePawn.png"
         self.moves = []
         self.takeMoves = []
     
@@ -105,9 +105,9 @@ class Rook(object):
         self.posRow = posRow
         self.posCol = posCol
         if self.color == "Black":
-            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/BlackRook.png"
+            self.image = "./PieceImages/BlackRook.png"
         else:
-            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/WhiteRook.png"
+            self.image = "./PieceImages/WhiteRook.png"
         self.moves = []
     
     def __repr__(self):
@@ -148,9 +148,9 @@ class Knight(object):
         self.posRow = posRow
         self.posCol = posCol
         if self.color == "Black":
-            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/BlackKnight.png"
+            self.image = "./PieceImages/BlackKnight.png"
         else:
-            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/WhiteKnight.png"
+            self.image = "./PieceImages/WhiteKnight.png"
         self.moves = []
 
     def __repr__(self):
@@ -174,9 +174,9 @@ class Bishop(object):
         self.posRow = posRow
         self.posCol = posCol
         if self.color == "Black":
-            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/BlackBishop.png"
+            self.image = "./PieceImages/BlackBishop.png"
         else:
-            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/WhiteBishop.png"
+            self.image = "./PieceImages/WhiteBishop.png"
         self.moves = []
     
     def __repr__(self):
@@ -229,9 +229,9 @@ class Queen(object):
         self.posRow = posRow
         self.posCol = posCol
         if self.color == "Black":
-            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/BlackQueen.png"
+            self.image = "./PieceImages/BlackQueen.png"
         else:
-            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/WhiteQueen.png"
+            self.image = "./PieceImages/WhiteQueen.png"
         self.moves = []
     
     def __repr__(self):
@@ -314,9 +314,9 @@ class King(object):
         self.posRow = posRow
         self.posCol = posCol
         if self.color == "Black":
-            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/BlackKing.png"
+            self.image = "./PieceImages/BlackKing.png"
         else:
-            self.image = "/Users/michaelkronovet/Desktop/15-112/FinalProject/PieceImages/WhiteKing.png"
+            self.image = "./PieceImages/WhiteKing.png"
         self.moves = []
 
     def __repr__(self):

@@ -10,7 +10,7 @@ import NeuralNet
 import ast
 
 # Converts string of weights to actual list of weights.
-with open("/Users/michaelkronovet/Desktop/15-112/FinalProject/RealWeights/RealWeights9.txt", "r") as myfile:
+with open("./RealWeights/RealWeights9.txt", "r") as myfile:
     weightsF = myfile.read().replace('\n', '')
 weightsL = ast.literal_eval(weightsF)
 

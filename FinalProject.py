@@ -214,7 +214,7 @@ def gameMode(event, data):
             if 0 <= event.y <= 30:
                 init(data)
     else:
-        if 0 <= event.x <= 280:
+        if 0 <= event.x <= 290:
             if 0 <= event.y <= 40:
                 if data.music == "On":
                     data.music = "Off"

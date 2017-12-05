@@ -26,15 +26,15 @@ def startScreen(canvas, data):
     for col in range(7):
         if col%2 == 0:
             canvas.create_rectangle(data.margin+col*int(data.width/7.5), 
-            15*data.margin-10+int(data.height/7),
+            14.6296*data.margin+int(data.height/7),
             data.margin+(col+1)*int(data.width/7.5), 
-            15*data.margin-10+2*int(data.height/7), 
+            14.6296*data.margin+2*int(data.height/7), 
             fill = "tan", width = data.height//100)
         else:
             canvas.create_rectangle(data.margin+col*int(data.width/7.5), 
-            15*data.margin-10+int(data.height/7),
+            14.6296*data.margin+int(data.height/7),
             data.margin+(col+1)*int(data.width/7.5), 
-            15*data.margin-10+2*int(data.height/7), 
+            14.6296*data.margin+2*int(data.height/7), 
             fill = "brown", width = data.height//100)
         if data.hover != None:
             canvas.create_rectangle(data.hover[0], data.hover[1], 
@@ -76,24 +76,24 @@ def tutorialScreen(canvas, data):
     aLabel = Label(image=aPhoto)
     aLabel.image = aPhoto
     canvas.create_image(data.width/2+data.margin*2, data.height/2,image = aPhoto)
-    canvas.create_text(data.width/2, 19, 
+    canvas.create_text(data.width/2, data.height*.03, 
                        text = "Tutorial",
                        font = "courier "+str(int(data.width/25))+" underline bold")
-    canvas.create_text(45, 15, 
+    canvas.create_text(data.width*.053, data.height*.0273, 
                        text = "Back",
-                       font = "courier "+str(int(data.width/25)))
+                       font = "courier "+str(int(data.width/26)))
     for col in range(7):
         if col%2 == 0:
             canvas.create_rectangle(data.margin+col*int(data.width/7.5), 
-            15*data.margin-10+int(data.height/7),
+            14.6296*data.margin+int(data.height/7),
             data.margin+(col+1)*int(data.width/7.5), 
-            15*data.margin-10+2*int(data.height/7), 
+            14.6296*data.margin+2*int(data.height/7), 
             fill = "tan", width = data.height//100)
         else:
             canvas.create_rectangle(data.margin+col*int(data.width/7.5), 
-            15*data.margin-10+int(data.height/7),
+            14.6296*data.margin+int(data.height/7),
             data.margin+(col+1)*int(data.width/7.5), 
-            15*data.margin-10+2*int(data.height/7), 
+            14.6926*data.margin+2*int(data.height/7), 
             fill = "brown", width = data.height//100)
         if data.hover != None:
             canvas.create_rectangle(data.hover[0], data.hover[1], 
@@ -143,12 +143,12 @@ def trainingScreen(canvas, data):
     aLabel.image = aPhoto
     canvas.create_image(data.width/2+data.margin*2, data.height/2,image = aPhoto)
     data.mainBoard.drawBoard(canvas)
-    canvas.create_text(data.width/2, 19, 
+    canvas.create_text(data.width/2, data.height*.03, 
                        text = "Training",
                        font = "courier "+str(int(data.width/25))+" underline bold")
-    canvas.create_text(45, 15, 
+    canvas.create_text(data.width*.053, data.height*.0273, 
                        text = "Back",
-                       font = "courier "+str(int(data.width/25)))
+                       font = "courier "+str(int(data.width/26)))
     if data.mainBoard.clicked:
         canvas.create_rectangle(data.mainBoard.horMargin+data.mainBoard.colClick*data.mainBoard.cellWidth,
                                 data.mainBoard.vertMargin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
@@ -167,12 +167,12 @@ def competitiveScreen(canvas, data):
     aLabel.image = aPhoto
     canvas.create_image(data.width/2+data.margin*2, data.height/2,image = aPhoto)
     data.mainBoard.drawBoard(canvas)
-    canvas.create_text(data.width/2, 19, 
+    canvas.create_text(data.width/2, data.height*.03, 
                        text = "Competitive",
                        font = "courier "+str(int(data.width/25))+" underline bold")
-    canvas.create_text(45, 15, 
+    canvas.create_text(data.width*.053, data.height*.0273, 
                        text = "Back",
-                       font = "courier "+str(int(data.width/25)))
+                       font = "courier "+str(int(data.width/26)))
     if data.mainBoard.clicked:
         canvas.create_rectangle(data.mainBoard.horMargin+data.mainBoard.colClick*data.mainBoard.cellWidth,
                                 data.mainBoard.vertMargin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
@@ -191,12 +191,12 @@ def multiplayerScreen(canvas, data):
     aLabel.image = aPhoto
     canvas.create_image(data.width/2+data.margin*2, data.height/2,image = aPhoto)
     data.mainBoard.drawBoard(canvas)
-    canvas.create_text(data.width/2, 19, 
+    canvas.create_text(data.width/2, data.height*.03, 
                        text = "Multiplayer",
                        font = "courier "+str(int(data.width/25))+" underline bold")
-    canvas.create_text(45, 15, 
+    canvas.create_text(data.width*.053, data.height*.0273, 
                        text = "Back",
-                       font = "courier "+str(int(data.width/25)))
+                       font = "courier "+str(int(data.width/26)))
     if data.mainBoard.clicked:
         canvas.create_rectangle(data.mainBoard.horMargin+data.mainBoard.colClick*data.mainBoard.cellWidth,
                                 data.mainBoard.vertMargin+data.mainBoard.rowClick*data.mainBoard.cellHeight,
@@ -210,12 +210,12 @@ def multiplayerScreen(canvas, data):
 # back to the home screen.
 def gameMode(event, data):
     if data.mode != "beginning":
-        if 0 <= event.x <= 85:
-            if 0 <= event.y <= 30:
+        if 0 <= event.x <= data.width*.1:
+            if 0 <= event.y <= data.height*.04615:
                 init(data)
     else:
-        if 0 <= event.x <= 290:
-            if 0 <= event.y <= 40:
+        if 0 <= event.x <= data.width*.3412:
+            if 0 <= event.y <= data.height*.0615:
                 if data.music == "On":
                     data.music = "Off"
                     pygame.mixer.music.pause()
@@ -271,11 +271,11 @@ class Person(object):
 def init(data):
     data.mode = "beginning"
     data.y = data.height/4*3.3
-    data.x1 = data.width/19*2-6
-    data.x2 = data.width/20*7+11
+    data.x1 = data.width*.098
+    data.x2 = data.width*.3629
     data.x3 = data.width/20*12.6
     data.x4 = data.width/19*17
-    data.r = 50
+    data.r = data.width/17
     data.margin = int(data.width/31)
     data.mainBoard = CB.Board(data.width, data.height)
     data.mainBoard.makeBoard()
@@ -290,7 +290,7 @@ def init(data):
     data.moved = False
     data.hover = None
     data.checkMate = None
-    data.instructImage = None
+    data.instructImage = "./MoveImages/MovePawn.png"
     data.music = "On"
 
 
@@ -369,7 +369,6 @@ def redrawAll(canvas, data):
 
 # Tells the game which box should be highlighted when in start/tutorial mode.
 def motion(event, data):
-    print(event.x, event.y)
     if data.mode == "beginning":
         if data.margin <= event.x <= data.margin+int(data.width/7.5):
             if 15*data.margin-10+int(data.height/7) <= event.y <= 15*data.margin-10+2*int(data.height/7):

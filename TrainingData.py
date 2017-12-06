@@ -4,8 +4,11 @@
 # It then puts the new trained weights from this training session into a text file
 # for me to reference when loading the neural network for the AI.
 
-# Database for chess training data
+# Citation: Database for chess training data
 # https://www.pgnmentor.com/files.html
+
+# Citation: Used Stockfish Engine to train my neural network.
+# https://stockfishchess.org
 
 import chess
 import chess.uci

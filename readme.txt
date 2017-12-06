@@ -25,7 +25,7 @@ pip install python-chess[engine,gaviota]
 
 How to Run:
 1. Open up the terminal/command prompt and cd into the project folder.
-2. Google your IP address and go into Server.py and Client.py and change the variable HOST to reflect your IP address (must update each time your IP address changes).
+2. Google your IP address and go into Server.py and Client.py and change the variable HOST to reflect your IP address (must update each time your IP address changes). If you are playing on multiple computers you must make the HOST variable in Client.py match the IP address of the server you are trying to connect to.
 3. Run Server.py in terminal and then in another terminal window run Client.py
 4. You should now be able to play the single player modes.
 5. If you want to play multiplayer, you need to run Client.py in a different terminal window. 

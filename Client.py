@@ -7,7 +7,7 @@ import threading
 from queue import Queue
 from FinalProject import *
 
-HOST = "128.237.178.58" # put your IP address here if playing on multiple computers
+HOST = "128.237.198.11" # put your IP address here if playing on multiple computers
 PORT = 50003
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.connect((HOST,PORT))

@@ -150,6 +150,9 @@ def trainingScreen(canvas, data):
     canvas.create_text(data.width/2, data.height*.03, 
                        text = "Training",
                        font = "courier "+str(int(data.width/25))+" underline bold")
+    canvas.create_text(data.width*.053, data.height*.0273, 
+                       text = "Back",
+                       font = "courier "+str(int(data.width/26)))
     sameBoards(canvas, data)
 
 # Makes and updates drawings of game board when player or AI makes a move.
@@ -166,6 +169,9 @@ def competitiveScreen(canvas, data):
                        font = "courier "+str(int(data.width/25))+" underline bold")
     canvas.create_text(data.width/20*18, data.height/25, text = "You are "+data.player,
                        font = "courier "+str(int(data.width/40)), fill = data.player)
+    canvas.create_text(data.width*.053, data.height*.0273, 
+                       text = "Back",
+                       font = "courier "+str(int(data.width/26)))
     sameBoards(canvas, data)
 
 # Makes and updates drawings of the game board when either player makes a move.
@@ -180,15 +186,24 @@ def multiplayerScreen(canvas, data):
     canvas.create_text(data.width/2, data.height*.03, 
                        text = "Multiplayer",
                        font = "courier "+str(int(data.width/25))+" underline bold")
-    canvas.create_text(data.width/20*18, data.height/25, text = "You are "+data.me.ID,
-                       font = "courier "+str(int(data.width/40)), fill = data.me.ID)
-    sameBoards(canvas, data)
-
-# This function is called to draw moves and board screen for the three playing modes.
-def sameBoards(canvas, data):
     canvas.create_text(data.width*.053, data.height*.0273, 
                        text = "Back",
                        font = "courier "+str(int(data.width/26)))
+    print("HERES THE OTHER ID", data.other.ID)
+    if data.other.ID != None:
+        print("HERES MY ID")
+        sameBoards(canvas, data)
+        canvas.create_text(data.width/20*18, data.height/25, text = "You are "+data.me.ID,
+                           font = "courier "+str(int(data.width/40)), fill = data.me.ID)
+    else:
+        canvas.create_rectangle(5*data.margin, data.height//2-3*data.margin, 
+        data.width-5*data.margin, data.height//2+3*data.margin,
+        fill = "Grey")
+        canvas.create_text(data.width//2, data.height//2, text = "Waiting for second player...",
+        fill = "tan", font = "fixedsys "+str(int(data.r/1.4)))
+
+# This function is called to draw moves and board screen for the three playing modes.
+def sameBoards(canvas, data):
     if data.mainBoard.kingCheck != None:
         canvas.create_rectangle(data.mainBoard.horMargin+data.mainBoard.kingCheck[1]*data.mainBoard.cellWidth,
                                 data.mainBoard.vertMargin+data.mainBoard.kingCheck[0]*data.mainBoard.cellHeight,
@@ -252,12 +267,14 @@ def moveWithMouse(event, data):
     if data.checkMate == None:
         if data.mainBoard.clicked:
             if data.mode == "multiplayer":
-                data.mainBoard.moveClick(event.x, event.y, data.me.ID, data)
-                if data.moved:
-                    sendMoveMessage(data)
-                    if data.checkMate != None:
-                        sendCheckMate(data)
-                    data.moved = False
+                print(data.other.ID)
+                if data.other.ID != None:
+                    data.mainBoard.moveClick(event.x, event.y, data.me.ID, data)
+                    if data.moved:
+                        sendMoveMessage(data)
+                        if data.checkMate != None:
+                            sendCheckMate(data)
+                        data.moved = False
             else:
                 data.mainBoard.moveClick(event.x, event.y, data.player, data)
                 if data.mode == "training":
@@ -290,8 +307,6 @@ def init(data):
     data.mainBoard.makeBoard()
     data.player = "White"
     data.timerFiredCount = 0
-    data.me = Person(data.mainBoard)
-    data.other = Person(data.mainBoard)
     data.origRow = None
     data.origCol = None
     data.newRow = None
@@ -301,6 +316,11 @@ def init(data):
     data.checkMate = None
     data.instructImage = "./MoveImages/MovePawn.png"
     data.music = "On"
+    try:
+        return data.other.ID
+    except:
+        data.me = Person(data.mainBoard)
+        data.other = Person(data.mainBoard)
 
 
 # Sets the canvas to store the current pieces on the board.

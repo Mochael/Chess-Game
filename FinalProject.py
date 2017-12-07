@@ -189,9 +189,7 @@ def multiplayerScreen(canvas, data):
     canvas.create_text(data.width*.053, data.height*.0273, 
                        text = "Back",
                        font = "courier "+str(int(data.width/26)))
-    print("HERES THE OTHER ID", data.other.ID)
     if data.other.ID != None:
-        print("HERES MY ID")
         sameBoards(canvas, data)
         canvas.create_text(data.width/20*18, data.height/25, text = "You are "+data.me.ID,
                            font = "courier "+str(int(data.width/40)), fill = data.me.ID)
@@ -267,7 +265,6 @@ def moveWithMouse(event, data):
     if data.checkMate == None:
         if data.mainBoard.clicked:
             if data.mode == "multiplayer":
-                print(data.other.ID)
                 if data.other.ID != None:
                     data.mainBoard.moveClick(event.x, event.y, data.me.ID, data)
                     if data.moved:
